@@ -10,10 +10,12 @@ UI бүрэн **Монгол** (Кирилл).
 
 - Next.js 14 (App Router) + TypeScript
 - Tailwind CSS
-- Prisma + SQLite
+- Prisma + PostgreSQL (Vercel / production)
 - JWT cookie session (jose + bcryptjs)
 
-## Суулгах
+## Суулгах (local)
+
+Postgres шаардлагатай (`DATABASE_URL`).
 
 ```bash
 cd xale
@@ -21,6 +23,8 @@ npm install
 npx prisma db push
 npm run seed
 ```
+
+MVP-д schema sync-д `prisma db push` хангалттай. Production-д later `prisma migrate deploy` ашиглаж болно.
 
 ## Ажиллуулах
 
@@ -35,7 +39,7 @@ npm run dev
 | Команд | Тайлбар |
 |--------|---------|
 | `npm run dev` | Development сервер |
-| `npm run build` | Production build |
+| `npm run build` | Production build (`prisma generate && next build`) |
 | `npm run start` | Production сервер |
 | `npm run seed` | Demo өгөгдөл оруулах |
 
@@ -61,12 +65,30 @@ npm run dev
 
 ## Орчны хувьсагч
 
-`.env` файл:
+`.env` (local) жишээ:
 
 ```
-DATABASE_URL="file:./dev.db"
-AUTH_SECRET="xale-dev-secret-change-in-production-mn-2026"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DBNAME?sslmode=require"
+AUTH_SECRET="change-me-to-a-long-random-string"
 ```
+
+### Vercel deploy
+
+SQLite Vercel serverless дээр ажиллахгүй — **PostgreSQL** ашиглана (Neon, Supabase, Vercel Postgres гэх мэт).
+
+Vercel Environment Variables:
+
+| Variable | Тайлбар |
+|----------|---------|
+| `DATABASE_URL` | Postgres connection string (pooled URL OK for serverless) |
+| `AUTH_SECRET` | JWT signing secret (урт, random) |
+
+Анхны deploy-ийн дараа:
+
+1. Schema sync: `npx prisma db push` (MVP) — эсвэл later `npx prisma migrate deploy`
+2. Seed (optional): `npm run seed` (local/CI-ээс `DATABASE_URL`-тай)
+
+`vercel.json` шаардлагагүй (Next.js default). Build script: `prisma generate && next build`.
 
 ## Хязгаарлалт (MVP)
 
