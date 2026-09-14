@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  phone        String?
+  whatsapp     String?
+  role         String     // SELLER | BUYER
+  createdAt    DateTime   @default(now())
+  listings     Listing[]
+  interests    Interest[]
+}
+
+model Listing {
+  id             String     @id @default(cuid())
+  title          String
+  category       String     // FOOD | RESTAURANT_SURPLUS | OTHER
+  description    String
+  originalPrice  Int        // MNT
+  discountPrice  Int        // MNT
+  quantity       Int
+  unit           String
+  expiryDate     DateTime
+  pickupDistrict String
+  photoUrl       String?
+  status         String     @default("ACTIVE") // ACTIVE | SOLD | EXPIRED | HIDDEN
+  sellerId       String
+  seller         User       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  interests      Interest[]
+}
+
+model Interest {
+  id        String   @id @default(cuid())
+  message   String
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
