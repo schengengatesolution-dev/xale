@@ -7,14 +7,14 @@ export async function Navbar() {
   const session = await getSession();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-stone-200 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-cream-100/95 backdrop-blur">
       <div className="relative mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-600 text-lg font-bold text-white shadow-sm">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-600 text-lg font-bold text-white shadow-sm">
             x
           </span>
           <div className="leading-tight">
-            <span className="block text-xl font-bold tracking-tight text-stone-900">
+            <span className="block text-xl font-bold tracking-tight text-green-800">
               xale
             </span>
             <span className="hidden text-[10px] font-medium uppercase tracking-wider text-stone-400 sm:block">
@@ -23,38 +23,43 @@ export async function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden items-center gap-1 text-sm md:flex">
           <Link
             href="/listings"
-            className="rounded-lg px-3 py-2 font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+            className="rounded-full px-3 py-2 font-medium text-stone-600 hover:bg-cream-200 hover:text-stone-900"
           >
             Зарууд
+          </Link>
+          <Link
+            href="/how-it-works"
+            className="rounded-full px-3 py-2 font-medium text-stone-600 hover:bg-cream-200 hover:text-stone-900"
+          >
+            Хэрхэн ажилладаг вэ?
           </Link>
 
           {session?.role === "SELLER" && (
             <>
               <Link
                 href="/seller"
-                className="rounded-lg px-3 py-2 font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                className="rounded-full px-3 py-2 font-medium text-stone-600 hover:bg-cream-200 hover:text-stone-900"
               >
                 Самбар
               </Link>
               <Link
                 href="/seller/listings"
-                className="rounded-lg px-3 py-2 font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                className="rounded-full px-3 py-2 font-medium text-stone-600 hover:bg-cream-200 hover:text-stone-900"
               >
                 Миний зарууд
               </Link>
               <Link
                 href="/seller/interests"
-                className="rounded-lg px-3 py-2 font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                className="rounded-full px-3 py-2 font-medium text-stone-600 hover:bg-cream-200 hover:text-stone-900"
               >
                 Сонирхол
               </Link>
               <Link
                 href="/seller/listings/new"
-                className="btn-primary !px-3 !py-1.5"
+                className="btn-primary !px-4 !py-1.5"
               >
                 + Зар
               </Link>
@@ -70,10 +75,10 @@ export async function Navbar() {
             </div>
           ) : (
             <div className="ml-2 flex items-center gap-2">
-              <Link href="/login" className="btn-secondary !px-3 !py-1.5">
+              <Link href="/login" className="btn-secondary !px-4 !py-1.5">
                 Нэвтрэх
               </Link>
-              <Link href="/signup" className="btn-primary !px-3 !py-1.5">
+              <Link href="/signup" className="btn-primary !px-4 !py-1.5">
                 Бүртгүүлэх
               </Link>
             </div>

@@ -44,6 +44,13 @@ export function MobileMenu({ session }: Props) {
             >
               Зарууд
             </Link>
+            <Link
+              href="/how-it-works"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
+            >
+              Хэрхэн ажилладаг вэ?
+            </Link>
             {session?.role === "SELLER" && (
               <>
                 <Link

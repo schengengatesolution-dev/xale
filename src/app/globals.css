@@ -3,33 +3,38 @@
 @tailwind utilities;
 
 :root {
-  --xale-green: #16a34a;
-  --xale-green-dark: #15803d;
-  --xale-amber: #f59e0b;
+  --xale-forest: #0b3d2e;
+  --xale-forest-mid: #1f5c45;
+  --xale-cream: #f8f4f0;
+  --xale-green: #1f5c45;
+  --xale-green-dark: #0b3d2e;
+  --xale-amber: #a67c4e;
+  --background: #f8f4f0;
+  --foreground: #1c1917;
 }
 
 body {
-  @apply bg-stone-50 text-stone-900 antialiased;
+  @apply bg-cream-100 text-stone-900 antialiased;
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-full bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-xl border border-stone-300 bg-white px-5 py-2.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-full border border-stone-300 bg-white px-5 py-2.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:bg-cream-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-danger {
     @apply inline-flex items-center justify-center rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-50;
   }
   .input {
-    @apply w-full rounded-xl border border-stone-300 bg-white px-3 py-2.5 text-sm shadow-sm placeholder:text-stone-400 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/30;
+    @apply w-full rounded-full border border-stone-300 bg-white px-3 py-2.5 text-sm shadow-sm placeholder:text-stone-400 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/30;
   }
   .label {
     @apply mb-1.5 block text-sm font-medium text-stone-700;
   }
   .card {
-    @apply rounded-2xl border border-stone-200 bg-white p-5 shadow-sm;
+    @apply rounded-2xl border border-stone-200/80 bg-white p-5 shadow-sm;
   }
   .alert-error {
     @apply rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700;
@@ -37,4 +42,12 @@ body {
   .alert-success {
     @apply rounded-xl bg-green-50 px-3 py-2 text-sm text-green-800;
   }
+}
+
+/* Safe area for PWA install / home-indicator */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
 }

@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
+import { BottomNav } from "@/components/BottomNav";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { getSession } from "@/lib/auth";
 import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
@@ -13,6 +16,16 @@ export const metadata: Metadata = {
   },
   description:
     "Хугацаа дуусах дөхсөн, илүүдэл хүнс, рестораны үлдэгдлийг худалдагч, худалдан авагчтай холбоно. Улаанбаатар.",
+  applicationName: "xale",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "xale",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: "xale — Илүүдэл барааны зах зээл",
     description:
@@ -20,19 +33,33 @@ export const metadata: Metadata = {
     locale: "mn_MN",
     type: "website",
   },
+  icons: {
+    icon: [{ url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
+  },
 };
 
-export default function RootLayout({
+export const viewport: Viewport = {
+  themeColor: "#0B3D2E",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+};
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getSession();
+
   return (
     <html lang="mn">
       <body className={inter.className}>
         <Navbar />
-        <main className="min-h-[calc(100vh-4rem)]">{children}</main>
-        <footer className="border-t border-stone-200 bg-white">
+        <main className="min-h-[calc(100vh-4rem)] pb-20 md:pb-0">{children}</main>
+        <footer className="border-t border-stone-200 bg-white pb-20 md:pb-0">
           <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
             <div>
               <p className="flex items-center gap-2 text-lg font-bold text-stone-900">
@@ -52,6 +79,11 @@ export default function RootLayout({
                 <li>
                   <Link href="/listings" className="hover:text-green-700">
                     Зарууд
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/how-it-works" className="hover:text-green-700">
+                    Хэрхэн ажилладаг вэ?
                   </Link>
                 </li>
                 <li>
@@ -77,7 +109,7 @@ export default function RootLayout({
                 Домэйн: <span className="font-medium text-stone-700">xale.mn</span>
               </p>
               <p className="mt-1 text-xs text-stone-400">
-                Одоо: xale-app.vercel.app
+                Одоо: xale-app.vercel.app · PWA v1 (нүүр дэлгэцэд нэмэх)
               </p>
             </div>
           </div>
@@ -85,6 +117,10 @@ export default function RootLayout({
             © {new Date().getFullYear()} xale · MVP
           </div>
         </footer>
+        <BottomNav
+          session={session ? { role: session.role } : null}
+        />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

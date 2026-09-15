@@ -58,7 +58,7 @@ export function ListingCard({ listing, href }: ListingCardProps) {
           </div>
         )}
         {discount > 0 && (
-          <span className="absolute left-2 top-2 rounded-full bg-amber-500 px-2.5 py-0.5 text-xs font-bold text-white shadow-sm">
+          <span className="absolute left-2 top-2 rounded-full bg-green-600 px-2.5 py-0.5 text-xs font-bold text-white shadow-sm">
             −{discount}%
           </span>
         )}
