@@ -46,7 +46,7 @@ export default async function SellerDashboardPage() {
           </p>
         </div>
         <Link href="/seller/listings/new" className="btn-primary">
-          + Шинэ Surprise Bag
+          + Шинэ Азтай уут
         </Link>
       </div>
 
@@ -85,7 +85,7 @@ export default async function SellerDashboardPage() {
 
       <div className="mt-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Сүүлийн Surprise Bag</h2>
+          <h2 className="text-lg font-bold">Сүүлийн Азтай уут</h2>
           <Link
             href="/seller/listings"
             className="text-sm font-semibold text-green-700 hover:underline"
@@ -96,7 +96,7 @@ export default async function SellerDashboardPage() {
 
         {recent.length === 0 ? (
           <div className="card mt-4 text-center">
-            <p className="text-stone-500">Одоогоор Surprise Bag байхгүй.</p>
+            <p className="text-stone-500">Одоогоор Азтай уут байхгүй.</p>
             <Link
               href="/seller/listings/new"
               className="btn-primary mt-4 inline-flex"
@@ -139,7 +139,7 @@ export default async function SellerDashboardPage() {
         <h3 className="font-semibold text-stone-800">Хурдан зөвлөмж</h3>
         <ul className="mt-2 space-y-1 text-sm text-stone-600">
           <li>· Авах цонхыг тодорхой оруулбал захиалга нэмэгдэнэ.</li>
-          <li>· Surprise Bag — ангилал тодорхой, агуулга өөрчлөгдөнө гэж бич.</li>
+          <li>· Азтай уут — ангилал тодорхой, агуулга өөрчлөгдөнө гэж бич.</li>
           <li>· Захиалга ирэхэд «Авсан» эсвэл «Ирээгүй» тэмдэглэ.</li>
           <li>
             · Одоогоор шимтгэлгүй —{" "}

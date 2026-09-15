@@ -43,7 +43,7 @@ export function ReserveForm({ listingId }: { listingId: string }) {
   if (status === "ok") {
     return (
       <div className="rounded-xl bg-green-50 p-4 text-sm text-green-800">
-        <p className="font-semibold">Surprise Bag захиалагдлаа!</p>
+        <p className="font-semibold">Азтай уут захиалагдлаа!</p>
         <p className="mt-1">
           Авах цонхны хугацаанд дэлгүүр / ресторан дээр очиж баталгаажуулаарай.
           Апп доторх төлбөр удахгүй нэмэгдэнэ — одоо авах үедээ төлнө.

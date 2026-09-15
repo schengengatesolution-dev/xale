@@ -9,7 +9,7 @@ const STEPS = [
   {
     step: "1",
     title: "Ол",
-    text: "Ойролцоох Surprise Bag-уудыг дүүрэг, ангиллаар шүүж олно.",
+    text: "Ойролцоох Азтай уутнуудыг дүүрэг, ангиллаар шүүж олно.",
   },
   {
     step: "2",
@@ -24,7 +24,7 @@ const STEPS = [
   {
     step: "4",
     title: "Хаягдал↓",
-    text: "Хямд үнээр авч, хоолны хаягдал багасгана — Surprise! агуулга өөрчлөгдөнө.",
+    text: "Хямд үнээр авч, хоолны хаягдал багасгана — агуулга нууц, өөрчлөгдөнө.",
   },
 ];
 
@@ -70,17 +70,17 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:py-24">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cream-100 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-cream-200" />
-            Улаанбаатар · Surprise Bag
+            Улаанбаатар · Азтай уут
           </div>
           <h1 className="mt-5 max-w-2xl text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.25rem]">
             Сайн хоолыг{" "}
             <span className="text-cream-200">хаягдахаас</span> авар —
-            Surprise Bag
+            Азтай уут
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-green-100">
-            Ойролцоох бизнесийн <strong>Surprise Bag</strong>-ыг{" "}
+            Ойролцоох бизнесийн <strong>Азтай уут</strong>-ыг{" "}
             <strong>ол</strong> → <strong>захиал</strong> → <strong>ав</strong>.
-            Ангилал тодорхой, яг агуулга нь Surprise!
+            Ангилал тодорхой, яг агуулга нь нууц!
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {session ? (
@@ -96,7 +96,7 @@ export default async function HomePage() {
                   href="/listings"
                   className="rounded-xl bg-cream-100 px-6 py-3.5 text-sm font-bold text-green-800 shadow-lg hover:bg-white"
                 >
-                  Ойролцоох Surprise Bag ол
+                  Ойролцоох Азтай уут ол
                 </Link>
                 <Link
                   href="/signup"
@@ -143,7 +143,7 @@ export default async function HomePage() {
                 ол → захиал → ав
               </h2>
               <p className="mt-1 text-sm text-stone-600">
-                Surprise Bag — 3 алхам (+ хаягдал↓)
+                Азтай уут — 3 алхам (+ хаягдал↓)
               </p>
             </div>
             <Link
@@ -179,7 +179,7 @@ export default async function HomePage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold text-stone-900 sm:text-3xl">
-                Ойролцоох Surprise Bag
+                Ойролцоох Азтай уут
               </h2>
               <p className="mt-1 text-sm text-stone-600">
                 Идэвхтэй уутнууд · Улаанбаатар
@@ -207,15 +207,15 @@ export default async function HomePage() {
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-stone-600">
             Талхны дэлгүүр, кафе, ресторан, зочид буудал, хүнсний дэлгүүрүүд
-            өдөр бүр илүүдэл хоол үлдээдэг. <strong>Surprise Bag</strong>-аар
+            өдөр бүр илүүдэл хоол үлдээдэг. <strong>Азтай уут</strong>-аар
             энэ хоолыг хямд үнээр хэрэглэгчидэд хүргэнэ — хаягдал буурна.
           </p>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {[
               {
                 icon: "🛍️",
-                title: "Surprise Bag",
-                text: "Ангилал тодорхой, яг агуулга нь өдөр бүр өөр — Surprise!",
+                title: "Азтай уут",
+                text: "Ангилал тодорхой, яг агуулга нь өдөр бүр өөр — нууц!",
               },
               {
                 icon: "⏰",
@@ -238,7 +238,7 @@ export default async function HomePage() {
             ))}
           </div>
           <p className="mx-auto mt-8 max-w-2xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-xs leading-relaxed text-amber-950">
-            <strong>Хүнсний аюулгүй байдал:</strong> Surprise Bag-ийн агуулга
+            <strong>Хүнсний аюулгүй байдал:</strong> Азтай уутны агуулга
             өөрчлөгдөж болно. Харшил / хоолны хязгаарлалт байвал захиалахаасаа
             өмнө бизнестэй холбогдоорой. xale нь зуучлагч платформ.
           </p>
@@ -255,8 +255,8 @@ export default async function HomePage() {
               <h3 className="text-xl font-bold text-green-800">Худалдан авагч</h3>
               <ul className="mt-4 space-y-2.5 text-sm text-stone-700">
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Ойролцоох Surprise
-                  Bag ол
+                  <span className="text-green-600">✓</span> Ойролцоох Азтай уут
+                  ол
                 </li>
                 <li className="flex gap-2">
                   <span className="text-green-600">✓</span> Захиал (нөөцлө)
@@ -277,7 +277,7 @@ export default async function HomePage() {
                   буудал, дэлгүүр
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Surprise Bag үүсгэ —
+                  <span className="text-green-600">✓</span> Азтай уут үүсгэ —
                   одоо <strong>шимтгэлгүй</strong>
                 </li>
                 <li className="flex gap-2">
@@ -309,7 +309,7 @@ export default async function HomePage() {
       <section className="bg-green-900 py-16 text-center text-white">
         <h2 className="text-2xl font-bold sm:text-3xl">Одоо эхлээрэй</h2>
         <p className="mx-auto mt-3 max-w-md text-green-100">
-          Surprise Bag-аараа сайн хоолыг хаягдахаас авар. Утаснаасаа «Нүүр
+          Азтай уутаараа сайн хоолыг хаягдахаас авар. Утаснаасаа «Нүүр
           дэлгэцэд нэмэх»-ээр апп шиг ашиглана.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -319,7 +319,7 @@ export default async function HomePage() {
                 href="/listings"
                 className="inline-block rounded-xl bg-cream-100 px-8 py-3.5 text-sm font-bold text-green-800 hover:bg-white"
               >
-                Surprise Bag ол
+                Азтай уут ол
               </Link>
               <Link
                 href="/signup"

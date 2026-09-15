@@ -55,7 +55,7 @@ export default async function ListingDetailPage({
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <Link href="/listings" className="text-sm text-green-700 hover:underline">
-        ← Surprise Bag-ууд руу
+        ← Азтай уутнууд руу
       </Link>
 
       <div className="mt-4 grid gap-8 md:grid-cols-2">
@@ -70,7 +70,7 @@ export default async function ListingDetailPage({
           ) : (
             <div className="flex aspect-square flex-col items-center justify-center gap-2 text-stone-400">
               <span className="text-6xl">🛍️</span>
-              <span className="text-sm font-medium">Surprise Bag</span>
+              <span className="text-sm font-medium">Азтай уут</span>
             </div>
           )}
         </div>
@@ -80,7 +80,7 @@ export default async function ListingDetailPage({
             {cat}
           </p>
           <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-coral-400">
-            Surprise Bag
+            Азтай уут
           </p>
           <h1 className="mt-1 text-2xl font-bold sm:text-3xl">{listing.title}</h1>
           <p className="mt-1 text-sm text-stone-600">{listing.seller.name}</p>
@@ -138,7 +138,7 @@ export default async function ListingDetailPage({
               {listing.description}
             </p>
             <p className="mt-2 text-xs text-stone-500">
-              Surprise = агуулга өдөр бүр өөрчлөгдөж болно. Хүнсний аюулгүй
+              Агуулга нууц — өдөр бүр өөрчлөгдөж болно. Хүнсний аюулгүй
               байдлын хувьд бизнес хариуцна.
             </p>
           </div>
@@ -177,7 +177,7 @@ export default async function ListingDetailPage({
               <h2 className="mb-3 font-semibold">Захиалах</h2>
               {alreadyReserved ? (
                 <p className="rounded-xl bg-green-50 p-3 text-sm text-green-800">
-                  Та энэ Surprise Bag-ыг аль хэдийн захиалсан. Авах цонхонд
+                  Та энэ Азтай уутыг аль хэдийн захиалсан. Авах цонхонд
                   очиорой!
                 </p>
               ) : session?.role === "BUYER" ? (

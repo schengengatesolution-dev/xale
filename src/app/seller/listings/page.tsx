@@ -33,7 +33,7 @@ export default async function SellerListingsPage() {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Миний Surprise Bag</h1>
+          <h1 className="text-2xl font-bold">Миний Азтай уут</h1>
           <p className="text-sm text-stone-600">Сайн байна уу, {session.name}</p>
         </div>
         <Link href="/seller/listings/new" className="btn-primary">
@@ -48,8 +48,8 @@ export default async function SellerListingsPage() {
       {listings.length === 0 ? (
         <EmptyState
           icon="🛍️"
-          title="Одоогоор Surprise Bag байхгүй"
-          description="Илүүдэл хоолоо Surprise Bag болгон оруулаад хаягдлыг бууруулаарай."
+          title="Одоогоор Азтай уут байхгүй"
+          description="Илүүдэл хоолоо Азтай уут болгон оруулаад хаягдлыг бууруулаарай."
           actionHref="/seller/listings/new"
           actionLabel="Эхний Bag үүсгэх"
         />

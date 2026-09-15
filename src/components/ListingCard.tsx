@@ -57,7 +57,7 @@ export function ListingCard({ listing, href }: ListingCardProps) {
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-1 text-stone-400">
             <span className="text-4xl">🛍️</span>
-            <span className="text-xs font-medium">Surprise Bag</span>
+            <span className="text-xs font-medium">Азтай уут</span>
           </div>
         )}
         {discount > 0 && (
@@ -91,7 +91,7 @@ export function ListingCard({ listing, href }: ListingCardProps) {
           )}
         </div>
         <p className="text-[11px] font-bold uppercase tracking-wider text-coral-400">
-          Surprise Bag
+          Азтай уут
         </p>
         <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-stone-900 group-hover:text-green-700">
           {listing.title}

@@ -42,7 +42,7 @@ export default async function SellerReservationsPage() {
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-2xl font-bold">Захиалгууд</h1>
       <p className="mt-1 text-sm text-stone-600">
-        Surprise Bag захиалга · Авсан / Ирээгүй тэмдэглэнэ
+        Азтай уут захиалга · Авсан / Ирээгүй тэмдэглэнэ
       </p>
 
       <div className="mt-6">
@@ -53,7 +53,7 @@ export default async function SellerReservationsPage() {
         <EmptyState
           icon="🛍️"
           title="Одоогоор захиалга байхгүй"
-          description="Surprise Bag идэвхтэй байхад худалдан авагчид захиална. Авах цонхыг зөв оруулсан эсэхээ шалгаарай."
+          description="Азтай уут идэвхтэй байхад худалдан авагчид захиална. Авах цонхыг зөв оруулсан эсэхээ шалгаарай."
           actionHref="/seller/listings"
           actionLabel="Миний уутнууд"
         />

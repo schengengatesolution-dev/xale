@@ -86,7 +86,7 @@ export function ListingForm({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error || "Surprise Bag хадгалахад алдаа гарлаа");
+        setError(data.error || "Азтай уут хадгалахад алдаа гарлаа");
         return;
       }
       router.push("/seller/listings");
@@ -107,7 +107,7 @@ export function ListingForm({
       )}
 
       <p className="rounded-xl border border-green-200 bg-green-50/70 px-3 py-2 text-xs leading-relaxed text-green-900">
-        <strong>Surprise Bag</strong> — ангилал тодорхой, яг агуулга нь
+        <strong>Азтай уут</strong> — ангилал тодорхой, яг агуулга нь
         нууц/өөрчлөгдөнө. Худалдан авагч авах цонхны хугацаанд ирнэ.
       </p>
 
@@ -120,7 +120,7 @@ export function ListingForm({
           name="title"
           required
           className="input"
-          placeholder="Жишээ: Талх, нарийн боовны Surprise Bag"
+          placeholder="Жишээ: Талх, нарийн боовны Азтай уут"
           defaultValue={initial?.title || ""}
         />
       </div>
@@ -171,7 +171,7 @@ export function ListingForm({
           name="description"
           required
           className="input min-h-[100px]"
-          placeholder="Агуулга өдөр бүр өөрчлөгдөнө — Surprise Bag..."
+          placeholder="Агуулга өдөр бүр өөрчлөгдөнө — Азтай уут..."
           defaultValue={initial?.description || ""}
         />
       </div>
@@ -315,7 +315,7 @@ export function ListingForm({
           {loading
             ? "Хадгалж байна..."
             : mode === "create"
-              ? "Surprise Bag үүсгэх"
+              ? "Азтай уут үүсгэх"
               : "Хадгалах"}
         </button>
         <button

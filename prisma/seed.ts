@@ -91,10 +91,10 @@ async function main() {
 
   const bags = [
     {
-      title: "Талх, нарийн боовны Surprise Bag",
+      title: "Талх, нарийн боовны Азтай уут",
       category: "BAKERY",
       description:
-        "Өнөөдрийн үлдэгдэл талх, круассан, жигнэмэг холимог. Яг агуулга нь өдөр бүр өөр — Surprise Bag!",
+        "Өнөөдрийн үлдэгдэл талх, круассан, жигнэмэг холимог. Яг агуулга нь өдөр бүр өөр — Азтай уут!",
       bagPrice: 5000,
       estimatedRetailValue: 18000,
       quantityAvailable: 8,
@@ -109,7 +109,7 @@ async function main() {
       sellerId: seller3.id,
     },
     {
-      title: "Кафены өдрийн Surprise Bag",
+      title: "Кафены өдрийн Азтай уут",
       category: "CAFE",
       description:
         "Сэндвич, салат, жигнэмэг эсвэл кофены дагалдах бүтээгдэхүүн. Агуулга өдөр бүр өөрчлөгдөнө.",
@@ -127,10 +127,10 @@ async function main() {
       sellerId: seller2.id,
     },
     {
-      title: "Рестораны оройн Surprise Bag",
+      title: "Рестораны оройн Азтай уут",
       category: "RESTAURANT",
       description:
-        "Өдрийн цэсний үлдэгдэл хоол — 1–2 хүнд хүрэлцэх Surprise Bag. Яг цэс нь нууц!",
+        "Өдрийн цэсний үлдэгдэл хоол — 1–2 хүнд хүрэлцэх Азтай уут. Яг цэс нь нууц!",
       bagPrice: 12000,
       estimatedRetailValue: 35000,
       quantityAvailable: 4,
@@ -145,7 +145,7 @@ async function main() {
       sellerId: seller2.id,
     },
     {
-      title: "Хүнсний дэлгүүрийн Surprise Bag",
+      title: "Хүнсний дэлгүүрийн Азтай уут",
       category: "GROCERY",
       description:
         "Хугацаа ойртож буй сүүн бүтээгдэхүүн, жимс, ногоо холимог. Агуулга өдөр бүр өөр.",
@@ -163,10 +163,10 @@ async function main() {
       sellerId: seller1.id,
     },
     {
-      title: "Зочид буудлын өглөөний Surprise Bag",
+      title: "Зочид буудлын өглөөний Азтай уут",
       category: "HOTEL",
       description:
-        "Буфет өглөөний үлдэгдэл — жигнэмэг, жимс, сэндвич гэх мэт. Surprise Bag агуулга өөрчлөгдөнө.",
+        "Буфет өглөөний үлдэгдэл — жигнэмэг, жимс, сэндвич гэх мэт. Азтай уут агуулга өөрчлөгдөнө.",
       bagPrice: 10000,
       estimatedRetailValue: 30000,
       quantityAvailable: 3,
@@ -184,7 +184,7 @@ async function main() {
       title: "Бялуу, нарийн боовны оройн Bag",
       category: "BAKERY",
       description:
-        "Төрсөн өдөр / захиалгын үлдэгдэл бялуу, жигнэмэг. Яг төрөл нь Surprise!",
+        "Төрсөн өдөр / захиалгын үлдэгдэл бялуу, жигнэмэг. Яг төрөл нь нууц!",
       bagPrice: 7000,
       estimatedRetailValue: 22000,
       quantityAvailable: 2,
@@ -204,14 +204,14 @@ async function main() {
     await prisma.listing.create({ data: bag });
   }
 
-  console.log("✅ Seed амжилттай! Surprise Bags бэлэн.");
+  console.log("✅ Seed амжилттай! Азтай уутнууд бэлэн.");
   console.log("Demo бүртгэлүүд (нууц үг: demo1234):");
   console.log("  Худалдагч: seller@xale.mn");
   console.log("  Кафе:      cafe@xale.mn");
   console.log("  Талх:      bakery@xale.mn");
   console.log("  Буудал:    hotel@xale.mn");
   console.log("  Худалдан авагч: buyer@xale.mn");
-  console.log(`  Нийт Surprise Bag: ${bags.length}`);
+  console.log(`  Нийт Азтай уут: ${bags.length}`);
   void buyer1;
   void buyer2;
 }

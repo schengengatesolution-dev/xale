@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       });
       if (existing) {
         return {
-          error: "Та энэ Surprise Bag-ыг аль хэдийн захиалсан",
+          error: "Та энэ Азтай уутыг аль хэдийн захиалсан",
           status: 400 as const,
         };
       }

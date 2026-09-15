@@ -51,9 +51,9 @@ export default async function ListingsPage({ searchParams }: Props) {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Surprise Bag</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Азтай уут</h1>
           <p className="mt-1 text-sm text-stone-600">
-            Ойролцоох уутнууд · Улаанбаатар · агуулга Surprise!
+            Ойролцоох уутнууд · Улаанбаатар · агуулга нууц!
           </p>
         </div>
         <p className="text-sm font-medium text-stone-500">
@@ -151,13 +151,13 @@ export default async function ListingsPage({ searchParams }: Props) {
           icon={hasFilters ? "🔍" : "🛍️"}
           title={
             hasFilters
-              ? "Тохирох Surprise Bag олдсонгүй"
+              ? "Тохирох Азтай уут олдсонгүй"
               : "Одоогоор идэвхтэй уут байхгүй"
           }
           description={
             hasFilters
               ? "Шүүлтүүрээ өөрчилж эсвэл цэвэрлээд дахин үзнэ үү."
-              : "Бизнесүүд удахгүй Surprise Bag нэмнэ."
+              : "Бизнесүүд удахгүй Азтай уут нэмнэ."
           }
           actionHref={hasFilters ? "/listings" : "/signup"}
           actionLabel={hasFilters ? "Шүүлтүүр цэвэрлэх" : "Бүртгүүлэх"}

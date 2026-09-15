@@ -28,9 +28,9 @@ export default async function EditListingPage({
         href="/seller/listings"
         className="text-sm text-green-700 hover:underline"
       >
-        ← Миний Surprise Bag
+        ← Миний Азтай уут
       </Link>
-      <h1 className="mt-3 text-2xl font-bold">Surprise Bag засах</h1>
+      <h1 className="mt-3 text-2xl font-bold">Азтай уут засах</h1>
       <div className="mt-6">
         <SellerNav active="/seller/listings" />
       </div>

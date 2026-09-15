@@ -18,7 +18,7 @@ export async function Navbar() {
               xale
             </span>
             <span className="hidden text-[10px] font-medium uppercase tracking-wider text-stone-400 sm:block">
-              Surprise Bag
+              Азтай уут
             </span>
           </div>
         </Link>

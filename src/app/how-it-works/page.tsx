@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Хэрхэн ажилладаг вэ?",
   description:
-    "xale Surprise Bag: ол → захиал → ав. Улаанбаатар.",
+    "xale Азтай уут: ол → захиал → ав. Улаанбаатар.",
 };
 
 const STEPS = [
@@ -13,7 +13,7 @@ const STEPS = [
     num: "1",
     title: "Ол",
     detail:
-      "Зарууд хуудаснаас дүүрэг, ангиллаар шүүж ойролцоох Surprise Bag-уудыг харна. Ангилал (талх, кафе, ресторан…) тодорхой — яг агуулга нь Surprise!",
+      "Зарууд хуудаснаас дүүрэг, ангиллаар шүүж ойролцоох Азтай уутнуудыг харна. Ангилал (талх, кафе, ресторан…) тодорхой — яг агуулга нь нууц!",
   },
   {
     step: "ХОЁР",
@@ -27,14 +27,14 @@ const STEPS = [
     num: "3",
     title: "Ав",
     detail:
-      "Тохирсон авах цонхонд бизнес дээр очиж Surprise Bag-аа авна. Худалдагч «Авсан» гэж тэмдэглэнэ. Ирээгүй бол No-show.",
+      "Тохирсон авах цонхонд бизнес дээр очиж Азтай уутаа авна. Худалдагч «Авсан» гэж тэмдэглэнэ. Ирээгүй бол No-show.",
   },
   {
     step: "ДӨРӨВ",
     num: "4",
     title: "Хаягдал бууруул",
     detail:
-      "Хямд үнээр авч, сайн хоолыг хаягдахаас аварна. Surprise Bag-ийн агуулга өдөр бүр өөрчлөгдөж болно.",
+      "Хямд үнээр авч, сайн хоолыг хаягдахаас аварна. Азтай уутны агуулга өдөр бүр өөрчлөгдөж болно.",
   },
 ];
 
@@ -50,7 +50,7 @@ export default function HowItWorksPage() {
         </h1>
         <p className="mt-4 text-base leading-relaxed text-stone-600">
           <strong className="text-green-700">xale</strong> бизнесийн илүүдэл
-          хоолыг <strong>Surprise Bag</strong> болгон хэрэглэгчдэд холбоно.
+          хоолыг <strong>Азтай уут</strong> болгон хэрэглэгчдэд холбоно.
           Гол урсгал: <strong>ол</strong> → <strong>захиал</strong> →{" "}
           <strong>ав</strong>. (Хаягдал бууруулах — нэмэлт үр дүн.)
         </p>
@@ -88,7 +88,7 @@ export default function HowItWorksPage() {
             Хүнсний аюулгүй байдал
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-amber-950/90">
-            Surprise Bag-ийн агуулга өөрчлөгдөж болно. Харшил эсвэл хоолны
+            Азтай уутны агуулга өөрчлөгдөж болно. Харшил эсвэл хоолны
             хязгаарлалт байвал захиалахаасаа өмнө бизнестэй холбогдоорой. xale
             нь зуучлагч — хоолны чанарыг бизнес өөрөө хариуцна.
           </p>
@@ -97,7 +97,7 @@ export default function HowItWorksPage() {
         <section className="mt-4 rounded-3xl border border-green-200 bg-green-50/70 p-6">
           <h2 className="text-lg font-bold text-green-800">Бизнесүүдэд</h2>
           <p className="mt-2 text-sm leading-relaxed text-stone-700">
-            Surprise Bag оруулах <strong>үнэгүй</strong>. Ирээдүйд гүйлгээний
+            Азтай уут оруулах <strong>үнэгүй</strong>. Ирээдүйд гүйлгээний
             шимтгэл (төсөл) — одоо идэвхгүй.{" "}
             <Link
               href="/payment-terms"
@@ -118,7 +118,7 @@ export default function HowItWorksPage() {
 
         <div className="mt-10 flex flex-wrap gap-3">
           <Link href="/listings" className="btn-primary !px-8 !py-3.5">
-            Surprise Bag ол
+            Азтай уут ол
           </Link>
           <Link href="/signup" className="btn-secondary !px-8 !py-3.5">
             Бүртгүүлэх

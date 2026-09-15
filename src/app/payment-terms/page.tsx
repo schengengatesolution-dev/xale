@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Төлбөрийн нөхцөл",
   description:
-    "xale Surprise Bag платформын төлбөрийн нөхцөл — одоогоор идэвхгүй төсөл.",
+    "xale Азтай уут платформын төлбөрийн нөхцөл — одоогоор идэвхгүй төсөл.",
 };
 
 export default function PaymentTermsPage() {
@@ -23,7 +23,7 @@ export default function PaymentTermsPage() {
           </p>
           <p className="mt-0.5 text-sm text-amber-900/80">
             Энэ хуудас нь ирээдүйн гүйлгээний шимтгэлийн төсөл юм. Өнөөдөр xale
-            Surprise Bag захиалга / зар нийтлэлд ямар ч төлбөр авдаггүй.
+            Азтай уут захиалга / зар нийтлэлд ямар ч төлбөр авдаггүй.
           </p>
         </div>
       </div>
@@ -44,8 +44,8 @@ export default function PaymentTermsPage() {
           <p className="text-sm leading-relaxed">
             <strong>xale</strong> нь Улаанбаатарт илүүдэл хоолтой бизнес
             (талхны дэлгүүр, кафе, ресторан, зочид буудал, хүнсний дэлгүүр) болон
-            хэрэглэгчдийг <strong>Surprise Bag</strong>-аар холбодог платформ
-            юм. Ангилал тодорхой, яг агуулга нь Surprise. Бид зуучлагч —
+            хэрэглэгчдийг <strong>Азтай уут</strong>-аар холбодог платформ
+            юм. Ангилал тодорхой, яг агуулга нь нууц. Бид зуучлагч —
             хоолыг өөрсдөө зардаггүй.
           </p>
         </section>
@@ -56,7 +56,7 @@ export default function PaymentTermsPage() {
           </h2>
           <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed">
             <li>
-              Surprise Bag оруулах: <strong>үнэгүй</strong>.
+              Азтай уут оруулах: <strong>үнэгүй</strong>.
             </li>
             <li>
               Худалдан авагч уут олж, <strong>захиалана</strong> (нөөцлөнө).
@@ -90,7 +90,7 @@ export default function PaymentTermsPage() {
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed">
             <li>
-              Surprise Bag оруулах: <strong>үнэгүй</strong> хэвээр.
+              Азтай уут оруулах: <strong>үнэгүй</strong> хэвээр.
             </li>
             <li>
               Амжилттай захиалга / цуглуулалтын дараа бизнесээс{" "}
@@ -111,7 +111,7 @@ export default function PaymentTermsPage() {
             4. Хүнсний аюулгүй байдал
           </h2>
           <p className="text-sm leading-relaxed">
-            Surprise Bag-ийн агуулга өөрчлөгдөж болно. Харшил / хоолны
+            Азтай уутны агуулга өөрчлөгдөж болно. Харшил / хоолны
             хязгаарлалт байвал захиалахаасаа өмнө бизнестэй холбогдоорой. Хоолны
             чанар, хадгалалтыг бизнес хариуцна.
           </p>
@@ -133,7 +133,7 @@ export default function PaymentTermsPage() {
           Нүүр хуудас
         </Link>
         <Link href="/listings" className="btn-primary">
-          Surprise Bag үзэх
+          Азтай уут үзэх
         </Link>
       </div>
     </div>
