@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Хэрхэн ажилладаг вэ?",
   description:
-    "xale Surprise Bag: ол → захиалаа → авах цонх → хаягдал бууруул. Улаанбаатар.",
+    "xale Surprise Bag: ол → захиал → ав. Улаанбаатар.",
 };
 
 const STEPS = [
@@ -18,16 +18,16 @@ const STEPS = [
   {
     step: "ХОЁР",
     num: "2",
-    title: "Захиалаа",
+    title: "Захиал",
     detail:
       "«Захиалах · Reserve» товчоор уутыг нөөцлөнө. Одоогоор апп дотор карт төлбөргүй — төлбөрийг авах үедээ хийнэ. Апп доторх төлбөр удахгүй нэмэгдэнэ.",
   },
   {
     step: "ГУРАВ",
     num: "3",
-    title: "Авах цонх",
+    title: "Ав",
     detail:
-      "Тохирсон цагийн цонхонд бизнес дээр очиж Surprise Bag-аа авна. Худалдагч «Авсан» гэж тэмдэглэнэ. Ирээгүй бол No-show.",
+      "Тохирсон авах цонхонд бизнес дээр очиж Surprise Bag-аа авна. Худалдагч «Авсан» гэж тэмдэглэнэ. Ирээгүй бол No-show.",
   },
   {
     step: "ДӨРӨВ",
@@ -46,12 +46,13 @@ export default function HowItWorksPage() {
           Хэрхэн ашиглах вэ?
         </p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight text-green-600 sm:text-4xl">
-          Surprise Bag — 4 алхам
+          ол → захиал → ав
         </h1>
         <p className="mt-4 text-base leading-relaxed text-stone-600">
-          <strong className="text-green-700">xale</strong> нь Too Good To Go
-          шиг: бизнесийн илүүдэл хоолыг <strong>Surprise Bag</strong> болгон
-          хэрэглэгчдэд холбоно. Ол → захиалаа → авах цонх → хаягдал↓.
+          <strong className="text-green-700">xale</strong> бизнесийн илүүдэл
+          хоолыг <strong>Surprise Bag</strong> болгон хэрэглэгчдэд холбоно.
+          Гол урсгал: <strong>ол</strong> → <strong>захиал</strong> →{" "}
+          <strong>ав</strong>. (Хаягдал бууруулах — нэмэлт үр дүн.)
         </p>
 
         <ol className="mt-10 space-y-5">

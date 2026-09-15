@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "xale — Surprise Bag",
     short_name: "xale",
     description:
-      "Surprise Bag: ол → захиалаа → авах цонх. Улаанбаатар.",
+      "Surprise Bag: ол → захиал → ав. Улаанбаатар.",
     start_url: "/",
     scope: "/",
     display: "standalone",

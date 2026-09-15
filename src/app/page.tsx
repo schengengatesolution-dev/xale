@@ -13,13 +13,13 @@ const STEPS = [
   },
   {
     step: "2",
-    title: "Захиалаа",
+    title: "Захиал",
     text: "Reserve товчоор нөөцлөнө. Апп доторх төлбөр удахгүй — одоо авах үедээ төлнө.",
   },
   {
     step: "3",
-    title: "Авах цонх",
-    text: "Тохирсон цагийн цонхонд дэлгүүр / ресторан / кафе дээр очиж авна.",
+    title: "Ав",
+    text: "Тохирсон авах цонхонд дэлгүүр / ресторан / кафе дээр очиж авна.",
   },
   {
     step: "4",
@@ -78,9 +78,8 @@ export default async function HomePage() {
             Surprise Bag
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-green-100">
-            <strong>xale</strong> нь Too Good To Go шиг: ойролцоох бизнесийн{" "}
-            <strong>Surprise Bag</strong>-ыг <strong>ол</strong> →{" "}
-            <strong>захиалаа</strong> → <strong>авах цонхонд очиж ав</strong>.
+            Ойролцоох бизнесийн <strong>Surprise Bag</strong>-ыг{" "}
+            <strong>ол</strong> → <strong>захиал</strong> → <strong>ав</strong>.
             Ангилал тодорхой, яг агуулга нь Surprise!
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -116,8 +115,8 @@ export default async function HomePage() {
           </div>
           <div className="mt-10 flex flex-wrap gap-6 text-sm text-green-100/90">
             <div>
-              <p className="text-2xl font-bold text-white">4 алхам</p>
-              <p>Ол → Захиалаа → Ав → Хаягдал↓</p>
+              <p className="text-2xl font-bold text-white">3 алхам</p>
+              <p>ол → захиал → ав</p>
             </div>
             <div className="hidden h-10 w-px bg-white/20 sm:block" />
             <div>
@@ -141,10 +140,10 @@ export default async function HomePage() {
                 Хэрхэн ашиглах вэ?
               </p>
               <h2 className="mt-2 text-2xl font-bold text-green-600 sm:text-3xl">
-                4 алхам — Surprise Bag
+                ол → захиал → ав
               </h2>
               <p className="mt-1 text-sm text-stone-600">
-                Ол → захиалаа → авах цонх → хаягдал↓
+                Surprise Bag — 3 алхам (+ хаягдал↓)
               </p>
             </div>
             <Link
@@ -260,11 +259,10 @@ export default async function HomePage() {
                   Bag ол
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Захиалаа (нөөцлө)
+                  <span className="text-green-600">✓</span> Захиал (нөөцлө)
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Авах цонхонд очиж ав
-                  — хямд үнэ
+                  <span className="text-green-600">✓</span> Ав — хямд үнэ
                 </li>
               </ul>
               <Link href="/listings" className="btn-primary mt-6 inline-flex">

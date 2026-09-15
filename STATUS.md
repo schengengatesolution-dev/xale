@@ -1,6 +1,6 @@
 # xale — STATUS
 
-**Бүтээгдэхүүн:** xale (Surprise Bag зах зээл, TGTG-style, Монгол)  
+**Бүтээгдэхүүн:** xale (Surprise Bag food-rescue marketplace, Монгол)  
 **Байршил:** `/workspace/xale/`  
 **Огноо:** 2026-09-15  
 **Production:** https://xale-app.vercel.app
@@ -11,16 +11,16 @@
 - [x] Interest → **Reservation** (`RESERVED` / `COLLECTED` / `NO_SHOW`)
 - [x] Buyer: discovery cards + detail reserve (апп дотор төлбөргүй)
 - [x] Seller: Bag CRUD + захиалга жагсаалт + Авсан / Ирээгүй
-- [x] Homepage / how-it-works / payment-terms — Surprise Bag хэл (Монгол)
+- [x] Homepage / how-it-works / payment-terms — Surprise Bag хэл (Монгол); урсгал: ол → захиал → ав
 - [x] Seed 6 demo Surprise Bag (УБ)
 - [x] Админ хэрэглэгчийн жагсаалт хэвээр
-- [x] TGTG calmer greens + PWA v1 хадгалсан
+- [x] Calmer greens UI + PWA v1 хадгалсан
 
 ## Утасны апп — rollout
 
 | Шат | Төлөв | Тайлбар |
 |-----|-------|---------|
-| **1. Вэбсайт redesign** | ✅ | TGTG UI |
+| **1. Вэбсайт redesign** | ✅ | Food-rescue UI |
 | **1b. Surprise Bag product** | ✅ одоо | Reserve + collect |
 | **2. PWA v1** | ✅ | Add to Home Screen |
 | **3. In-app pay** | ⏳ дараа | Карт төлбөр |

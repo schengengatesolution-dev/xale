@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s · xale",
   },
   description:
-    "Surprise Bag: ойролцоох илүүдэл хоолыг олж, захиалж, авах цонхонд очиж аваарай. Улаанбаатар.",
+    "Surprise Bag: ол → захиал → ав. Улаанбаатар.",
   applicationName: "xale",
   manifest: "/manifest.webmanifest",
   appleWebApp: {

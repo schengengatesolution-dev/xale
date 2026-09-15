@@ -1,7 +1,7 @@
 {
-  "name": "xale — Илүүдэл барааны зах зээл",
+  "name": "xale — Surprise Bag",
   "short_name": "xale",
-  "description": "Улаанбаатарт илүүдэл / хугацаа дуусах дөхсөн хүнсийг олж, захиалж, дэлгүүрт очиж аваарай.",
+  "description": "Surprise Bag: ол → захиал → ав. Улаанбаатар.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
