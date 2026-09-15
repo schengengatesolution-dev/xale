@@ -9,6 +9,8 @@
 |----------|---------|
 | `DATABASE_URL` | PostgreSQL connection string (Neon / Supabase / Vercel Postgres). Serverless-д pooled URL ашиглаж болно. |
 | `AUTH_SECRET` | Урт, random JWT secret (ж: `openssl rand -base64 32`) |
+| `ADMIN_PASSWORD` | Админ `/admin/login` нууц үг — хүчтэй нууц үг (бүү commit) |
+| `ADMIN_EMAIL` | (заавал биш) default `admin@xale.mn` |
 
 Production + Preview-д хоёуланд нь тохируулна. `.env*` commit хийхгүй.
 
@@ -55,6 +57,7 @@ Demo нууц үг бүгдэд: `demo1234`
 - [ ] Зар үүсгэх / засах / устгах
 - [ ] «Сонирхож байна» + seller `/seller/interests`
 - [ ] Mobile: hamburger цэс ажиллана
+- [ ] Админ: `/admin/login` → `/admin` хэрэглэгчдийн жагсаалт (ADMIN_PASSWORD)
 - [ ] `npm run build` CI/Vercel дээр ногоон
 
 ## 5. Тэмдэглэл

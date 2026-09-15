@@ -17,6 +17,7 @@
 - [x] Empty states + Монгол алдааны мессеж
 - [x] Seed demo accounts (README / OPS.md)
 - [x] OPS.md — xale.mn go-live checklist
+- [x] Admin `/admin` — бүртгэлтэй хэрэглэгчдийн жагсаалт (`ADMIN_PASSWORD`)
 
 ## Demo
 
@@ -32,5 +33,7 @@
 | `/seller/listings` | Миний зарууд |
 | `/seller/interests` | Сонирхол |
 | `/login` `/signup` | Auth |
+| `/admin/login` | Админ нэвтрэх |
+| `/admin` | Админ самбар (хэрэглэгчид) |
 
 Дэлгэрэнгүй: `OPS.md`, `README.md`
