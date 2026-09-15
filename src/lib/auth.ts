@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 
@@ -28,8 +28,9 @@ export async function verifyPassword(
   return bcrypt.compare(password, hash);
 }
 
-export async function createSession(user: SessionUser): Promise<void> {
-  const token = await new SignJWT({
+/** Sign a JWT for cookie and/or mobile Bearer use. */
+export async function createToken(user: SessionUser): Promise<string> {
+  return new SignJWT({
     id: user.id,
     email: user.email,
     name: user.name,
@@ -41,29 +42,11 @@ export async function createSession(user: SessionUser): Promise<void> {
     .setIssuedAt()
     .setExpirationTime("7d")
     .sign(SECRET);
-
-  cookies().set(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
 }
 
-export async function destroySession(): Promise<void> {
-  cookies().set(COOKIE_NAME, "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  });
-}
-
-export async function getSession(): Promise<SessionUser | null> {
-  const token = cookies().get(COOKIE_NAME)?.value;
-  if (!token) return null;
+export async function verifyToken(
+  token: string
+): Promise<SessionUser | null> {
   try {
     const { payload } = await jwtVerify(token, SECRET);
     return {
@@ -77,6 +60,53 @@ export async function getSession(): Promise<SessionUser | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Create httpOnly cookie session and return the JWT string
+ * so mobile clients can store Bearer token.
+ */
+export async function createSession(user: SessionUser): Promise<string> {
+  const token = await createToken(user);
+
+  cookies().set(COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  return token;
+}
+
+export async function destroySession(): Promise<void> {
+  cookies().set(COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+}
+
+/**
+ * Resolve session from Authorization: Bearer <token> OR cookie.
+ * Works in Route Handlers and Server Components via next/headers.
+ */
+export async function getSession(): Promise<SessionUser | null> {
+  const hdrs = headers();
+  const auth = hdrs.get("authorization");
+  let token: string | undefined;
+
+  if (auth && auth.toLowerCase().startsWith("bearer ")) {
+    token = auth.slice(7).trim();
+  } else {
+    token = cookies().get(COOKIE_NAME)?.value;
+  }
+
+  if (!token) return null;
+  return verifyToken(token);
 }
 
 export async function requireAuth(

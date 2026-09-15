@@ -94,9 +94,46 @@ export async function POST(req: NextRequest) {
   }
 }
 
+/** Seller: reservations on their bags. Buyer: own reservations. */
 export async function GET() {
   const session = await getSession();
-  if (!session || session.role !== "SELLER") {
+  if (!session) {
+    return NextResponse.json({ error: "Зөвшөөрөлгүй" }, { status: 401 });
+  }
+
+  if (session.role === "BUYER") {
+    const reservations = await prisma.reservation.findMany({
+      where: { buyerId: session.id },
+      include: {
+        listing: {
+          select: {
+            id: true,
+            title: true,
+            bagPrice: true,
+            estimatedRetailValue: true,
+            pickupStart: true,
+            pickupEnd: true,
+            pickupDistrict: true,
+            pickupAddress: true,
+            category: true,
+            photoUrl: true,
+            seller: {
+              select: {
+                id: true,
+                name: true,
+                phone: true,
+                whatsapp: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return NextResponse.json({ reservations });
+  }
+
+  if (session.role !== "SELLER") {
     return NextResponse.json({ error: "Зөвшөөрөлгүй" }, { status: 403 });
   }
 

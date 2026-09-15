@@ -39,14 +39,16 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    await createSession({
+    const sessionUser = {
       id: user.id,
       email: user.email,
       name: user.name,
       role: user.role,
       phone: user.phone,
       whatsapp: user.whatsapp,
-    });
+    };
+
+    const token = await createSession(sessionUser);
 
     return NextResponse.json({
       user: {
@@ -54,7 +56,10 @@ export async function POST(req: NextRequest) {
         email: user.email,
         name: user.name,
         role: user.role,
+        phone: user.phone,
+        whatsapp: user.whatsapp,
       },
+      token,
     });
   } catch (e) {
     if (e instanceof z.ZodError) {
