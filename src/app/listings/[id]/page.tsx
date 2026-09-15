@@ -143,6 +143,12 @@ export default async function ListingDetailPage({
             </p>
           </div>
 
+          <p className="mt-4 rounded-xl border border-green-200 bg-green-50 px-3 py-2.5 text-xs leading-relaxed text-green-900">
+            <strong>Азтай уут:</strong> ангилал тодорхой. Доторх зүйлийг
+            сонгохгүй (гайхшрал) — үнэ жижиглэнгийн ойролцоогоор ⅓ (~3 дахин
+            хямд).
+          </p>
+
           <div className="card mt-6">
             <h2 className="font-semibold">Бизнес</h2>
             <p className="mt-1 text-stone-800">{listing.seller.name}</p>

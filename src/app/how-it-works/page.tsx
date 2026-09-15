@@ -13,7 +13,7 @@ const STEPS = [
     num: "1",
     title: "Ол",
     detail:
-      "Зарууд хуудаснаас дүүрэг, ангиллаар шүүж ойролцоох Азтай уутнуудыг харна. Ангилал (талх, кафе, ресторан…) тодорхой — яг агуулга нь нууц!",
+      "Зарууд хуудаснаас дүүрэг, ангиллаар шүүж ойролцоох Азтай уутнуудыг харна. Ангилал (талх, кафе, ресторан…) тодорхой — яг агуулгыг сонгохгүй, гайхшрал!",
   },
   {
     step: "ХОЁР",
@@ -34,7 +34,7 @@ const STEPS = [
     num: "4",
     title: "Хаягдал бууруул",
     detail:
-      "Хямд үнээр авч, сайн хоолыг хаягдахаас аварна. Азтай уутны агуулга өдөр бүр өөрчлөгдөж болно.",
+      "Жижиглэнгийн ойролцоогоор ⅓ үнээр авч, сайн хоолыг хаягдахаас аварна. Агуулга өдөр бүр өөрчлөгдөж болно.",
   },
 ];
 
@@ -54,6 +54,36 @@ export default function HowItWorksPage() {
           Гол урсгал: <strong>ол</strong> → <strong>захиал</strong> →{" "}
           <strong>ав</strong>. (Хаягдал бууруулах — нэмэлт үр дүн.)
         </p>
+
+        <section className="mt-8 rounded-3xl border border-green-200 bg-white p-6 shadow-sm">
+          <h2 className="text-lg font-bold text-green-800">
+            Азтай уут гэж юу вэ?
+          </h2>
+          <ul className="mt-3 space-y-2.5 text-sm leading-relaxed text-stone-700">
+            <li className="flex gap-2">
+              <span className="shrink-0 font-bold text-green-600">1.</span>
+              <span>
+                <strong>Ангилал тодорхой</strong> — талх / нарийн боов, хүнсний
+                дэлгүүр, ресторан, кафе, зочид буудал гэх мэт.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 font-bold text-green-600">2.</span>
+              <span>
+                <strong>Яг агуулгыг сонгохгүй</strong> — доторх зүйл гайхшрал;
+                өдөр бүр өөрчлөгдөж болно.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="shrink-0 font-bold text-green-600">3.</span>
+              <span>
+                Тиймээс үнэ нь жижиглэнгийн ойролцоогоор{" "}
+                <strong>3 дахин хямд</strong> (~⅓). Жишээ: ~15,000₮ үнэ цэнэ →
+                ~5,000₮ Азтай уут.
+              </span>
+            </li>
+          </ul>
+        </section>
 
         <ol className="mt-10 space-y-5">
           {STEPS.map((s) => (

@@ -54,6 +54,10 @@ export function ReserveForm({ listingId }: { listingId: string }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
+      <p className="rounded-xl border border-green-200 bg-green-50 px-3 py-2 text-xs leading-relaxed text-green-900">
+        Азтай уут: ангилал тодорхой; доторх зүйлийг сонгохгүй. Үнэ
+        жижиглэнгийн ойролцоогоор ⅓.
+      </p>
       <p className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
         Одоогоор апп дотор карт төлбөргүй. Захиалга нөөцлөнө — төлбөрийг авах
         үедээ хийнэ. Апп доторх төлбөр удахгүй.

@@ -9,7 +9,7 @@ const STEPS = [
   {
     step: "1",
     title: "Ол",
-    text: "Ойролцоох Азтай уутнуудыг дүүрэг, ангиллаар шүүж олно.",
+    text: "Ойролцоох Азтай уутнуудыг дүүрэг, ангиллаар шүүж олно. Ангилал тодорхой.",
   },
   {
     step: "2",
@@ -24,7 +24,7 @@ const STEPS = [
   {
     step: "4",
     title: "Хаягдал↓",
-    text: "Хямд үнээр авч, хоолны хаягдал багасгана — агуулга нууц, өөрчлөгдөнө.",
+    text: "Жижиглэнгийн ~⅓ үнээр авч хаягдал багасгана — агуулга гайхшрал, өдөр бүр өөр.",
   },
 ];
 
@@ -80,7 +80,10 @@ export default async function HomePage() {
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-green-100">
             Ойролцоох бизнесийн <strong>Азтай уут</strong>-ыг{" "}
             <strong>ол</strong> → <strong>захиал</strong> → <strong>ав</strong>.
-            Ангилал тодорхой, яг агуулга нь нууц!
+            Ангилал тодорхой (талх, кафе, ресторан…), харин доторх зүйлийг
+            сонгохгүй — өдөр бүр өөрчлөгдөнө. Тиймээс үнэ нь жижиглэнгийн
+            ойролцоогоор <strong>3 дахин хямд</strong> (жишээ: ~15,000₮ →
+            ~5,000₮).
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {session ? (
@@ -144,6 +147,11 @@ export default async function HomePage() {
               </h2>
               <p className="mt-1 text-sm text-stone-600">
                 Азтай уут — 3 алхам (+ хаягдал↓)
+              </p>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone-600">
+                Ангилал тодорхой, доторх зүйлийг сонгохгүй (гайхшрал). Үнэ нь
+                жижиглэнгийн ойролцоогоор 3 дахин хямд — жишээ: ~15,000₮ үнэ
+                цэнэ → ~5,000₮ Азтай уут.
               </p>
             </div>
             <Link
@@ -215,7 +223,7 @@ export default async function HomePage() {
               {
                 icon: "🛍️",
                 title: "Азтай уут",
-                text: "Ангилал тодорхой, яг агуулга нь өдөр бүр өөр — нууц!",
+                text: "Ангилал тодорхой; доторх зүйлийг сонгохгүй. Үнэ жижиглэнгийн ~⅓ (~3 дахин хямд).",
               },
               {
                 icon: "⏰",
@@ -262,7 +270,8 @@ export default async function HomePage() {
                   <span className="text-green-600">✓</span> Захиал (нөөцлө)
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Ав — хямд үнэ
+                  <span className="text-green-600">✓</span> Ав — жижиглэнгийн
+                  ойролцоогоор ⅓ үнэ
                 </li>
               </ul>
               <Link href="/listings" className="btn-primary mt-6 inline-flex">
