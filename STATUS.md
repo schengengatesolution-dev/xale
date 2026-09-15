@@ -27,6 +27,12 @@
 | **4. Native Expo** | ⏳ дараа | App Store / Play |
 | **5. Домэйн xale.mn** | ⏳ дараа | OPS.md |
 
+## Deploy
+
+- **Production live:** https://xale-app.vercel.app (Vercel direct deploy `dpl_6QrT7fjQmAvp3dnKZvE1YYXggWT6`)
+- **Local commit:** `e1d9a7d` on `main` (ahead of origin — GitHub push needs `GH_TOKEN`; session sudo blocked PAT/SSH key creation)
+- Neon DB schema pushed + 6 Surprise Bags seeded
+
 ## Demo
 
 Нууц үг: `demo1234`
