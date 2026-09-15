@@ -15,19 +15,25 @@ export function InterestForm({ listingId }: { listingId: string }) {
     setLoading(true);
     setStatus("idle");
     setError("");
-    const res = await fetch("/api/interests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingId, message }),
-    });
-    const data = await res.json();
-    setLoading(false);
-    if (!res.ok) {
+    try {
+      const res = await fetch("/api/interests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId, message }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setStatus("err");
+        setError(data.error || "Сонирхол илгээхэд алдаа гарлаа");
+        return;
+      }
+      setStatus("ok");
+    } catch {
       setStatus("err");
-      setError(data.error || "Алдаа гарлаа");
-      return;
+      setError("Сүлжээний алдаа. Дахин оролдоно уу.");
+    } finally {
+      setLoading(false);
     }
-    setStatus("ok");
   }
 
   if (status === "ok") {

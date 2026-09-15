@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
+import { EmptyState } from "@/components/EmptyState";
 import { CATEGORIES, CATEGORY_KEYS, UB_DISTRICTS } from "@/lib/constants";
 import Link from "next/link";
 
@@ -29,6 +30,12 @@ export default async function ListingsPage({ searchParams }: Props) {
     orderBy: { createdAt: "desc" },
   });
 
+  const hasFilters = !!(
+    searchParams.category ||
+    searchParams.district ||
+    searchParams.q
+  );
+
   function buildHref(overrides: Record<string, string | undefined>) {
     const params = new URLSearchParams();
     const merged = { ...searchParams, ...overrides };
@@ -43,12 +50,14 @@ export default async function ListingsPage({ searchParams }: Props) {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Зарууд</h1>
-          <p className="text-sm text-stone-600">
+          <h1 className="text-2xl font-bold tracking-tight">Зарууд</h1>
+          <p className="mt-1 text-sm text-stone-600">
             Хугацаа дуусах дөхсөн / илүүдэл бараа · Улаанбаатар
           </p>
         </div>
-        <p className="text-sm text-stone-500">{listings.length} зар</p>
+        <p className="text-sm font-medium text-stone-500">
+          {listings.length} зар
+        </p>
       </div>
 
       <form className="card mt-6 grid gap-3 sm:grid-cols-4">
@@ -110,14 +119,13 @@ export default async function ListingsPage({ searchParams }: Props) {
         </div>
       </form>
 
-      {/* Quick category chips */}
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
           href={buildHref({ category: undefined })}
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+          className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
             !searchParams.category
               ? "bg-green-600 text-white"
-              : "bg-stone-200 text-stone-700"
+              : "bg-stone-200 text-stone-700 hover:bg-stone-300"
           }`}
         >
           Бүгд
@@ -126,10 +134,10 @@ export default async function ListingsPage({ searchParams }: Props) {
           <Link
             key={k}
             href={buildHref({ category: k })}
-            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
               searchParams.category === k
                 ? "bg-green-600 text-white"
-                : "bg-stone-200 text-stone-700"
+                : "bg-stone-200 text-stone-700 hover:bg-stone-300"
             }`}
           >
             {CATEGORIES[k]}
@@ -138,10 +146,21 @@ export default async function ListingsPage({ searchParams }: Props) {
       </div>
 
       {listings.length === 0 ? (
-        <div className="mt-12 text-center text-stone-500">
-          <p className="text-4xl">🛒</p>
-          <p className="mt-3">Тохирох зар олдсонгүй.</p>
-        </div>
+        <EmptyState
+          icon={hasFilters ? "🔍" : "🛒"}
+          title={
+            hasFilters
+              ? "Тохирох зар олдсонгүй"
+              : "Одоогоор идэвхтэй зар байхгүй"
+          }
+          description={
+            hasFilters
+              ? "Шүүлтүүрээ өөрчилж эсвэл цэвэрлээд дахин үзнэ үү."
+              : "Худалдагчид удахгүй зарууд нэмнэ. Та бүртгүүлээд эхний зар оруулж болно."
+          }
+          actionHref={hasFilters ? "/listings" : "/signup"}
+          actionLabel={hasFilters ? "Шүүлтүүр цэвэрлэх" : "Бүртгүүлэх"}
+        />
       ) : (
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {listings.map((listing) => (

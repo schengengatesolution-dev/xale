@@ -2,6 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingForm } from "@/components/ListingForm";
+import { SellerNav } from "@/components/SellerNav";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +30,9 @@ export default async function EditListingPage({
         ← Миний зарууд
       </Link>
       <h1 className="mt-3 text-2xl font-bold">Зар засах</h1>
+      <div className="mt-6">
+        <SellerNav active="/seller/listings" />
+      </div>
       <div className="mt-6">
         <ListingForm
           mode="edit"

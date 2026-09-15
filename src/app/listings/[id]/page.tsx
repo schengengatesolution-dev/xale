@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import {
   CATEGORIES,
+  expiryLabel,
   formatDate,
   formatMNT,
   STATUSES,
@@ -84,7 +85,12 @@ export default async function ListingDetailPage({
             </div>
             <div className="rounded-xl bg-stone-100 p-3">
               <dt className="text-stone-500">Дуусах огноо</dt>
-              <dd className="font-semibold">{formatDate(listing.expiryDate)}</dd>
+              <dd className="font-semibold">
+                {formatDate(listing.expiryDate)}
+                <span className="mt-0.5 block text-xs font-normal text-stone-500">
+                  {expiryLabel(listing.expiryDate)}
+                </span>
+              </dd>
             </div>
             <div className="rounded-xl bg-stone-100 p-3">
               <dt className="text-stone-500">Авах байршил</dt>

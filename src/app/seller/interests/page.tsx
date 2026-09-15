@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/constants";
+import { SellerNav } from "@/components/SellerNav";
+import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
 
@@ -29,12 +31,20 @@ export default async function SellerInterestsPage() {
         Худалдан авагчдын «Сонирхож байна» зурвасууд
       </p>
 
+      <div className="mt-6">
+        <SellerNav active="/seller/interests" />
+      </div>
+
       {interests.length === 0 ? (
-        <div className="card mt-8 text-center text-stone-500">
-          Одоогоор сонирхол байхгүй.
-        </div>
+        <EmptyState
+          icon="💬"
+          title="Одоогоор сонирхол байхгүй"
+          description="Зар идэвхтэй байхад худалдан авагчид «Сонирхож байна» илгээнэ. Утас/WhatsApp-аа зөв оруулсан эсэхээ шалгаарай."
+          actionHref="/seller/listings"
+          actionLabel="Миний зарууд"
+        />
       ) : (
-        <ul className="mt-6 space-y-4">
+        <ul className="space-y-4">
           {interests.map((i) => (
             <li key={i.id} className="card">
               <div className="flex flex-wrap items-start justify-between gap-2">
@@ -53,7 +63,7 @@ export default async function SellerInterestsPage() {
                   {i.buyer.phone && (
                     <a
                       href={`tel:${i.buyer.phone}`}
-                      className="block text-green-700"
+                      className="block font-semibold text-green-700"
                     >
                       {i.buyer.phone}
                     </a>
@@ -63,7 +73,7 @@ export default async function SellerInterestsPage() {
                       href={`https://wa.me/976${i.buyer.whatsapp}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="block text-green-700"
+                      className="block text-green-700 hover:underline"
                     >
                       WhatsApp
                     </a>

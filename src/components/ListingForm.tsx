@@ -58,19 +58,24 @@ export function ListingForm({
       mode === "create" ? "/api/listings" : `/api/listings/${initial?.id}`;
     const method = mode === "create" ? "POST" : "PUT";
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    setLoading(false);
-    if (!res.ok) {
-      setError(data.error || "Алдаа гарлаа");
-      return;
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "Зар хадгалахад алдаа гарлаа");
+        return;
+      }
+      router.push("/seller/listings");
+      router.refresh();
+    } catch {
+      setError("Сүлжээний алдаа. Дахин оролдоно уу.");
+    } finally {
+      setLoading(false);
     }
-    router.push("/seller/listings");
-    router.refresh();
   }
 
   return (

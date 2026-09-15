@@ -4,6 +4,8 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CATEGORIES, formatDate, formatMNT, STATUSES } from "@/lib/constants";
 import { DeleteListingButton } from "@/components/DeleteListingButton";
+import { SellerNav } from "@/components/SellerNav";
+import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
 
@@ -30,15 +32,20 @@ export default async function SellerListingsPage() {
         </Link>
       </div>
 
+      <div className="mt-6">
+        <SellerNav active="/seller/listings" />
+      </div>
+
       {listings.length === 0 ? (
-        <div className="card mt-8 text-center">
-          <p className="text-stone-500">Одоогоор зар байхгүй.</p>
-          <Link href="/seller/listings/new" className="btn-primary mt-4 inline-flex">
-            Эхний зар үүсгэх
-          </Link>
-        </div>
+        <EmptyState
+          icon="📦"
+          title="Одоогоор зар байхгүй"
+          description="Илүүдэл эсвэл хугацаа дуусах дөхсөн бараагаа оруулаад худалдан авагчдад хүрээрэй."
+          actionHref="/seller/listings/new"
+          actionLabel="Эхний зар үүсгэх"
+        />
       ) : (
-        <div className="mt-6 overflow-x-auto rounded-2xl border border-stone-200 bg-white">
+        <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-sm">
           <table className="min-w-full text-left text-sm">
             <thead className="border-b bg-stone-50 text-xs uppercase text-stone-500">
               <tr>
@@ -53,7 +60,7 @@ export default async function SellerListingsPage() {
             </thead>
             <tbody>
               {listings.map((l) => (
-                <tr key={l.id} className="border-b last:border-0">
+                <tr key={l.id} className="border-b last:border-0 hover:bg-stone-50/80">
                   <td className="px-4 py-3 font-medium">
                     <Link
                       href={`/listings/${l.id}`}
@@ -69,7 +76,17 @@ export default async function SellerListingsPage() {
                   <td className="px-4 py-3">{formatMNT(l.discountPrice)}</td>
                   <td className="px-4 py-3">{formatDate(l.expiryDate)}</td>
                   <td className="px-4 py-3">
-                    {STATUSES[l.status as keyof typeof STATUSES] || l.status}
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        l.status === "ACTIVE"
+                          ? "bg-green-100 text-green-800"
+                          : l.status === "SOLD"
+                            ? "bg-stone-200 text-stone-700"
+                            : "bg-amber-100 text-amber-800"
+                      }`}
+                    >
+                      {STATUSES[l.status as keyof typeof STATUSES] || l.status}
+                    </span>
                   </td>
                   <td className="px-4 py-3">{l._count.interests}</td>
                   <td className="px-4 py-3">

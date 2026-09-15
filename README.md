@@ -90,6 +90,12 @@ Vercel Environment Variables:
 
 `vercel.json` шаардлагагүй (Next.js default). Build script: `prisma generate && next build`.
 
+## Go-live
+
+`OPS.md` — xale.mn DNS, env (`DATABASE_URL`, `AUTH_SECRET`), seed checklist.
+
+Худалдагчийн самбар: `/seller`
+
 ## Хязгаарлалт (MVP)
 
 - Төлбөр, хүргэлт байхгүй

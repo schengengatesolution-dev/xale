@@ -48,3 +48,22 @@ export function formatDate(date: Date | string): string {
     day: "numeric",
   });
 }
+
+/** Calendar days until expiry (negative if past). */
+export function daysUntilExpiry(date: Date | string): number {
+  const d = typeof date === "string" ? new Date(date) : date;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(d);
+  target.setHours(0, 0, 0, 0);
+  return Math.round((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+export function expiryLabel(date: Date | string): string {
+  const days = daysUntilExpiry(date);
+  if (days < 0) return "Хугацаа дууссан";
+  if (days === 0) return "Өнөөдөр дуусна";
+  if (days === 1) return "Маргааш дуусна";
+  if (days <= 3) return `${days} хоногийн дотор`;
+  return formatDate(date);
+}

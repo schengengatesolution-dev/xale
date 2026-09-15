@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { ListingForm } from "@/components/ListingForm";
+import { SellerNav } from "@/components/SellerNav";
 import Link from "next/link";
 
 export default async function NewListingPage() {
@@ -18,8 +19,9 @@ export default async function NewListingPage() {
       </Link>
       <h1 className="mt-3 text-2xl font-bold">Шинэ зар</h1>
       <div className="mt-6">
-        <ListingForm mode="create" />
+        <SellerNav active="/seller/listings/new" />
       </div>
+      <ListingForm mode="create" />
     </div>
   );
 }
