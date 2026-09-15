@@ -149,6 +149,12 @@ export default function SignupPage() {
           {loading ? "Түр хүлээнэ үү..." : "Бүртгүүлэх"}
         </button>
       </form>
+      <p className="mt-6 text-center text-xs text-stone-400">
+        Одоогоор шимтгэлгүй.{" "}
+        <Link href="/payment-terms" className="underline hover:text-stone-600">
+          Төлбөрийн нөхцөл
+        </Link>
+      </p>
     </div>
   );
 }

@@ -129,6 +129,15 @@ export default async function SellerDashboardPage() {
           <li>· Зураг URL нэмбэл зар илүү анхаарал татна.</li>
           <li>· Дуусах огноог зөв оруулбал худалдан авагч яаралтай харна.</li>
           <li>· Сонирхол ирэхэд утас/WhatsApp-аар шууд холбогдоорой.</li>
+          <li>
+            · Одоогоор шимтгэлгүй —{" "}
+            <Link
+              href="/payment-terms"
+              className="font-medium text-green-700 hover:underline"
+            >
+              Төлбөрийн нөхцөл
+            </Link>
+          </li>
         </ul>
       </div>
     </div>

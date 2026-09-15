@@ -18,6 +18,7 @@
 - [x] Seed demo accounts (README / OPS.md)
 - [x] OPS.md — xale.mn go-live checklist
 - [x] Admin `/admin` — бүртгэлтэй хэрэглэгчдийн жагсаалт (`ADMIN_PASSWORD`)
+- [x] `/payment-terms` — Монгол төлбөрийн нөхцөл (төсөл, шимтгэлгүй)
 
 ## Demo
 
@@ -35,5 +36,6 @@
 | `/login` `/signup` | Auth |
 | `/admin/login` | Админ нэвтрэх |
 | `/admin` | Админ самбар (хэрэглэгчид) |
+| `/payment-terms` | Төлбөрийн нөхцөл (төсөл / идэвхгүй) |
 
 Дэлгэрэнгүй: `OPS.md`, `README.md`

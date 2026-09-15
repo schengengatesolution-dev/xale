@@ -64,6 +64,11 @@ export default function RootLayout({
                     Нэвтрэх
                   </Link>
                 </li>
+                <li>
+                  <Link href="/payment-terms" className="hover:text-green-700">
+                    Төлбөрийн нөхцөл
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
