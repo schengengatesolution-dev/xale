@@ -5,16 +5,20 @@ import { z } from "zod";
 
 const updateSchema = z.object({
   title: z.string().min(1).optional(),
-  category: z.enum(["FOOD", "RESTAURANT_SURPLUS", "OTHER"]).optional(),
+  category: z
+    .enum(["BAKERY", "RESTAURANT", "HOTEL", "GROCERY", "CAFE", "OTHER"])
+    .optional(),
   description: z.string().min(1).optional(),
-  originalPrice: z.number().int().positive().optional(),
-  discountPrice: z.number().int().nonnegative().optional(),
-  quantity: z.number().int().positive().optional(),
-  unit: z.string().min(1).optional(),
-  expiryDate: z.string().optional(),
+  bagPrice: z.number().int().nonnegative().optional(),
+  estimatedRetailValue: z.number().int().positive().optional(),
+  quantityAvailable: z.number().int().nonnegative().optional(),
+  pickupStart: z.string().optional(),
+  pickupEnd: z.string().optional(),
   pickupDistrict: z.string().min(1).optional(),
+  pickupAddress: z.string().optional().nullable(),
+  dietaryNotes: z.string().optional().nullable(),
   photoUrl: z.string().optional().nullable(),
-  status: z.enum(["ACTIVE", "SOLD", "EXPIRED", "HIDDEN"]).optional(),
+  status: z.enum(["ACTIVE", "SOLD_OUT", "EXPIRED", "HIDDEN"]).optional(),
 });
 
 export async function GET(
@@ -27,7 +31,11 @@ export async function GET(
       seller: {
         select: { id: true, name: true, phone: true, whatsapp: true },
       },
-      _count: { select: { interests: true } },
+      _count: {
+        select: {
+          reservations: { where: { status: "RESERVED" } },
+        },
+      },
     },
   });
 
@@ -58,11 +66,47 @@ export async function PUT(
     const body = await req.json();
     const data = updateSchema.parse(body);
 
+    const pickupStart = data.pickupStart
+      ? new Date(data.pickupStart)
+      : existing.pickupStart;
+    const pickupEnd = data.pickupEnd
+      ? new Date(data.pickupEnd)
+      : existing.pickupEnd;
+    if (!(pickupEnd > pickupStart)) {
+      return NextResponse.json(
+        { error: "Авах цонхны төгсгөл эхлэлээс хойш байх ёстой" },
+        { status: 400 }
+      );
+    }
+
     const listing = await prisma.listing.update({
       where: { id: params.id },
       data: {
-        ...data,
-        ...(data.expiryDate ? { expiryDate: new Date(data.expiryDate) } : {}),
+        ...(data.title !== undefined ? { title: data.title } : {}),
+        ...(data.category !== undefined ? { category: data.category } : {}),
+        ...(data.description !== undefined
+          ? { description: data.description }
+          : {}),
+        ...(data.bagPrice !== undefined ? { bagPrice: data.bagPrice } : {}),
+        ...(data.estimatedRetailValue !== undefined
+          ? { estimatedRetailValue: data.estimatedRetailValue }
+          : {}),
+        ...(data.quantityAvailable !== undefined
+          ? { quantityAvailable: data.quantityAvailable }
+          : {}),
+        pickupStart,
+        pickupEnd,
+        ...(data.pickupDistrict !== undefined
+          ? { pickupDistrict: data.pickupDistrict }
+          : {}),
+        ...(data.pickupAddress !== undefined
+          ? { pickupAddress: data.pickupAddress }
+          : {}),
+        ...(data.dietaryNotes !== undefined
+          ? { dietaryNotes: data.dietaryNotes }
+          : {}),
+        ...(data.photoUrl !== undefined ? { photoUrl: data.photoUrl } : {}),
+        ...(data.status !== undefined ? { status: data.status } : {}),
       },
     });
 

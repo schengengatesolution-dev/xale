@@ -5,16 +5,25 @@ import { z } from "zod";
 
 const createSchema = z.object({
   title: z.string().min(1),
-  category: z.enum(["FOOD", "RESTAURANT_SURPLUS", "OTHER"]),
+  category: z.enum([
+    "BAKERY",
+    "RESTAURANT",
+    "HOTEL",
+    "GROCERY",
+    "CAFE",
+    "OTHER",
+  ]),
   description: z.string().min(1),
-  originalPrice: z.number().int().positive(),
-  discountPrice: z.number().int().nonnegative(),
-  quantity: z.number().int().positive(),
-  unit: z.string().min(1),
-  expiryDate: z.string(),
+  bagPrice: z.number().int().nonnegative(),
+  estimatedRetailValue: z.number().int().positive(),
+  quantityAvailable: z.number().int().positive(),
+  pickupStart: z.string(),
+  pickupEnd: z.string(),
   pickupDistrict: z.string().min(1),
+  pickupAddress: z.string().optional().nullable(),
+  dietaryNotes: z.string().optional().nullable(),
   photoUrl: z.string().optional().nullable(),
-  status: z.enum(["ACTIVE", "SOLD", "EXPIRED", "HIDDEN"]).optional(),
+  status: z.enum(["ACTIVE", "SOLD_OUT", "EXPIRED", "HIDDEN"]).optional(),
 });
 
 export async function GET(req: NextRequest) {
@@ -45,8 +54,8 @@ export async function GET(req: NextRequest) {
   if (district) where.pickupDistrict = district;
   if (q) {
     where.OR = [
-      { title: { contains: q } },
-      { description: { contains: q } },
+      { title: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
     ];
   }
 
@@ -56,9 +65,13 @@ export async function GET(req: NextRequest) {
       seller: {
         select: { id: true, name: true, phone: true, whatsapp: true },
       },
-      _count: { select: { interests: true } },
+      _count: {
+        select: {
+          reservations: { where: { status: "RESERVED" } },
+        },
+      },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { pickupStart: "asc" },
   });
 
   return NextResponse.json({ listings });
@@ -73,12 +86,29 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = createSchema.parse(body);
+    const pickupStart = new Date(data.pickupStart);
+    const pickupEnd = new Date(data.pickupEnd);
+    if (!(pickupEnd > pickupStart)) {
+      return NextResponse.json(
+        { error: "Авах цонхны төгсгөл эхлэлээс хойш байх ёстой" },
+        { status: 400 }
+      );
+    }
 
     const listing = await prisma.listing.create({
       data: {
-        ...data,
+        title: data.title,
+        category: data.category,
+        description: data.description,
+        bagPrice: data.bagPrice,
+        estimatedRetailValue: data.estimatedRetailValue,
+        quantityAvailable: data.quantityAvailable,
+        pickupStart,
+        pickupEnd,
+        pickupDistrict: data.pickupDistrict,
+        pickupAddress: data.pickupAddress || null,
+        dietaryNotes: data.dietaryNotes || null,
         photoUrl: data.photoUrl || null,
-        expiryDate: new Date(data.expiryDate),
         status: data.status || "ACTIVE",
         sellerId: session.id,
       },

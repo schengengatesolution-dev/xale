@@ -4,13 +4,12 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Төлбөрийн нөхцөл",
   description:
-    "xale платформын төлбөрийн нөхцөл — одоогоор идэвхгүй төсөл. Шимтгэл авдаггүй.",
+    "xale Surprise Bag платформын төлбөрийн нөхцөл — одоогоор идэвхгүй төсөл.",
 };
 
 export default function PaymentTermsPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
-      {/* Draft / inactive banner */}
       <div
         role="status"
         className="mb-8 flex flex-col gap-2 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-4 sm:flex-row sm:items-center sm:gap-4"
@@ -23,8 +22,8 @@ export default function PaymentTermsPage() {
             Одоогоор идэвхгүй — шимтгэл авдаггүй
           </p>
           <p className="mt-0.5 text-sm text-amber-900/80">
-            Энэ хуудас нь ирээдүйн төлбөрийн загварын төсөл юм. Өнөөдөр xale
-            хэрэглэгчдээс ямар ч төлбөр, шимтгэл авдаггүй.
+            Энэ хуудас нь ирээдүйн гүйлгээний шимтгэлийн төсөл юм. Өнөөдөр xale
+            Surprise Bag захиалга / зар нийтлэлд ямар ч төлбөр авдаггүй.
           </p>
         </div>
       </div>
@@ -43,10 +42,11 @@ export default function PaymentTermsPage() {
             1. Платформын зорилго
           </h2>
           <p className="text-sm leading-relaxed">
-            <strong>xale</strong> нь Улаанбаатар болон ойр орчимд хугацаа дуусах
-            дөхсөн, илүүдэл хүнс болон барааг худалдагч (дэлгүүр, ресторан,
-            аж ахуй) болон худалдан авагчтай холбодог зах зээл юм. Бид арилжааны
-            талуудыг олж холбоход тусалдаг — барааг өөрсдөө худалдаалахгүй.
+            <strong>xale</strong> нь Улаанбаатарт илүүдэл хоолтой бизнес
+            (талхны дэлгүүр, кафе, ресторан, зочид буудал, хүнсний дэлгүүр) болон
+            хэрэглэгчдийг <strong>Surprise Bag</strong>-аар холбодог платформ
+            юм. Ангилал тодорхой, яг агуулга нь Surprise. Бид зуучлагч —
+            хоолыг өөрсдөө зардаггүй.
           </p>
         </section>
 
@@ -56,24 +56,21 @@ export default function PaymentTermsPage() {
           </h2>
           <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed">
             <li>
-              Зар оруулах: <strong>үнэгүй</strong> (одоо болон цаашид).
+              Surprise Bag оруулах: <strong>үнэгүй</strong>.
             </li>
             <li>
-              Худалдан авагч зар үзэж, «Сонирхож байна» илгээнэ эсвэл шууд
-              холбогдоно.
+              Худалдан авагч уут олж, <strong>захиалана</strong> (нөөцлөнө).
             </li>
             <li>
-              Талууд утас / WhatsApp-аар тохиролцож, барааг{" "}
-              <strong>авах цэг дээр</strong> өөрсдөө авна.
+              Авах цонхны хугацаанд бизнес дээр очиж авна. Төлбөр{" "}
+              <strong>офлайн</strong> (бэлэн / шилжүүлэг).
             </li>
             <li>
-              Төлбөр нь худалдагч, худалдан авагчийн хооронд{" "}
-              <strong>офлайн</strong> (бэлэн / шилжүүлэг гэх мэт) хийгдэнэ.
+              <strong>Апп доторх карт төлбөр</strong> одоогоор байхгүй —
+              удахгүй нэмэгдэнэ.
             </li>
             <li>
-              <strong>xale</strong> одоогоор зар нийтлэх, амжилтын шимтгэл,
-              VIP байршуулалт, эсвэл худалдан авагчийн төлбөр{" "}
-              <strong>ямар ч хэлбэрээр авдаггүй</strong>.
+              xale одоогоор ямар ч шимтгэл <strong>авдаггүй</strong>.
             </li>
           </ul>
         </section>
@@ -88,49 +85,45 @@ export default function PaymentTermsPage() {
             </span>
           </div>
           <p className="text-sm leading-relaxed">
-            Хэрэглэгчийн тоо нэмэгдсэний дараа дараах загварыг идэвхжүүлэх
-            төлөвлөгөөтэй. <em>Одоо хэрэгжихгүй.</em> Шимтгэл эхлэхээс өмнө
-            бид урьдчилан мэдэгдэнэ.
+            Хэрэглэгчийн тоо нэмэгдсэний дараа гүйлгээний шимтгэлийг
+            идэвхжүүлэх төлөвлөгөөтэй. <em>Одоо хэрэгжихгүй.</em>
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed">
             <li>
-              Зар оруулах: <strong>үнэгүй</strong> хэвээр.
+              Surprise Bag оруулах: <strong>үнэгүй</strong> хэвээр.
             </li>
             <li>
-              <strong>VIP / тусгай байршуулалт</strong> (сонголттой): зарыг
-              жагсаалтын дээд хэсэгт гаргах тогтмол төлбөр (тогтоосон дүнтэй).
-              Худалдагч хүсвэл ашиглана.
-            </li>
-            <li>
-              Амжилттай борлуулалтын дараа худалдагчаас{" "}
-              <strong>борлуулалтын үнийн 3%</strong> амжилтын шимтгэл (seller
-              success fee) авах. Энэ нь худалдан авагчийн төлсөн үнэ / зарын
-              хямдралтай үнэ дээр тооцогдоно —{" "}
-              <strong>худалдагчийн ашиг дээр биш</strong>.
+              Амжилттай захиалга / цуглуулалтын дараа бизнесээс{" "}
+              <strong>bag үнийн ~3%</strong> гүйлгээний шимтгэл (төсөл).
             </li>
             <li>
               Худалдан авагчаас платформын шимтгэл{" "}
               <strong>авахгүй</strong>.
             </li>
             <li>
-              Төлбөрийн үндсэн хэлбэр: худалдан авагч худалдагчид авах үед
-              шууд төлнө; амжилтын шимтгэлийг тусад нь тооцоолно.
+              VIP / тусгай байршуулалт (сонголттой) — тогтмол төлбөр.
             </li>
           </ul>
         </section>
 
         <section className="card space-y-3">
           <h2 className="text-lg font-bold text-stone-900">
-            4. Анхааруулга / өөрчлөлт
+            4. Хүнсний аюулгүй байдал
+          </h2>
+          <p className="text-sm leading-relaxed">
+            Surprise Bag-ийн агуулга өөрчлөгдөж болно. Харшил / хоолны
+            хязгаарлалт байвал захиалахаасаа өмнө бизнестэй холбогдоорой. Хоолны
+            чанар, хадгалалтыг бизнес хариуцна.
+          </p>
+        </section>
+
+        <section className="card space-y-3">
+          <h2 className="text-lg font-bold text-stone-900">
+            5. Анхааруулга / өөрчлөлт
           </h2>
           <p className="text-sm leading-relaxed">
             Эдгээр нөхцөл нь <strong>төсөл</strong> бөгөөд өөрчлөгдөж болно.
-            Шимтгэл идэвхжих үед бид хэрэглэгчдэд{" "}
-            <strong>урьдчилан мэдэгдэх</strong> болно (жишээ нь сайт дээрх
-            мэдэгдэл, имэйл). Идэвхжүүлэхээс өмнө ямар ч төлбөр нэхэмжлэхгүй.
-          </p>
-          <p className="text-sm leading-relaxed text-stone-500">
-            Асуулт байвал платформ дээрх холбоо барих мэдээллийг ашиглана уу.
+            Шимтгэл идэвхжих үед бид урьдчилан мэдэгдэнэ.
           </p>
         </section>
       </div>
@@ -140,7 +133,7 @@ export default function PaymentTermsPage() {
           Нүүр хуудас
         </Link>
         <Link href="/listings" className="btn-primary">
-          Зарууд үзэх
+          Surprise Bag үзэх
         </Link>
       </div>
     </div>

@@ -2,7 +2,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { CATEGORIES, formatDate, formatMNT, STATUSES } from "@/lib/constants";
+import {
+  CATEGORIES,
+  formatMNT,
+  formatPickupWindow,
+  STATUSES,
+} from "@/lib/constants";
 import { DeleteListingButton } from "@/components/DeleteListingButton";
 import { SellerNav } from "@/components/SellerNav";
 import { EmptyState } from "@/components/EmptyState";
@@ -16,7 +21,11 @@ export default async function SellerListingsPage() {
 
   const listings = await prisma.listing.findMany({
     where: { sellerId: session.id },
-    include: { _count: { select: { interests: true } } },
+    include: {
+      _count: {
+        select: { reservations: { where: { status: "RESERVED" } } },
+      },
+    },
     orderBy: { createdAt: "desc" },
   });
 
@@ -24,11 +33,11 @@ export default async function SellerListingsPage() {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Миний зарууд</h1>
+          <h1 className="text-2xl font-bold">Миний Surprise Bag</h1>
           <p className="text-sm text-stone-600">Сайн байна уу, {session.name}</p>
         </div>
         <Link href="/seller/listings/new" className="btn-primary">
-          + Шинэ зар
+          + Шинэ Bag
         </Link>
       </div>
 
@@ -38,11 +47,11 @@ export default async function SellerListingsPage() {
 
       {listings.length === 0 ? (
         <EmptyState
-          icon="📦"
-          title="Одоогоор зар байхгүй"
-          description="Илүүдэл эсвэл хугацаа дуусах дөхсөн бараагаа оруулаад худалдан авагчдад хүрээрэй."
+          icon="🛍️"
+          title="Одоогоор Surprise Bag байхгүй"
+          description="Илүүдэл хоолоо Surprise Bag болгон оруулаад хаягдлыг бууруулаарай."
           actionHref="/seller/listings/new"
-          actionLabel="Эхний зар үүсгэх"
+          actionLabel="Эхний Bag үүсгэх"
         />
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-sm">
@@ -52,15 +61,19 @@ export default async function SellerListingsPage() {
                 <th className="px-4 py-3">Гарчиг</th>
                 <th className="px-4 py-3">Ангилал</th>
                 <th className="px-4 py-3">Үнэ</th>
-                <th className="px-4 py-3">Дуусах</th>
+                <th className="px-4 py-3">Үлдсэн</th>
+                <th className="px-4 py-3">Авах цонх</th>
                 <th className="px-4 py-3">Төлөв</th>
-                <th className="px-4 py-3">Сонирхол</th>
+                <th className="px-4 py-3">Захиалга</th>
                 <th className="px-4 py-3">Үйлдэл</th>
               </tr>
             </thead>
             <tbody>
               {listings.map((l) => (
-                <tr key={l.id} className="border-b last:border-0 hover:bg-stone-50/80">
+                <tr
+                  key={l.id}
+                  className="border-b last:border-0 hover:bg-stone-50/80"
+                >
                   <td className="px-4 py-3 font-medium">
                     <Link
                       href={`/listings/${l.id}`}
@@ -73,14 +86,17 @@ export default async function SellerListingsPage() {
                     {CATEGORIES[l.category as keyof typeof CATEGORIES] ||
                       l.category}
                   </td>
-                  <td className="px-4 py-3">{formatMNT(l.discountPrice)}</td>
-                  <td className="px-4 py-3">{formatDate(l.expiryDate)}</td>
+                  <td className="px-4 py-3">{formatMNT(l.bagPrice)}</td>
+                  <td className="px-4 py-3">{l.quantityAvailable}</td>
+                  <td className="px-4 py-3 text-xs">
+                    {formatPickupWindow(l.pickupStart, l.pickupEnd)}
+                  </td>
                   <td className="px-4 py-3">
                     <span
                       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
                         l.status === "ACTIVE"
                           ? "bg-green-100 text-green-800"
-                          : l.status === "SOLD"
+                          : l.status === "SOLD_OUT"
                             ? "bg-stone-200 text-stone-700"
                             : "bg-amber-100 text-amber-800"
                       }`}
@@ -88,7 +104,7 @@ export default async function SellerListingsPage() {
                       {STATUSES[l.status as keyof typeof STATUSES] || l.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3">{l._count.interests}</td>
+                  <td className="px-4 py-3">{l._count.reservations}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
                       <Link

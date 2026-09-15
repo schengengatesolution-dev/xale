@@ -15,9 +15,9 @@ export default async function NewListingPage() {
         href="/seller/listings"
         className="text-sm text-green-700 hover:underline"
       >
-        ← Миний зарууд
+        ← Миний Surprise Bag
       </Link>
-      <h1 className="mt-3 text-2xl font-bold">Шинэ зар</h1>
+      <h1 className="mt-3 text-2xl font-bold">Шинэ Surprise Bag</h1>
       <div className="mt-6">
         <SellerNav active="/seller/listings/new" />
       </div>

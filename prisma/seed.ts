@@ -3,8 +3,21 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
+function todayAt(h: number, m = 0) {
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function tomorrowAt(h: number, m = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
 async function main() {
-  await prisma.interest.deleteMany();
+  await prisma.reservation.deleteMany();
   await prisma.listing.deleteMany();
   await prisma.user.deleteMany();
 
@@ -43,6 +56,17 @@ async function main() {
     },
   });
 
+  const seller4 = await prisma.user.create({
+    data: {
+      email: "hotel@xale.mn",
+      passwordHash,
+      name: "UB Сити зочид буудал",
+      phone: "77001122",
+      whatsapp: "77001122",
+      role: "SELLER",
+    },
+  });
+
   const buyer1 = await prisma.user.create({
     data: {
       email: "buyer@xale.mn",
@@ -65,209 +89,129 @@ async function main() {
     },
   });
 
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const day2 = new Date();
-  day2.setDate(day2.getDate() + 2);
-  const day3 = new Date();
-  day3.setDate(day3.getDate() + 3);
-  const day5 = new Date();
-  day5.setDate(day5.getDate() + 5);
-  const today = new Date();
-  today.setHours(23, 59, 0, 0);
-
-  const listings = [
+  const bags = [
     {
-      title: "Сүү 1л — дуусах дөхсөн",
-      category: "FOOD",
+      title: "Талх, нарийн боовны Surprise Bag",
+      category: "BAKERY",
       description:
-        "Өнөөдөр дуусах сүү. Хөргөгчинд хадгалсан, чанар сайтай. Бөөндөөр авах боломжтой.",
-      originalPrice: 4500,
-      discountPrice: 2000,
-      quantity: 24,
-      unit: "ширхэг",
-      expiryDate: today,
-      pickupDistrict: "Баянзүрх",
-      photoUrl: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=600",
-      status: "ACTIVE",
-      sellerId: seller1.id,
-    },
-    {
-      title: "Талх, бялуу — өнөөдрийн үлдэгдэл",
-      category: "FOOD",
-      description:
-        "Өнөөдөр жигнэсэн талх, бялууны үлдэгдэл. Орой 20:00-оос хойш авч болно.",
-      originalPrice: 8000,
-      discountPrice: 3000,
-      quantity: 15,
-      unit: "ширхэг",
-      expiryDate: today,
+        "Өнөөдрийн үлдэгдэл талх, круассан, жигнэмэг холимог. Яг агуулга нь өдөр бүр өөр — Surprise Bag!",
+      bagPrice: 5000,
+      estimatedRetailValue: 18000,
+      quantityAvailable: 8,
+      pickupStart: todayAt(18, 0),
+      pickupEnd: todayAt(20, 30),
       pickupDistrict: "Сүхбаатар",
-      photoUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600",
+      pickupAddress: "СБД, 1-р хороо, Талхны дэлгүүр",
+      dietaryNotes: "Глютен агуулсан байж болно",
+      photoUrl:
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600",
       status: "ACTIVE",
       sellerId: seller3.id,
     },
     {
-      title: "Рестораны бэлэн хоол — өдрийн үлдэгдэл",
-      category: "RESTAURANT_SURPLUS",
+      title: "Кафены өдрийн Surprise Bag",
+      category: "CAFE",
       description:
-        "Өдрийн цэсний үлдэгдэл хоол. 5–6 порц. Халуун авчрах боломжтой. Гахайн фермд ч тохиромжтой.",
-      originalPrice: 25000,
-      discountPrice: 8000,
-      quantity: 6,
-      unit: "порц",
-      expiryDate: today,
-      pickupDistrict: "Хан-Уул",
-      photoUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
-      status: "ACTIVE",
-      sellerId: seller2.id,
-    },
-    {
-      title: "Йогурт багц — 2 хоногийн дотор",
-      category: "FOOD",
-      description: "Грек йогурт 400г. 12 ширхэг. Хугацаа 2 хоногийн дараа дуусна.",
-      originalPrice: 6500,
-      discountPrice: 3000,
-      quantity: 12,
-      unit: "ширхэг",
-      expiryDate: day2,
-      pickupDistrict: "Баянгол",
-      photoUrl: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600",
-      status: "ACTIVE",
-      sellerId: seller1.id,
-    },
-    {
-      title: "Жимс, ногооны үлдэгдэл",
-      category: "FOOD",
-      description:
-        "Алим, банана, лууван, байцаа холимог. Гадаад төрх бага зэрэг муудсан боловч идэхэд тохиромжтой.",
-      originalPrice: 15000,
-      discountPrice: 5000,
-      quantity: 1,
-      unit: "хайрцаг",
-      expiryDate: tomorrow,
-      pickupDistrict: "Чингэлтэй",
-      photoUrl: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600",
-      status: "ACTIVE",
-      sellerId: seller1.id,
-    },
-    {
-      title: "Кафены сэндвич, салат",
-      category: "RESTAURANT_SURPLUS",
-      description:
-        "Өдрийн сэндвич, салатны үлдэгдэл. 8 порц. Орой 18:00–20:00 хооронд аваарай.",
-      originalPrice: 12000,
-      discountPrice: 4000,
-      quantity: 8,
-      unit: "порц",
-      expiryDate: today,
+        "Сэндвич, салат, жигнэмэг эсвэл кофены дагалдах бүтээгдэхүүн. Агуулга өдөр бүр өөрчлөгдөнө.",
+      bagPrice: 6000,
+      estimatedRetailValue: 20000,
+      quantityAvailable: 5,
+      pickupStart: todayAt(17, 30),
+      pickupEnd: todayAt(19, 30),
       pickupDistrict: "Сүхбаатар",
-      photoUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
+      pickupAddress: "СБД төв, Улаанбаатар кафе",
+      dietaryNotes: "Цагаан хоолны сонголт байж болно",
+      photoUrl:
+        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600",
       status: "ACTIVE",
       sellerId: seller2.id,
     },
     {
-      title: "Өндөг 30 ширхэг — дуусах дөхсөн",
-      category: "FOOD",
-      description: "Шинэ өндөг. Хугацаа 3 хоногийн дараа. Бөөндөөр хямд.",
-      originalPrice: 18000,
-      discountPrice: 10000,
-      quantity: 3,
-      unit: "хайрцаг",
-      expiryDate: day3,
-      pickupDistrict: "Сонгинохайрхан",
-      photoUrl: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=600",
+      title: "Рестораны оройн Surprise Bag",
+      category: "RESTAURANT",
+      description:
+        "Өдрийн цэсний үлдэгдэл хоол — 1–2 хүнд хүрэлцэх Surprise Bag. Яг цэс нь нууц!",
+      bagPrice: 12000,
+      estimatedRetailValue: 35000,
+      quantityAvailable: 4,
+      pickupStart: todayAt(20, 0),
+      pickupEnd: todayAt(21, 30),
+      pickupDistrict: "Хан-Уул",
+      pickupAddress: "ХУД, ресторан хаалганы ойр",
+      dietaryNotes: "Махтай байж болно",
+      photoUrl:
+        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600",
+      status: "ACTIVE",
+      sellerId: seller2.id,
+    },
+    {
+      title: "Хүнсний дэлгүүрийн Surprise Bag",
+      category: "GROCERY",
+      description:
+        "Хугацаа ойртож буй сүүн бүтээгдэхүүн, жимс, ногоо холимог. Агуулга өдөр бүр өөр.",
+      bagPrice: 8000,
+      estimatedRetailValue: 25000,
+      quantityAvailable: 6,
+      pickupStart: tomorrowAt(10, 0),
+      pickupEnd: tomorrowAt(12, 0),
+      pickupDistrict: "Баянзүрх",
+      pickupAddress: "БЗД, Номин дэлгүүр касс 2",
+      dietaryNotes: "Хөргөгчинд хадгална",
+      photoUrl:
+        "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600",
       status: "ACTIVE",
       sellerId: seller1.id,
     },
     {
-      title: "Бялууны үлдэгдэл — том хэсэг",
-      category: "FOOD",
+      title: "Зочид буудлын өглөөний Surprise Bag",
+      category: "HOTEL",
       description:
-        "Төрсөн өдрийн бялууны үлдэгдэл. 2 кг орчим. Хөргөгчинд хадгална.",
-      originalPrice: 45000,
-      discountPrice: 15000,
-      quantity: 1,
-      unit: "ширхэг",
-      expiryDate: tomorrow,
-      pickupDistrict: "Баянзүрх",
-      photoUrl: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600",
+        "Буфет өглөөний үлдэгдэл — жигнэмэг, жимс, сэндвич гэх мэт. Surprise Bag агуулга өөрчлөгдөнө.",
+      bagPrice: 10000,
+      estimatedRetailValue: 30000,
+      quantityAvailable: 3,
+      pickupStart: tomorrowAt(9, 0),
+      pickupEnd: tomorrowAt(11, 0),
+      pickupDistrict: "Чингэлтэй",
+      pickupAddress: "ЧД, UB Сити зочид буудал лобби",
+      dietaryNotes: null,
+      photoUrl:
+        "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600",
+      status: "ACTIVE",
+      sellerId: seller4.id,
+    },
+    {
+      title: "Бялуу, нарийн боовны оройн Bag",
+      category: "BAKERY",
+      description:
+        "Төрсөн өдөр / захиалгын үлдэгдэл бялуу, жигнэмэг. Яг төрөл нь Surprise!",
+      bagPrice: 7000,
+      estimatedRetailValue: 22000,
+      quantityAvailable: 2,
+      pickupStart: todayAt(19, 0),
+      pickupEnd: todayAt(21, 0),
+      pickupDistrict: "Баянгол",
+      pickupAddress: "БГД, Талхны салбар",
+      dietaryNotes: "Сахар ихтэй байж болно",
+      photoUrl:
+        "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600",
       status: "ACTIVE",
       sellerId: seller3.id,
-    },
-    {
-      title: "Махны яс, үлдэгдэл — фермд",
-      category: "OTHER",
-      description:
-        "Рестораны махны яс, үлдэгдэл. Гахайн/нохойн хоолонд тохиромжтой. Өдөр бүр бэлэн.",
-      originalPrice: 5000,
-      discountPrice: 1000,
-      quantity: 10,
-      unit: "кг",
-      expiryDate: tomorrow,
-      pickupDistrict: "Хан-Уул",
-      photoUrl: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=600",
-      status: "ACTIVE",
-      sellerId: seller2.id,
-    },
-    {
-      title: "Гурил, гоймон — хугацаа ойртож байна",
-      category: "FOOD",
-      description: "Гурил 5кг, гоймон багц. Хугацаа 5 хоногийн дараа дуусна.",
-      originalPrice: 22000,
-      discountPrice: 12000,
-      quantity: 5,
-      unit: "багц",
-      expiryDate: day5,
-      pickupDistrict: "Баянгол",
-      photoUrl: "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600",
-      status: "ACTIVE",
-      sellerId: seller1.id,
-    },
-    {
-      title: "Кофе, жигнэмэг — өдрийн үлдэгдэл",
-      category: "RESTAURANT_SURPLUS",
-      description:
-        "Кафены өдрийн жигнэмэг, круассан үлдэгдэл. 20 ширхэг. Хямд үнээр.",
-      originalPrice: 5000,
-      discountPrice: 1500,
-      quantity: 20,
-      unit: "ширхэг",
-      expiryDate: today,
-      pickupDistrict: "Чингэлтэй",
-      photoUrl: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600",
-      status: "ACTIVE",
-      sellerId: seller2.id,
-    },
-    {
-      title: "Шөл, хоолны үлдэгдэл — том сав",
-      category: "RESTAURANT_SURPLUS",
-      description:
-        "Өдрийн шөл, хоолны үлдэгдэл 5 литр. Фермд эсвэл олон хүнд тохиромжтой.",
-      originalPrice: 30000,
-      discountPrice: 5000,
-      quantity: 1,
-      unit: "сав",
-      expiryDate: today,
-      pickupDistrict: "Сүхбаатар",
-      photoUrl: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600",
-      status: "ACTIVE",
-      sellerId: seller2.id,
     },
   ];
 
-  for (const listing of listings) {
-    await prisma.listing.create({ data: listing });
+  for (const bag of bags) {
+    await prisma.listing.create({ data: bag });
   }
 
-  console.log("✅ Seed амжилттай!");
-  console.log("Demo бүртгэлүүд:");
-  console.log("  Худалдагч: seller@xale.mn / demo1234");
-  console.log("  Кафе:      cafe@xale.mn / demo1234");
-  console.log("  Талх:      bakery@xale.mn / demo1234");
-  console.log("  Худалдан авагч: buyer@xale.mn / demo1234");
-  console.log("  Ферм:      farm@xale.mn / demo1234");
-  console.log(`  Нийт зарууд: ${listings.length}`);
+  console.log("✅ Seed амжилттай! Surprise Bags бэлэн.");
+  console.log("Demo бүртгэлүүд (нууц үг: demo1234):");
+  console.log("  Худалдагч: seller@xale.mn");
+  console.log("  Кафе:      cafe@xale.mn");
+  console.log("  Талх:      bakery@xale.mn");
+  console.log("  Буудал:    hotel@xale.mn");
+  console.log("  Худалдан авагч: buyer@xale.mn");
+  console.log(`  Нийт Surprise Bag: ${bags.length}`);
   void buyer1;
   void buyer2;
 }

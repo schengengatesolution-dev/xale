@@ -20,14 +20,15 @@ export default async function ListingsPage({ searchParams }: Props) {
   if (searchParams.district) where.pickupDistrict = searchParams.district;
   if (searchParams.q) {
     where.OR = [
-      { title: { contains: searchParams.q } },
-      { description: { contains: searchParams.q } },
+      { title: { contains: searchParams.q, mode: "insensitive" } },
+      { description: { contains: searchParams.q, mode: "insensitive" } },
     ];
   }
 
   const listings = await prisma.listing.findMany({
     where,
-    orderBy: { createdAt: "desc" },
+    include: { seller: { select: { name: true } } },
+    orderBy: { pickupStart: "asc" },
   });
 
   const hasFilters = !!(
@@ -50,13 +51,13 @@ export default async function ListingsPage({ searchParams }: Props) {
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Зарууд</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Surprise Bag</h1>
           <p className="mt-1 text-sm text-stone-600">
-            Хугацаа дуусах дөхсөн / илүүдэл бараа · Улаанбаатар
+            Ойролцоох уутнууд · Улаанбаатар · агуулга Surprise!
           </p>
         </div>
         <p className="text-sm font-medium text-stone-500">
-          {listings.length} зар
+          {listings.length} уут
         </p>
       </div>
 
@@ -70,7 +71,7 @@ export default async function ListingsPage({ searchParams }: Props) {
             name="q"
             defaultValue={searchParams.q || ""}
             className="input"
-            placeholder="Жишээ: сүү, талх..."
+            placeholder="Жишээ: талх, кафе..."
           />
         </div>
         <div>
@@ -147,16 +148,16 @@ export default async function ListingsPage({ searchParams }: Props) {
 
       {listings.length === 0 ? (
         <EmptyState
-          icon={hasFilters ? "🔍" : "🛒"}
+          icon={hasFilters ? "🔍" : "🛍️"}
           title={
             hasFilters
-              ? "Тохирох зар олдсонгүй"
-              : "Одоогоор идэвхтэй зар байхгүй"
+              ? "Тохирох Surprise Bag олдсонгүй"
+              : "Одоогоор идэвхтэй уут байхгүй"
           }
           description={
             hasFilters
               ? "Шүүлтүүрээ өөрчилж эсвэл цэвэрлээд дахин үзнэ үү."
-              : "Худалдагчид удахгүй зарууд нэмнэ. Та бүртгүүлээд эхний зар оруулж болно."
+              : "Бизнесүүд удахгүй Surprise Bag нэмнэ."
           }
           actionHref={hasFilters ? "/listings" : "/signup"}
           actionLabel={hasFilters ? "Шүүлтүүр цэвэрлэх" : "Бүртгүүлэх"}

@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "xale — Илүүдэл барааны зах зээл",
+    name: "xale — Surprise Bag",
     short_name: "xale",
     description:
-      "Улаанбаатарт илүүдэл / хугацаа дуусах дөхсөн хүнсийг олж, захиалж, дэлгүүрт очиж аваарай.",
+      "Surprise Bag: ол → захиалаа → авах цонх. Улаанбаатар.",
     start_url: "/",
     scope: "/",
     display: "standalone",

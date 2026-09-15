@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Хэрхэн ажилладаг вэ?",
   description:
-    "xale: ойролцоох илүүдэл бараа ол → сонирхол → дэлгүүрт очиж ав. Хоолны хаягдал бууруулна.",
+    "xale Surprise Bag: ол → захиалаа → авах цонх → хаягдал бууруул. Улаанбаатар.",
 };
 
 const STEPS = [
@@ -13,28 +13,28 @@ const STEPS = [
     num: "1",
     title: "Ол",
     detail:
-      "Зарууд хуудаснаас дүүрэг, ангиллаар шүүж ойролцоох илүүдэл / хугацаа дуусах дөхсөн барааг харна.",
+      "Зарууд хуудаснаас дүүрэг, ангиллаар шүүж ойролцоох Surprise Bag-уудыг харна. Ангилал (талх, кафе, ресторан…) тодорхой — яг агуулга нь Surprise!",
   },
   {
     step: "ХОЁР",
     num: "2",
-    title: "Захиалаа / Сонирхол",
+    title: "Захиалаа",
     detail:
-      "«Сонирхож байна» илгээнэ. Худалдагч таны утас / WhatsApp-ыг харна. (Одоогоор апп дотор төлбөр байхгүй — офлайн тохиролцоо.)",
+      "«Захиалах · Reserve» товчоор уутыг нөөцлөнө. Одоогоор апп дотор карт төлбөргүй — төлбөрийг авах үедээ хийнэ. Апп доторх төлбөр удахгүй нэмэгдэнэ.",
   },
   {
     step: "ГУРАВ",
     num: "3",
-    title: "Авчрах цагт очиж аваарай",
+    title: "Авах цонх",
     detail:
-      "Тохирсон цагт зарын авах байршил (дэлгүүр / ресторан) дээр очиж бараагаа авна. Төлбөр бэлэн эсвэл шилжүүлгээр.",
+      "Тохирсон цагийн цонхонд бизнес дээр очиж Surprise Bag-аа авна. Худалдагч «Авсан» гэж тэмдэглэнэ. Ирээгүй бол No-show.",
   },
   {
     step: "ДӨРӨВ",
     num: "4",
-    title: "Хоолны хаягдал бууруул",
+    title: "Хаягдал бууруул",
     detail:
-      "Хямд үнээр авч, хоолны хаягдал багасгана. Худалдагч илүүдлээ зарж, худалдан авагч хэмнэнэ — гаригт ч сайн.",
+      "Хямд үнээр авч, сайн хоолыг хаягдахаас аварна. Surprise Bag-ийн агуулга өдөр бүр өөрчлөгдөж болно.",
   },
 ];
 
@@ -46,12 +46,12 @@ export default function HowItWorksPage() {
           Хэрхэн ашиглах вэ?
         </p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight text-green-600 sm:text-4xl">
-          4 алхам — ол → ав → хаягдал↓
+          Surprise Bag — 4 алхам
         </h1>
         <p className="mt-4 text-base leading-relaxed text-stone-600">
-          <strong className="text-green-700">xale</strong> нь Too Good To Go шиг:
-          ойролцоох илүүдэл хүнсийг олж, сонирхол илгээж, дэлгүүрт очиж авна.
-          Апп доторх төлбөргүй (одоо) — талууд офлайн тохиролцоно.
+          <strong className="text-green-700">xale</strong> нь Too Good To Go
+          шиг: бизнесийн илүүдэл хоолыг <strong>Surprise Bag</strong> болгон
+          хэрэглэгчдэд холбоно. Ол → захиалаа → авах цонх → хаягдал↓.
         </p>
 
         <ol className="mt-10 space-y-5">
@@ -82,11 +82,22 @@ export default function HowItWorksPage() {
           ))}
         </ol>
 
-        <section className="mt-10 rounded-3xl border border-green-200 bg-green-50/70 p-6">
-          <h2 className="text-lg font-bold text-green-800">Худалдагчдад</h2>
+        <section className="mt-10 rounded-3xl border border-amber-200 bg-amber-50 p-6">
+          <h2 className="text-lg font-bold text-amber-950">
+            Хүнсний аюулгүй байдал
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-amber-950/90">
+            Surprise Bag-ийн агуулга өөрчлөгдөж болно. Харшил эсвэл хоолны
+            хязгаарлалт байвал захиалахаасаа өмнө бизнестэй холбогдоорой. xale
+            нь зуучлагч — хоолны чанарыг бизнес өөрөө хариуцна.
+          </p>
+        </section>
+
+        <section className="mt-4 rounded-3xl border border-green-200 bg-green-50/70 p-6">
+          <h2 className="text-lg font-bold text-green-800">Бизнесүүдэд</h2>
           <p className="mt-2 text-sm leading-relaxed text-stone-700">
-            Зар оруулах <strong>үнэгүй</strong>. Ирээдүйд амжилтын шимтгэл ~3% болон
-            сонголттой VIP байршуулалт төлөвлөгдсөн — одоо идэвхгүй.{" "}
+            Surprise Bag оруулах <strong>үнэгүй</strong>. Ирээдүйд гүйлгээний
+            шимтгэл (төсөл) — одоо идэвхгүй.{" "}
             <Link
               href="/payment-terms"
               className="font-semibold text-green-700 hover:underline"
@@ -99,14 +110,14 @@ export default function HowItWorksPage() {
         <section className="mt-4 rounded-3xl border border-stone-200 bg-white p-6">
           <h2 className="text-lg font-bold text-green-800">Утасны апп (PWA v1)</h2>
           <p className="mt-2 text-sm leading-relaxed text-stone-600">
-            Сайтыг утасны нүүр дэлгэцэд нэмж апп шиг ашиглана. App Store / Play
-            Store-ын native апп (Expo) болон xale.mn домэйн — дараагийн шат.
+            Сайтыг утасны нүүр дэлгэцэд нэмж апп шиг ашиглана. Native апп болон
+            xale.mn — дараагийн шат.
           </p>
         </section>
 
         <div className="mt-10 flex flex-wrap gap-3">
           <Link href="/listings" className="btn-primary !px-8 !py-3.5">
-            Зарууд ол
+            Surprise Bag ол
           </Link>
           <Link href="/signup" className="btn-secondary !px-8 !py-3.5">
             Бүртгүүлэх

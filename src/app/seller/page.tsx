@@ -12,32 +12,41 @@ export default async function SellerDashboardPage() {
   if (!session) redirect("/login");
   if (session.role !== "SELLER") redirect("/listings");
 
-  const [listings, interestCount] = await Promise.all([
+  const [listings, reservationCount, pendingCount] = await Promise.all([
     prisma.listing.findMany({
       where: { sellerId: session.id },
-      include: { _count: { select: { interests: true } } },
+      include: {
+        _count: {
+          select: { reservations: { where: { status: "RESERVED" } } },
+        },
+      },
       orderBy: { createdAt: "desc" },
     }),
-    prisma.interest.count({
+    prisma.reservation.count({
       where: { listing: { sellerId: session.id } },
+    }),
+    prisma.reservation.count({
+      where: {
+        listing: { sellerId: session.id },
+        status: "RESERVED",
+      },
     }),
   ]);
 
   const active = listings.filter((l) => l.status === "ACTIVE").length;
-  const sold = listings.filter((l) => l.status === "SOLD").length;
   const recent = listings.slice(0, 5);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Худалдагчийн самбар</h1>
+          <h1 className="text-2xl font-bold">Бизнес самбар</h1>
           <p className="text-sm text-stone-600">
             Сайн байна уу, <strong>{session.name}</strong>
           </p>
         </div>
         <Link href="/seller/listings/new" className="btn-primary">
-          + Шинэ зар
+          + Шинэ Surprise Bag
         </Link>
       </div>
 
@@ -48,17 +57,17 @@ export default async function SellerDashboardPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="card">
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
-            Идэвхтэй зар
+            Идэвхтэй уут
           </p>
           <p className="mt-2 text-3xl font-bold text-green-700">{active}</p>
         </div>
         <div className="card">
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
-            Ирсэн сонирхол
+            Хүлээгдэж буй захиалга
           </p>
-          <p className="mt-2 text-3xl font-bold text-amber-600">{interestCount}</p>
+          <p className="mt-2 text-3xl font-bold text-amber-600">{pendingCount}</p>
           <Link
-            href="/seller/interests"
+            href="/seller/reservations"
             className="mt-2 inline-block text-xs font-semibold text-green-700 hover:underline"
           >
             Харах →
@@ -66,15 +75,17 @@ export default async function SellerDashboardPage() {
         </div>
         <div className="card">
           <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
-            Зарагдсан
+            Нийт захиалга
           </p>
-          <p className="mt-2 text-3xl font-bold text-stone-800">{sold}</p>
+          <p className="mt-2 text-3xl font-bold text-stone-800">
+            {reservationCount}
+          </p>
         </div>
       </div>
 
       <div className="mt-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Сүүлийн зарууд</h2>
+          <h2 className="text-lg font-bold">Сүүлийн Surprise Bag</h2>
           <Link
             href="/seller/listings"
             className="text-sm font-semibold text-green-700 hover:underline"
@@ -85,12 +96,12 @@ export default async function SellerDashboardPage() {
 
         {recent.length === 0 ? (
           <div className="card mt-4 text-center">
-            <p className="text-stone-500">Одоогоор зар байхгүй.</p>
+            <p className="text-stone-500">Одоогоор Surprise Bag байхгүй.</p>
             <Link
               href="/seller/listings/new"
               className="btn-primary mt-4 inline-flex"
             >
-              Эхний зар үүсгэх
+              Эхний Bag үүсгэх
             </Link>
           </div>
         ) : (
@@ -108,7 +119,8 @@ export default async function SellerDashboardPage() {
                     {l.title}
                   </Link>
                   <p className="text-xs text-stone-500">
-                    {formatMNT(l.discountPrice)} · {l._count.interests} сонирхол
+                    {formatMNT(l.bagPrice)} · {l.quantityAvailable} үлдсэн ·{" "}
+                    {l._count.reservations} захиалга
                   </p>
                 </div>
                 <Link
@@ -126,9 +138,9 @@ export default async function SellerDashboardPage() {
       <div className="card mt-8 border-dashed border-stone-300 bg-stone-50">
         <h3 className="font-semibold text-stone-800">Хурдан зөвлөмж</h3>
         <ul className="mt-2 space-y-1 text-sm text-stone-600">
-          <li>· Зураг URL нэмбэл зар илүү анхаарал татна.</li>
-          <li>· Дуусах огноог зөв оруулбал худалдан авагч яаралтай харна.</li>
-          <li>· Сонирхол ирэхэд утас/WhatsApp-аар шууд холбогдоорой.</li>
+          <li>· Авах цонхыг тодорхой оруулбал захиалга нэмэгдэнэ.</li>
+          <li>· Surprise Bag — ангилал тодорхой, агуулга өөрчлөгдөнө гэж бич.</li>
+          <li>· Захиалга ирэхэд «Авсан» эсвэл «Ирээгүй» тэмдэглэ.</li>
           <li>
             · Одоогоор шимтгэлгүй —{" "}
             <Link

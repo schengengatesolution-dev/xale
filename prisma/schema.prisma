@@ -8,44 +8,53 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(cuid())
-  email        String     @unique
+  id           String        @id @default(cuid())
+  email        String        @unique
   passwordHash String
   name         String
   phone        String?
   whatsapp     String?
-  role         String     // SELLER | BUYER
-  createdAt    DateTime   @default(now())
+  role         String // SELLER | BUYER
+  createdAt    DateTime      @default(now())
   listings     Listing[]
-  interests    Interest[]
+  reservations Reservation[]
 }
 
+/// Surprise Bag listing (TGTG-style)
 model Listing {
-  id             String     @id @default(cuid())
-  title          String
-  category       String     // FOOD | RESTAURANT_SURPLUS | OTHER
-  description    String
-  originalPrice  Int        // MNT
-  discountPrice  Int        // MNT
-  quantity       Int
-  unit           String
-  expiryDate     DateTime
-  pickupDistrict String
-  photoUrl       String?
-  status         String     @default("ACTIVE") // ACTIVE | SOLD | EXPIRED | HIDDEN
-  sellerId       String
-  seller         User       @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  interests      Interest[]
+  id                   String        @id @default(cuid())
+  title                String
+  category             String // BAKERY | RESTAURANT | HOTEL | GROCERY | CAFE | OTHER
+  description          String
+  bagPrice             Int // MNT — Surprise Bag үнэ
+  estimatedRetailValue Int // MNT — ойролцоо жижиглэн үнэ
+  quantityAvailable    Int
+  pickupStart          DateTime
+  pickupEnd            DateTime
+  pickupDistrict       String
+  pickupAddress        String?
+  dietaryNotes         String?
+  photoUrl             String?
+  status               String        @default("ACTIVE") // ACTIVE | SOLD_OUT | HIDDEN | EXPIRED
+  sellerId             String
+  seller               User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  reservations         Reservation[]
 }
 
-model Interest {
+/// Buyer reserve → seller mark COLLECTED / NO_SHOW
+model Reservation {
   id        String   @id @default(cuid())
-  message   String
+  note      String?
+  status    String   @default("RESERVED") // RESERVED | COLLECTED | NO_SHOW | CANCELLED
   listingId String
   listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   buyerId   String
   buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([listingId])
+  @@index([buyerId])
 }

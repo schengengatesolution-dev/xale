@@ -11,11 +11,11 @@ const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "xale — Илүүдэл барааны зах зээл",
+    default: "xale — Surprise Bag зах зээл",
     template: "%s · xale",
   },
   description:
-    "Хугацаа дуусах дөхсөн, илүүдэл хүнс, рестораны үлдэгдлийг худалдагч, худалдан авагчтай холбоно. Улаанбаатар.",
+    "Surprise Bag: ойролцоох илүүдэл хоолыг олж, захиалж, авах цонхонд очиж аваарай. Улаанбаатар.",
   applicationName: "xale",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "xale — Илүүдэл барааны зах зээл",
+    title: "xale — Surprise Bag зах зээл",
     description:
-      "Дэлгүүр, рестораны илүүдэл барааг худалдан авагчтай холбоно. Улаанбаатар.",
+      "Surprise Bag — илүүдэл хоолыг хаягдахаас авар. Улаанбаатар.",
     locale: "mn_MN",
     type: "website",
   },
@@ -69,7 +69,7 @@ export default async function RootLayout({
                 xale
               </p>
               <p className="mt-3 text-sm leading-relaxed text-stone-500">
-                Монголын илүүдэл / хугацаа дуусах дөхсөн барааны зах зээл.
+                Surprise Bag зах зээл — илүүдэл хоолыг хаягдахаас авар.
                 Улаанбаатар.
               </p>
             </div>
@@ -78,7 +78,7 @@ export default async function RootLayout({
               <ul className="mt-3 space-y-2 text-sm text-stone-600">
                 <li>
                   <Link href="/listings" className="hover:text-green-700">
-                    Зарууд
+                    Surprise Bag
                   </Link>
                 </li>
                 <li>

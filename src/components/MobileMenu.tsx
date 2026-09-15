@@ -75,7 +75,7 @@ export function MobileMenu({ session }: Props) {
                   Шинэ зар
                 </Link>
                 <Link
-                  href="/seller/interests"
+                  href="/seller/reservations"
                   onClick={() => setOpen(false)}
                   className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
                 >

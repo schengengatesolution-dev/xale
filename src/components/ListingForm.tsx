@@ -2,22 +2,44 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CATEGORIES, CATEGORY_KEYS, STATUSES, UB_DISTRICTS } from "@/lib/constants";
+import {
+  CATEGORIES,
+  CATEGORY_KEYS,
+  STATUSES,
+  UB_DISTRICTS,
+  toLocalInputValue,
+} from "@/lib/constants";
 
 export type ListingFormData = {
   id?: string;
   title: string;
   category: string;
   description: string;
-  originalPrice: number;
-  discountPrice: number;
-  quantity: number;
-  unit: string;
-  expiryDate: string;
+  bagPrice: number;
+  estimatedRetailValue: number;
+  quantityAvailable: number;
+  pickupStart: string;
+  pickupEnd: string;
   pickupDistrict: string;
+  pickupAddress: string;
+  dietaryNotes: string;
   photoUrl: string;
   status: string;
 };
+
+function defaultWindow() {
+  const start = new Date();
+  start.setHours(18, 0, 0, 0);
+  if (start.getTime() < Date.now()) {
+    start.setDate(start.getDate() + 1);
+  }
+  const end = new Date(start);
+  end.setHours(start.getHours() + 2);
+  return {
+    pickupStart: toLocalInputValue(start),
+    pickupEnd: toLocalInputValue(end),
+  };
+}
 
 export function ListingForm({
   initial,
@@ -29,11 +51,7 @@ export function ListingForm({
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const defaultExpiry = new Date();
-  defaultExpiry.setDate(defaultExpiry.getDate() + 1);
-  const expiryStr =
-    initial?.expiryDate || defaultExpiry.toISOString().slice(0, 10);
+  const defaults = defaultWindow();
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,12 +62,14 @@ export function ListingForm({
       title: String(fd.get("title")),
       category: String(fd.get("category")),
       description: String(fd.get("description")),
-      originalPrice: Number(fd.get("originalPrice")),
-      discountPrice: Number(fd.get("discountPrice")),
-      quantity: Number(fd.get("quantity")),
-      unit: String(fd.get("unit")),
-      expiryDate: String(fd.get("expiryDate")),
+      bagPrice: Number(fd.get("bagPrice")),
+      estimatedRetailValue: Number(fd.get("estimatedRetailValue")),
+      quantityAvailable: Number(fd.get("quantityAvailable")),
+      pickupStart: String(fd.get("pickupStart")),
+      pickupEnd: String(fd.get("pickupEnd")),
       pickupDistrict: String(fd.get("pickupDistrict")),
+      pickupAddress: String(fd.get("pickupAddress") || "") || null,
+      dietaryNotes: String(fd.get("dietaryNotes") || "") || null,
       photoUrl: String(fd.get("photoUrl") || "") || null,
       status: String(fd.get("status")),
     };
@@ -66,7 +86,7 @@ export function ListingForm({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error || "Зар хадгалахад алдаа гарлаа");
+        setError(data.error || "Surprise Bag хадгалахад алдаа гарлаа");
         return;
       }
       router.push("/seller/listings");
@@ -86,6 +106,11 @@ export function ListingForm({
         </div>
       )}
 
+      <p className="rounded-xl border border-green-200 bg-green-50/70 px-3 py-2 text-xs leading-relaxed text-green-900">
+        <strong>Surprise Bag</strong> — ангилал тодорхой, яг агуулга нь
+        нууц/өөрчлөгдөнө. Худалдан авагч авах цонхны хугацаанд ирнэ.
+      </p>
+
       <div>
         <label className="label" htmlFor="title">
           Гарчиг
@@ -95,6 +120,7 @@ export function ListingForm({
           name="title"
           required
           className="input"
+          placeholder="Жишээ: Талх, нарийн боовны Surprise Bag"
           defaultValue={initial?.title || ""}
         />
       </div>
@@ -108,7 +134,7 @@ export function ListingForm({
             id="category"
             name="category"
             className="input"
-            defaultValue={initial?.category || "FOOD"}
+            defaultValue={initial?.category || "BAKERY"}
           >
             {CATEGORY_KEYS.map((k) => (
               <option key={k} value={k}>
@@ -145,88 +171,90 @@ export function ListingForm({
           name="description"
           required
           className="input min-h-[100px]"
+          placeholder="Агуулга өдөр бүр өөрчлөгдөнө — Surprise Bag..."
           defaultValue={initial?.description || ""}
         />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="label" htmlFor="originalPrice">
-            Анхны үнэ (₮)
+          <label className="label" htmlFor="bagPrice">
+            Bag үнэ (₮)
           </label>
           <input
-            id="originalPrice"
-            name="originalPrice"
-            type="number"
-            min={1}
-            required
-            className="input"
-            defaultValue={initial?.originalPrice ?? ""}
-          />
-        </div>
-        <div>
-          <label className="label" htmlFor="discountPrice">
-            Хямдралтай үнэ (₮)
-          </label>
-          <input
-            id="discountPrice"
-            name="discountPrice"
+            id="bagPrice"
+            name="bagPrice"
             type="number"
             min={0}
             required
             className="input"
-            defaultValue={initial?.discountPrice ?? ""}
+            defaultValue={initial?.bagPrice ?? ""}
           />
         </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="label" htmlFor="quantity">
-            Тоо хэмжээ
+          <label className="label" htmlFor="estimatedRetailValue">
+            Ойролцоо жижиглэн үнэ (₮)
           </label>
           <input
-            id="quantity"
-            name="quantity"
+            id="estimatedRetailValue"
+            name="estimatedRetailValue"
             type="number"
             min={1}
             required
             className="input"
-            defaultValue={initial?.quantity ?? 1}
+            defaultValue={initial?.estimatedRetailValue ?? ""}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="label" htmlFor="quantityAvailable">
+          Үлдсэн уутны тоо
+        </label>
+        <input
+          id="quantityAvailable"
+          name="quantityAvailable"
+          type="number"
+          min={0}
+          required
+          className="input"
+          defaultValue={initial?.quantityAvailable ?? 1}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label className="label" htmlFor="pickupStart">
+            Авах цонх — эхлэх
+          </label>
+          <input
+            id="pickupStart"
+            name="pickupStart"
+            type="datetime-local"
+            required
+            className="input"
+            defaultValue={initial?.pickupStart || defaults.pickupStart}
           />
         </div>
         <div>
-          <label className="label" htmlFor="unit">
-            Нэгж
+          <label className="label" htmlFor="pickupEnd">
+            Авах цонх — дуусах
           </label>
           <input
-            id="unit"
-            name="unit"
+            id="pickupEnd"
+            name="pickupEnd"
+            type="datetime-local"
             required
             className="input"
-            placeholder="ширхэг, кг, порц..."
-            defaultValue={initial?.unit || "ширхэг"}
+            defaultValue={initial?.pickupEnd || defaults.pickupEnd}
           />
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="label" htmlFor="expiryDate">
-            Дуусах огноо
-          </label>
-          <input
-            id="expiryDate"
-            name="expiryDate"
-            type="date"
-            required
-            className="input"
-            defaultValue={expiryStr}
-          />
-        </div>
-        <div>
           <label className="label" htmlFor="pickupDistrict">
-            Авах дүүрэг (УБ)
+            Дүүрэг (УБ)
           </label>
           <select
             id="pickupDistrict"
@@ -241,6 +269,31 @@ export function ListingForm({
             ))}
           </select>
         </div>
+        <div>
+          <label className="label" htmlFor="pickupAddress">
+            Хаяг (заавал биш)
+          </label>
+          <input
+            id="pickupAddress"
+            name="pickupAddress"
+            className="input"
+            placeholder="Гудамж, орц..."
+            defaultValue={initial?.pickupAddress || ""}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="label" htmlFor="dietaryNotes">
+          Хоолны тэмдэглэл (харшил гэх мэт)
+        </label>
+        <input
+          id="dietaryNotes"
+          name="dietaryNotes"
+          className="input"
+          placeholder="Глютен, самар..."
+          defaultValue={initial?.dietaryNotes || ""}
+        />
       </div>
 
       <div>
@@ -262,7 +315,7 @@ export function ListingForm({
           {loading
             ? "Хадгалж байна..."
             : mode === "create"
-              ? "Зар үүсгэх"
+              ? "Surprise Bag үүсгэх"
               : "Хадгалах"}
         </button>
         <button

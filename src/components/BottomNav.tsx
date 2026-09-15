@@ -20,7 +20,7 @@ export function BottomNav({ session }: Props) {
   const sellerExtra =
     session?.role === "SELLER"
       ? [{ href: "/seller", label: "Самбар", icon: BoardIcon }]
-      : [{ href: session ? "/listings" : "/signup", label: session ? "Зарууд" : "Эхлэх", icon: UserIcon }];
+      : [{ href: session ? "/listings" : "/signup", label: session ? "Уутнууд" : "Эхлэх", icon: UserIcon }];
 
   const links = [...buyerLinks.slice(0, 2), ...sellerExtra, buyerLinks[2]];
 

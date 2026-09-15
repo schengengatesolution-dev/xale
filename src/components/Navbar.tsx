@@ -18,7 +18,7 @@ export async function Navbar() {
               xale
             </span>
             <span className="hidden text-[10px] font-medium uppercase tracking-wider text-stone-400 sm:block">
-              Илүүдэл бараа
+              Surprise Bag
             </span>
           </div>
         </Link>
@@ -52,7 +52,7 @@ export async function Navbar() {
                 Миний зарууд
               </Link>
               <Link
-                href="/seller/interests"
+                href="/seller/reservations"
                 className="rounded-full px-3 py-2 font-medium text-stone-600 hover:bg-cream-200 hover:text-stone-900"
               >
                 Сонирхол
@@ -61,7 +61,7 @@ export async function Navbar() {
                 href="/seller/listings/new"
                 className="btn-primary !px-4 !py-1.5"
               >
-                + Зар
+                + Bag
               </Link>
             </>
           )}

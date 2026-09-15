@@ -9,33 +9,47 @@ const STEPS = [
   {
     step: "1",
     title: "Ол",
-    text: "Ойролцоох илүүдэл / хугацаа дуусах дөхсөн барааг заруудаас ол.",
+    text: "Ойролцоох Surprise Bag-уудыг дүүрэг, ангиллаар шүүж олно.",
   },
   {
     step: "2",
-    title: "Захиалаа / Сонирхол",
-    text: "«Сонирхож байна» илгээж нөөцлөнө — дэлгүүрт очихоосоо өмнө.",
+    title: "Захиалаа",
+    text: "Reserve товчоор нөөцлөнө. Апп доторх төлбөр удахгүй — одоо авах үедээ төлнө.",
   },
   {
     step: "3",
-    title: "Авчрах цагт очиж аваарай",
-    text: "Тохирсон цагт дэлгүүр / ресторан дээр очиж бараагаа авна.",
+    title: "Авах цонх",
+    text: "Тохирсон цагийн цонхонд дэлгүүр / ресторан / кафе дээр очиж авна.",
   },
   {
     step: "4",
-    title: "Хоолны хаягдал бууруул",
-    text: "Хямд үнээр авч, хоолны хаягдал багасгана — хүн бүр хожно.",
+    title: "Хаягдал↓",
+    text: "Хямд үнээр авч, хоолны хаягдал багасгана — Surprise! агуулга өөрчлөгдөнө.",
   },
 ];
 
 export default async function HomePage() {
   const session = await getSession();
 
-  let featured: Awaited<ReturnType<typeof prisma.listing.findMany>> = [];
+  let featured: Array<{
+    id: string;
+    title: string;
+    category: string;
+    bagPrice: number;
+    estimatedRetailValue: number;
+    quantityAvailable: number;
+    pickupStart: Date;
+    pickupEnd: Date;
+    pickupDistrict: string;
+    photoUrl: string | null;
+    status: string;
+    seller: { name: string } | null;
+  }> = [];
   try {
     featured = await prisma.listing.findMany({
       where: { status: "ACTIVE" },
-      orderBy: { createdAt: "desc" },
+      include: { seller: { select: { name: true } } },
+      orderBy: { pickupStart: "asc" },
       take: 6,
     });
   } catch {
@@ -44,7 +58,6 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero — calm forest, TGTG-like mission */}
       <section className="relative overflow-hidden bg-gradient-to-br from-green-900 via-[#005A57] to-green-600 text-white">
         <div
           className="pointer-events-none absolute inset-0 opacity-25"
@@ -57,17 +70,18 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:py-24">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cream-100 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-cream-200" />
-            Улаанбаатар · Surplus food
+            Улаанбаатар · Surprise Bag
           </div>
           <h1 className="mt-5 max-w-2xl text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.25rem]">
-            Илүүдэл хоол{" "}
-            <span className="text-cream-200">хаягдахгүй</span> — ойролцоох
-            дэлгүүрт аваарай
+            Сайн хоолыг{" "}
+            <span className="text-cream-200">хаягдахаас</span> авар —
+            Surprise Bag
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-green-100">
-            <strong>xale</strong> нь Too Good To Go шиг: ойролцоох илүүдэл
-            барааг <strong>ол</strong> → <strong>сонирхол</strong> илгээ →{" "}
-            <strong>дэлгүүрт очиж ав</strong>. Хоолны хаягдал бууруулна.
+            <strong>xale</strong> нь Too Good To Go шиг: ойролцоох бизнесийн{" "}
+            <strong>Surprise Bag</strong>-ыг <strong>ол</strong> →{" "}
+            <strong>захиалаа</strong> → <strong>авах цонхонд очиж ав</strong>.
+            Ангилал тодорхой, яг агуулга нь Surprise!
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {session ? (
@@ -75,7 +89,7 @@ export default async function HomePage() {
                 href={session.role === "SELLER" ? "/seller" : "/listings"}
                 className="rounded-xl bg-cream-100 px-6 py-3.5 text-sm font-bold text-green-800 shadow-lg hover:bg-white"
               >
-                {session.role === "SELLER" ? "Самбар руу" : "Ойролцоох зарууд"}
+                {session.role === "SELLER" ? "Самбар руу" : "Ойролцоох уутнууд"}
               </Link>
             ) : (
               <>
@@ -83,7 +97,7 @@ export default async function HomePage() {
                   href="/listings"
                   className="rounded-xl bg-cream-100 px-6 py-3.5 text-sm font-bold text-green-800 shadow-lg hover:bg-white"
                 >
-                  Ойролцоох зарууд ол
+                  Ойролцоох Surprise Bag ол
                 </Link>
                 <Link
                   href="/signup"
@@ -103,23 +117,22 @@ export default async function HomePage() {
           <div className="mt-10 flex flex-wrap gap-6 text-sm text-green-100/90">
             <div>
               <p className="text-2xl font-bold text-white">4 алхам</p>
-              <p>Ол → Сонирхол → Ав → Хаягдал↓</p>
+              <p>Ол → Захиалаа → Ав → Хаягдал↓</p>
             </div>
             <div className="hidden h-10 w-px bg-white/20 sm:block" />
             <div>
-              <p className="text-2xl font-bold text-white">Үнэгүй зар</p>
-              <p>Шимтгэлгүй · офлайн авна</p>
+              <p className="text-2xl font-bold text-white">Төлбөр офлайн</p>
+              <p>Апп доторх төлбөр удахгүй</p>
             </div>
             <div className="hidden h-10 w-px bg-white/20 sm:block" />
             <div>
               <p className="text-2xl font-bold text-white">УБ дүүргүүд</p>
-              <p>Авах байршил шүүнэ</p>
+              <p>Авах цонх · дүүрэг шүүнэ</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Numbered steps — TGTG how-it-works */}
       <section className="border-b border-stone-200/70 bg-cream-50 py-14">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -128,10 +141,10 @@ export default async function HomePage() {
                 Хэрхэн ашиглах вэ?
               </p>
               <h2 className="mt-2 text-2xl font-bold text-green-600 sm:text-3xl">
-                4 алхам — ол → ав
+                4 алхам — Surprise Bag
               </h2>
               <p className="mt-1 text-sm text-stone-600">
-                Too Good To Go шиг: ол → захиалаа → очиж ав → хаягдал↓
+                Ол → захиалаа → авах цонх → хаягдал↓
               </p>
             </div>
             <Link
@@ -162,16 +175,15 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured listings */}
       {featured.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-14">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold text-stone-900 sm:text-3xl">
-                Ойролцоох зарууд
+                Ойролцоох Surprise Bag
               </h2>
               <p className="mt-1 text-sm text-stone-600">
-                Одоо идэвхтэй илүүдэл / near-expiry бараа
+                Идэвхтэй уутнууд · Улаанбаатар
               </p>
             </div>
             <Link
@@ -189,33 +201,32 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Mission / why */}
       <section className="bg-white py-16">
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-center text-2xl font-bold text-stone-900 sm:text-3xl">
             Яагаад xale вэ?
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-stone-600">
-            Улаанбаатарт өдөр бүр дэлгүүр, ресторанууд хугацаа дуусах дөхсөн
-            эсвэл илүүдэл хүнсээ хаядаг. Нөгөө талд хүмүүс хямд, хэрэгтэй бараа
-            хайж байна. <strong>xale</strong> энэ хоёрыг холбоно.
+            Талхны дэлгүүр, кафе, ресторан, зочид буудал, хүнсний дэлгүүрүүд
+            өдөр бүр илүүдэл хоол үлдээдэг. <strong>Surprise Bag</strong>-аар
+            энэ хоолыг хямд үнээр хэрэглэгчидэд хүргэнэ — хаягдал буурна.
           </p>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {[
               {
+                icon: "🛍️",
+                title: "Surprise Bag",
+                text: "Ангилал тодорхой, яг агуулга нь өдөр бүр өөр — Surprise!",
+              },
+              {
+                icon: "⏰",
+                title: "Авах цонх",
+                text: "Захиалсны дараа тохирсон цагт очиж авна — нөөцлөгдөнө.",
+              },
+              {
                 icon: "🌍",
-                title: "Хаягдал багасгана",
-                text: "Хугацаа дууссан бараа хог болохын өмнө хэрэгтэй хүнд очно.",
-              },
-              {
-                icon: "💰",
-                title: "Хямд үнэ",
-                text: "Худалдан авагчид хямдралтай үнээр авч, мөнгө хэмнэнэ.",
-              },
-              {
-                icon: "🏪",
-                title: "Дэлгүүрт очиж ав",
-                text: "Сонирхол → тохирсон цагт авах цэг дээр — төлбөр офлайн.",
+                title: "Хаягдал↓",
+                text: "Сайн хоол хаягдахгүй. Худалдагч, худалдан авагч хоёулаа хожно.",
               },
             ].map((item) => (
               <div key={item.title} className="card text-center">
@@ -227,62 +238,68 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
+          <p className="mx-auto mt-8 max-w-2xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-xs leading-relaxed text-amber-950">
+            <strong>Хүнсний аюулгүй байдал:</strong> Surprise Bag-ийн агуулга
+            өөрчлөгдөж болно. Харшил / хоолны хязгаарлалт байвал захиалахаасаа
+            өмнө бизнестэй холбогдоорой. xale нь зуучлагч платформ.
+          </p>
         </div>
       </section>
 
-      {/* Audiences CTAs */}
       <section className="bg-cream-200/50 py-16">
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">
-            Худалдан авагч · Худалдагч
+            Худалдан авагч · Бизнес
           </h2>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <div className="card border-green-200 bg-green-50/70">
               <h3 className="text-xl font-bold text-green-800">Худалдан авагч</h3>
               <ul className="mt-4 space-y-2.5 text-sm text-stone-700">
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Ойролцоох илүүдэл
-                  бараа ол
+                  <span className="text-green-600">✓</span> Ойролцоох Surprise
+                  Bag ол
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Сонирхол илгээж
-                  нөөцлө
+                  <span className="text-green-600">✓</span> Захиалаа (нөөцлө)
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Дэлгүүрт очиж ав —
-                  хямд үнэ
+                  <span className="text-green-600">✓</span> Авах цонхонд очиж ав
+                  — хямд үнэ
                 </li>
               </ul>
               <Link href="/listings" className="btn-primary mt-6 inline-flex">
-                Зарууд үзэх
+                Уутнууд үзэх
               </Link>
             </div>
             <div className="card border-green-200/80 bg-white">
-              <h3 className="text-xl font-bold text-green-800">Худалдагч</h3>
+              <h3 className="text-xl font-bold text-green-800">Бизнес</h3>
               <ul className="mt-4 space-y-2.5 text-sm text-stone-700">
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Дэлгүүр, мини маркет,
-                  ресторан
+                  <span className="text-green-600">✓</span> Талх, кафе, ресторан,
+                  буудал, дэлгүүр
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Зар{" "}
-                  <strong>үнэгүй</strong> · ирээдүйд 3%+VIP (төсөл)
+                  <span className="text-green-600">✓</span> Surprise Bag үүсгэ —
+                  одоо <strong>шимтгэлгүй</strong>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> Сонирхол хүлээн авч
-                  холбогд
+                  <span className="text-green-600">✓</span> Захиалга хүлээн авч
+                  «Авсан» тэмдэглэ
                 </li>
               </ul>
               {!session ? (
                 <Link href="/signup" className="btn-primary mt-6 inline-flex">
-                  Худалдагчаар бүртгүүлэх
+                  Бизнесээр бүртгүүлэх
                 </Link>
               ) : session.role === "SELLER" ? (
                 <Link href="/seller" className="btn-primary mt-6 inline-flex">
                   Самбар руу
                 </Link>
               ) : (
-                <Link href="/payment-terms" className="btn-secondary mt-6 inline-flex">
+                <Link
+                  href="/payment-terms"
+                  className="btn-secondary mt-6 inline-flex"
+                >
                   Төлбөрийн нөхцөл
                 </Link>
               )}
@@ -291,13 +308,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="bg-green-900 py-16 text-center text-white">
         <h2 className="text-2xl font-bold sm:text-3xl">Одоо эхлээрэй</h2>
         <p className="mx-auto mt-3 max-w-md text-green-100">
-          Илүүдэл бараагаа хаялгүй, хэрэгтэй хүнд очих боломжийг{" "}
-          <strong className="text-cream-100">xale</strong>-ээр нээнэ үү.
-          Утаснаасаа «Нүүр дэлгэцэд нэмэх»-ээр апп шиг ашиглана.
+          Surprise Bag-аараа сайн хоолыг хаягдахаас авар. Утаснаасаа «Нүүр
+          дэлгэцэд нэмэх»-ээр апп шиг ашиглана.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {!session ? (
@@ -306,7 +321,7 @@ export default async function HomePage() {
                 href="/listings"
                 className="inline-block rounded-xl bg-cream-100 px-8 py-3.5 text-sm font-bold text-green-800 hover:bg-white"
               >
-                Зарууд ол
+                Surprise Bag ол
               </Link>
               <Link
                 href="/signup"
