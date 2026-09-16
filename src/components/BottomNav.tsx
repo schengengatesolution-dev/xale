@@ -9,7 +9,7 @@ type Props = {
 
 const buyerLinks = [
   { href: "/", label: "Нүүр", icon: HomeIcon },
-  { href: "/listings", label: "Ол", icon: SearchIcon },
+  { href: "/map", label: "Ол", icon: MapIcon },
   { href: "/how-it-works", label: "Алхам", icon: StepsIcon },
 ];
 
@@ -20,7 +20,7 @@ export function BottomNav({ session }: Props) {
   const sellerExtra =
     session?.role === "SELLER"
       ? [{ href: "/seller", label: "Самбар", icon: BoardIcon }]
-      : [{ href: session ? "/listings" : "/signup", label: session ? "Уутнууд" : "Эхлэх", icon: UserIcon }];
+      : [{ href: session ? "/listings" : "/signup", label: session ? "Жагсаалт" : "Эхлэх", icon: UserIcon }];
 
   const links = [...buyerLinks.slice(0, 2), ...sellerExtra, buyerLinks[2]];
 
@@ -64,11 +64,11 @@ function HomeIcon({ active }: { active: boolean }) {
     </svg>
   );
 }
-function SearchIcon({ active }: { active: boolean }) {
+function MapIcon({ active }: { active: boolean }) {
   return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.4 : 2}>
-      <circle cx="11" cy="11" r="7" />
-      <path d="M20 20l-3.5-3.5" />
+    <svg className="h-5 w-5" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth={active ? 2.4 : 2}>
+      <path d="M9 3l-6 2v16l6-2 6 2 6-2V1l-6 2-6-2z" />
+      <path d="M9 3v16M15 5v16" fill="none" />
     </svg>
   );
 }

@@ -56,9 +56,17 @@ export default async function ListingsPage({ searchParams }: Props) {
             Ойролцоох уутнууд · Улаанбаатар · агуулга нууц!
           </p>
         </div>
-        <p className="text-sm font-medium text-stone-500">
-          {listings.length} уут
-        </p>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/map"
+            className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700"
+          >
+            Газрын зураг
+          </Link>
+          <p className="text-sm font-medium text-stone-500">
+            {listings.length} уут
+          </p>
+        </div>
       </div>
 
       <form className="card mt-6 grid gap-3 sm:grid-cols-4">

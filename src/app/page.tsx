@@ -88,7 +88,7 @@ export default async function HomePage() {
           <div className="mt-8 flex flex-wrap gap-3">
             {session ? (
               <Link
-                href={session.role === "SELLER" ? "/seller" : "/listings"}
+                href={session.role === "SELLER" ? "/seller" : "/map"}
                 className="rounded-xl bg-cream-100 px-6 py-3.5 text-sm font-bold text-green-800 shadow-lg hover:bg-white"
               >
                 {session.role === "SELLER" ? "Самбар руу" : "Ойролцоох уутнууд"}
@@ -96,7 +96,7 @@ export default async function HomePage() {
             ) : (
               <>
                 <Link
-                  href="/listings"
+                  href="/map"
                   className="rounded-xl bg-cream-100 px-6 py-3.5 text-sm font-bold text-green-800 shadow-lg hover:bg-white"
                 >
                   Ойролцоох Азтай уут ол
@@ -194,7 +194,7 @@ export default async function HomePage() {
               </p>
             </div>
             <Link
-              href="/listings"
+              href="/map"
               className="text-sm font-semibold text-green-700 hover:underline"
             >
               Бүгдийг үзэх →
@@ -274,7 +274,7 @@ export default async function HomePage() {
                   ойролцоогоор ⅓ үнэ
                 </li>
               </ul>
-              <Link href="/listings" className="btn-primary mt-6 inline-flex">
+              <Link href="/map" className="btn-primary mt-6 inline-flex">
                 Уутнууд үзэх
               </Link>
             </div>
@@ -325,7 +325,7 @@ export default async function HomePage() {
           {!session ? (
             <>
               <Link
-                href="/listings"
+                href="/map"
                 className="inline-block rounded-xl bg-cream-100 px-8 py-3.5 text-sm font-bold text-green-800 hover:bg-white"
               >
                 Азтай уут ол
@@ -339,7 +339,7 @@ export default async function HomePage() {
             </>
           ) : (
             <Link
-              href={session.role === "SELLER" ? "/seller" : "/listings"}
+              href={session.role === "SELLER" ? "/seller" : "/map"}
               className="inline-block rounded-xl bg-cream-100 px-8 py-3.5 text-sm font-bold text-green-800 hover:bg-white"
             >
               Үргэлжлүүлэх

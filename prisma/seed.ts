@@ -16,6 +16,31 @@ function tomorrowAt(h: number, m = 0) {
   return d;
 }
 
+
+const DISTRICT_SEED: Record<string, { lat: number; lng: number }> = {
+  Сүхбаатар: { lat: 47.9215, lng: 106.927 },
+  Баянзүрх: { lat: 47.914, lng: 106.952 },
+  Баянгол: { lat: 47.911, lng: 106.888 },
+  Чингэлтэй: { lat: 47.926, lng: 106.905 },
+  "Хан-Уул": { lat: 47.878, lng: 106.902 },
+  Сонгинохайрхан: { lat: 47.908, lng: 106.82 },
+};
+
+function withCoords(
+  bag: {
+    pickupDistrict: string;
+    [k: string]: unknown;
+  },
+  jitter: number
+) {
+  const base = DISTRICT_SEED[bag.pickupDistrict] || { lat: 47.918, lng: 106.917 };
+  return {
+    ...bag,
+    lat: base.lat + jitter,
+    lng: base.lng + jitter * 0.7,
+  };
+}
+
 async function main() {
   await prisma.reservation.deleteMany();
   await prisma.listing.deleteMany();
@@ -200,8 +225,9 @@ async function main() {
     },
   ];
 
-  for (const bag of bags) {
-    await prisma.listing.create({ data: bag });
+  for (let i = 0; i < bags.length; i++) {
+    const bag = withCoords(bags[i], (i - 2.5) * 0.004);
+    await prisma.listing.create({ data: bag as typeof bags[number] & { lat: number; lng: number } });
   }
 
   console.log("✅ Seed амжилттай! Азтай уутнууд бэлэн.");

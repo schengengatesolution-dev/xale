@@ -2,36 +2,44 @@
 
 **Бүтээгдэхүүн:** xale (Азтай уут food-rescue marketplace, Монгол)  
 **Байршил:** `/workspace/xale/`  
-**Огноо:** 2026-09-15  
+**Огноо:** 2026-09-17  
 **Production:** https://xale-app.vercel.app
 
-## Phase 1b — Азтай уут (одоо)
+## Phase 1c — Газрын зураг discovery (одоо)
 
-- [x] Prisma Listing → Азтай уут талбарууд (`bagPrice`, `estimatedRetailValue`, `pickupStart`/`pickupEnd`, `quantityAvailable`, `dietaryNotes`, …)
-- [x] Interest → **Reservation** (`RESERVED` / `COLLECTED` / `NO_SHOW`)
-- [x] Buyer: discovery cards + detail reserve (апп дотор төлбөргүй)
-- [x] Seller: Bag CRUD + захиалга жагсаалт + Авсан / Ирээгүй
-- [x] Homepage / how-it-works / payment-terms — Азтай уут хэл (Монгол); урсгал: ол → захиал → ав
-- [x] Seed 6 demo Азтай уут (УБ)
-- [x] Админ хэрэглэгчийн жагсаалт хэвээр
-- [x] Calmer greens UI + PWA v1 хадгалсан
+- [x] Map-first discovery `/map` (Leaflet + OSM, SSR-free)
+- [x] Browser geolocation + УБ төв fallback (~47.918 / 106.917)
+- [x] Bag pins + bottom sheet: нэр, байршил, утас (`tel:`), үнэ, авах цонх
+- [x] Зочин үзэж болно; захиалах = нэвтэрсэн buyer эсвэл «Бүртгүүлээд захиалах»
+- [x] Listing `lat`/`lng` (optional Float) + seed UB coords; client district→coords jitter fallback
+- [x] Navbar / BottomNav / homepage CTAs → `/map` (жагсаалт `/listings` үлдсэн)
+- [x] Expo mirror: `(tabs)/map` пин жагсаалт + вэб `/map` нээх
+
+## Phase 1b — Азтай уут
+
+- [x] Prisma Listing → Азтай уут талбарууд
+- [x] Reservation flow, seller collect / no-show
+- [x] Seed 6 demo Азтай уут (УБ) + lat/lng
+- [x] PWA v1 / calmer greens UI
 
 ## Утасны апп — rollout
 
 | Шат | Төлөв | Тайлбар |
 |-----|-------|---------|
 | **1. Вэбсайт redesign** | ✅ | Food-rescue UI |
-| **1b. Азтай уут product** | ✅ одоо | Reserve + collect |
+| **1b. Азтай уут product** | ✅ | Reserve + collect |
+| **1c. Map discovery** | ✅ одоо | `/map` Leaflet |
 | **2. PWA v1** | ✅ | Add to Home Screen |
 | **3. In-app pay** | ⏳ дараа | Карт төлбөр |
-| **4. Native Expo** | ⏳ дараа | App Store / Play |
+| **4. Native Expo** | ⏳ | Map tab + web map link |
 | **5. Домэйн xale.mn** | ⏳ дараа | OPS.md |
 
 ## Deploy
 
-- **Production live:** https://xale-app.vercel.app (Vercel direct deploy `dpl_6QrT7fjQmAvp3dnKZvE1YYXggWT6`)
-- **Local commit:** `e1d9a7d` on `main` (ahead of origin — GitHub push needs `GH_TOKEN`; session sudo blocked PAT/SSH key creation)
-- Neon DB schema pushed + 6 Азтай уутнууд seeded
+- **Production live:** https://xale-app.vercel.app
+- Neon DB: `lat`/`lng` pushed + re-seeded 2026-09-17
+- **Deploy blocker:** Vercel CLI logged out on box — redeploy from Vercel dashboard / CI after push
+- GitHub push: only if `gh` auth already works (do not create tokens)
 
 ## Demo
 
@@ -47,24 +55,23 @@
 
 ### Хэрхэн турших
 
-1. `/listings` — Азтай уут картууд (үнэ, retail, авах цонх, үлдсэн уут)
-2. `buyer@xale.mn` нэвтэрч detail дээр **Захиалах**
-3. `bakery@xale.mn` (эсвэл бусад seller) → `/seller/reservations` → **Авсан** / **Ирээгүй**
-4. `/how-it-works`, `/payment-terms` — Азтай уут хэл
+1. `/map` — газрын зураг, пин дарж sheet; зочиноор үзэж болно
+2. `buyer@xale.mn` — sheet дээр **Захиалах**
+3. `/listings` — жагсаалт (хоёрдогч)
+4. Seller → `/seller/reservations` → Авсан / Ирээгүй
 
 ## Гол URL
 
 | Зам | Тайлбар |
 |-----|---------|
-| `/` | Landing (Азтай уут) |
-| `/how-it-works` | 4 алхам |
-| `/listings` | Bag discovery |
+| `/` | Landing |
+| `/map` | **Primary discovery** (газрын зураг) |
+| `/listings` | Жагсаалт (alternate) |
 | `/listings/[id]` | Detail + reserve |
+| `/how-it-works` | 4 алхам |
 | `/seller` | Бизнес самбар |
-| `/seller/listings` | Миний Bag |
-| `/seller/reservations` | Захиалгууд |
 | `/login` `/signup` | Auth |
-| `/admin` | Админ хэрэглэгчид |
-| `/payment-terms` | Төлбөрийн нөхцөл (төсөл) |
+| `/admin` | Админ |
+| `/payment-terms` | Төлбөрийн нөхцөл |
 
 Дэлгэрэнгүй: `OPS.md`, `README.md`

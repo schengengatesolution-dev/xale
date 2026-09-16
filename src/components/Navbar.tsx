@@ -25,10 +25,16 @@ export async function Navbar() {
 
         <nav className="hidden items-center gap-1 text-sm md:flex">
           <Link
+            href="/map"
+            className="rounded-full px-3 py-2 font-medium text-stone-600 hover:bg-cream-200 hover:text-stone-900"
+          >
+            Азтай уут
+          </Link>
+          <Link
             href="/listings"
             className="rounded-full px-3 py-2 font-medium text-stone-600 hover:bg-cream-200 hover:text-stone-900"
           >
-            Зарууд
+            Жагсаалт
           </Link>
           <Link
             href="/how-it-works"

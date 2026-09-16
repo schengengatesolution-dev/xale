@@ -33,6 +33,8 @@ model Listing {
   pickupEnd            DateTime
   pickupDistrict       String
   pickupAddress        String?
+  lat                  Float?
+  lng                  Float?
   dietaryNotes         String?
   photoUrl             String?
   status               String        @default("ACTIVE") // ACTIVE | SOLD_OUT | HIDDEN | EXPIRED

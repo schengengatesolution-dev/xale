@@ -23,6 +23,8 @@ const createSchema = z.object({
   pickupAddress: z.string().optional().nullable(),
   dietaryNotes: z.string().optional().nullable(),
   photoUrl: z.string().optional().nullable(),
+  lat: z.number().optional().nullable(),
+  lng: z.number().optional().nullable(),
   status: z.enum(["ACTIVE", "SOLD_OUT", "EXPIRED", "HIDDEN"]).optional(),
 });
 
@@ -107,6 +109,8 @@ export async function POST(req: NextRequest) {
         pickupEnd,
         pickupDistrict: data.pickupDistrict,
         pickupAddress: data.pickupAddress || null,
+        lat: data.lat ?? null,
+        lng: data.lng ?? null,
         dietaryNotes: data.dietaryNotes || null,
         photoUrl: data.photoUrl || null,
         status: data.status || "ACTIVE",
