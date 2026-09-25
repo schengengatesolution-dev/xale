@@ -86,21 +86,48 @@ model Payment {
   settlement      Settlement?
 }
 
-/// Recorded on QPay PAID webhook — admin bank payout later (PENDING = ready-to-payout)
+/// Recorded on QPay PAID → READY until Friday-cutoff weekly batch marks PAID_OUT
 model Settlement {
-  id               String   @id @default(cuid())
-  paymentId        String   @unique
-  payment          Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  sellerId         String
-  seller           User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  amountSellerMnt  Int
+  id                String       @id @default(cuid())
+  paymentId         String       @unique
+  payment           Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  sellerId          String
+  seller            User         @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  amountSellerMnt   Int
   amountPlatformMnt Int
-  status           String   @default("READY") // READY | PROCESSING | PAID_OUT | HELD
-  payoutTargetDate DateTime? // instant on PAID (same moment as webhook)
-  note             String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  status            String       @default("READY") // READY | PROCESSING | PAID_OUT | HELD
+  payoutTargetDate  DateTime? // legacy; weekly batch uses createdAt + Friday cutoff
+  paidOutAt         DateTime?
+  payoutBatchId     String?
+  payoutBatch       PayoutBatch? @relation(fields: [payoutBatchId], references: [id], onDelete: SetNull)
+  note              String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 
   @@index([sellerId])
   @@index([status])
+  @@index([payoutBatchId])
+  @@index([createdAt])
+}
+
+/// Weekly Friday-cutoff seller payout batch (manual bank transfer)
+model PayoutBatch {
+  id             String       @id @default(cuid())
+  label          String // e.g. 2026-W39-FRI
+  cutoffAt       DateTime
+  status         String       @default("OPEN") // OPEN | EXPORTED | PAID
+  operatorEmail  String?
+  operatorNote   String?
+  paidAt         DateTime?
+  exportedAt     DateTime?
+  totalSellerMnt Int          @default(0)
+  totalPlatformMnt Int        @default(0)
+  sellerCount    Int          @default(0)
+  settlementCount Int         @default(0)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  settlements    Settlement[]
+
+  @@index([status])
+  @@index([cutoffAt])
 }

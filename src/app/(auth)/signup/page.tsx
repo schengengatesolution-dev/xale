@@ -98,7 +98,7 @@ export default function SignupPage() {
           </div>
           <p className="mt-2 text-xs text-stone-500">
             {role === "SELLER"
-              ? "Азтай уут нийтэлнэ. Банкны мэдээлэл заавал — төлбөр шууд данс руу."
+              ? "Азтай уут нийтэлнэ. Банкны мэдээлэл заавал — долоо хоног бүр данс руу шилжүүлнэ."
               : "Зарууд үзэж, захиална."}
           </p>
         </div>
@@ -196,7 +196,7 @@ export default function SignupPage() {
               <input id="bankAccountName" name="bankAccountName" required className="input" />
             </div>
             <p className="text-xs text-stone-500">
-              Төлбөр баталгаажсан даруй таны данс руу шилжүүлнэ
+              Баасан cutoff → дараагийн 1–5 ажлын өдөрт таны данс
             </p>
           </>
         )}

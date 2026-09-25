@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { checkPayment, isCheckoutEnabled } from "@/lib/qpay";
 import { markPaymentPaid } from "@/lib/settle-payment";
-import { SELLER_PAYOUT_ONELINER } from "@/lib/business-day";
 
 export async function GET(
   _req: NextRequest,
@@ -75,7 +74,6 @@ export async function GET(
         ? {
             status: settlement.status,
             payoutTargetDate: settlement.payoutTargetDate,
-            note: SELLER_PAYOUT_ONELINER,
           }
         : null,
   });

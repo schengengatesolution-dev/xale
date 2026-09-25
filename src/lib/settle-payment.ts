@@ -5,7 +5,7 @@ import {
 } from "@/lib/business-day";
 
 /**
- * Mark payment + reservation PAID and create Settlement READY (instant payout intent).
+ * Mark payment + reservation PAID and create Settlement READY (weekly Friday-cutoff queue).
  * Idempotent. Never leaves verified PAID money without a Settlement row.
  * Source of truth: QPay webhook + payment/check. Client status poll is UX backup only.
  */
@@ -36,7 +36,7 @@ export async function markPaymentPaid(paymentId: string): Promise<{
   }
 
   const sellerId = existing.reservation.listing.sellerId;
-  const payoutTargetDate = new Date(); // instant — no next-business-day delay
+  const payoutTargetDate = new Date();
   const paidAt = new Date();
 
   const result = await prisma.$transaction(async (tx) => {
@@ -63,14 +63,14 @@ export async function markPaymentPaid(paymentId: string): Promise<{
         amountPlatformMnt: existing.platformFeeMnt,
         status: SETTLEMENT_STATUS.READY,
         payoutTargetDate,
-        note: SELLER_PAYOUT_ONELINER,
+        note: null,
       },
       update: {
         amountSellerMnt: existing.sellerAmountMnt,
         amountPlatformMnt: existing.platformFeeMnt,
         payoutTargetDate,
         status: SETTLEMENT_STATUS.READY,
-        note: SELLER_PAYOUT_ONELINER,
+        note: null,
       },
     });
 

@@ -144,7 +144,9 @@ export default async function SellerReservationsPage() {
                 <ReservationActions id={r.id} status={r.status} />
                 {r.paymentStatus === "PAID" && (
                   <p className="mt-3 rounded-xl bg-green-50 px-3 py-2 text-xs text-green-900">
-                    {SELLER_PAYOUT_ONELINER}
+                    {r.payment?.settlement?.status === "PAID_OUT"
+                      ? "Данс руу шилжүүлэг хийгдсэн"
+                      : SELLER_PAYOUT_ONELINER}
                   </p>
                 )}
               </li>

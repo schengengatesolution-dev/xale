@@ -57,7 +57,7 @@ export default function SellerSettingsPage() {
     <div className="mx-auto max-w-lg px-4 py-8">
       <h1 className="text-2xl font-bold">Тохиргоо · банк</h1>
       <p className="mt-1 text-sm text-stone-600">
-        Төлбөр баталгаажсан даруй таны данс руу шилжүүлнэ
+        Баасан cutoff → дараагийн 1–5 ажлын өдөрт таны данс
       </p>
       <div className="mt-6">
         <SellerNav active="/seller/settings" />

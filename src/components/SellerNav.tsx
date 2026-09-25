@@ -5,6 +5,7 @@ const links = [
   { href: "/seller/listings", label: "Миний уутнууд" },
   { href: "/seller/listings/new", label: "Шинэ уут" },
   { href: "/seller/reservations", label: "Захиалгууд" },
+  { href: "/seller/payouts", label: "Төлбөр" },
   { href: "/seller/settings", label: "Банк" },
 ];
 

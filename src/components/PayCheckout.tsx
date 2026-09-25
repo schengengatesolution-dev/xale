@@ -102,7 +102,7 @@ export function PayCheckout({
           setPaid(true);
           setPayoutNote(
             data.settlement?.note ||
-              "Төлбөр баталгаажсан даруй таны данс руу шилжүүлнэ"
+              "Баасан cutoff → дараагийн 1–5 ажлын өдөрт таны данс"
           );
         }
       } catch {
