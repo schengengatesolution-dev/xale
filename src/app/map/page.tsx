@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getSession } from "@/lib/auth";
 import { MapDiscovery } from "@/components/map/MapDiscovery";
+import { isCheckoutEnabled } from "@/lib/qpay";
 
 export const metadata: Metadata = {
   title: "Газрын зураг",
@@ -18,6 +19,7 @@ export default async function MapPage() {
           ? { id: session.id, role: session.role, name: session.name }
           : null
       }
+      checkoutEnabled={isCheckoutEnabled()}
     />
   );
 }

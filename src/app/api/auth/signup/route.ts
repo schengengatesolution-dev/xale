@@ -3,19 +3,48 @@ import { prisma } from "@/lib/prisma";
 import { createSession, hashPassword } from "@/lib/auth";
 import { z } from "zod";
 
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(1),
-  phone: z.string().optional(),
-  whatsapp: z.string().optional(),
-  role: z.enum(["SELLER", "BUYER"]),
-});
+const schema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(6),
+    passwordConfirm: z.string().min(6).optional(),
+    name: z.string().min(1),
+    phone: z.string().optional(),
+    whatsapp: z.string().optional(),
+    role: z.enum(["SELLER", "BUYER"]),
+    bankName: z.string().optional(),
+    bankAccount: z.string().optional(),
+    bankAccountName: z.string().optional(),
+  })
+  .refine(
+    (d) => d.passwordConfirm == null || d.passwordConfirm === d.password,
+    { message: "Нууц үг таарахгүй байна", path: ["passwordConfirm"] }
+  )
+  .superRefine((d, ctx) => {
+    if (d.role === "SELLER") {
+      for (const key of ["bankName", "bankAccount", "bankAccountName"] as const) {
+        if (!d[key]?.trim()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Худалдагч банкны мэдээлэл заавал",
+            path: [key],
+          });
+        }
+      }
+    }
+  });
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = schema.parse(body);
+
+    if (data.passwordConfirm != null && data.passwordConfirm !== data.password) {
+      return NextResponse.json(
+        { error: "Нууц үг таарахгүй байна. Дахин оруулна уу." },
+        { status: 400 }
+      );
+    }
 
     const existing = await prisma.user.findUnique({
       where: { email: data.email },
@@ -27,6 +56,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (data.role === "SELLER") {
+      if (
+        !data.bankName?.trim() ||
+        !data.bankAccount?.trim() ||
+        !data.bankAccountName?.trim()
+      ) {
+        return NextResponse.json(
+          { error: "Худалдагч банкны мэдээлэл (банк, данс, нэр) заавал" },
+          { status: 400 }
+        );
+      }
+    }
+
     const passwordHash = await hashPassword(data.password);
     const user = await prisma.user.create({
       data: {
@@ -36,6 +78,10 @@ export async function POST(req: NextRequest) {
         phone: data.phone || null,
         whatsapp: data.whatsapp || data.phone || null,
         role: data.role,
+        bankName: data.role === "SELLER" ? data.bankName!.trim() : null,
+        bankAccount: data.role === "SELLER" ? data.bankAccount!.trim() : null,
+        bankAccountName:
+          data.role === "SELLER" ? data.bankAccountName!.trim() : null,
       },
     });
 

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { isCheckoutEnabled } from "@/lib/qpay";
 import {
   CATEGORIES,
   formatMNT,
@@ -8,6 +9,7 @@ import {
   STATUSES,
 } from "@/lib/constants";
 import { ReserveForm } from "@/components/ReserveForm";
+import { PayCheckout } from "@/components/PayCheckout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -38,6 +40,7 @@ export default async function ListingDetailPage({
   );
 
   let alreadyReserved = false;
+  let unpaidReservationId: string | null = null;
   if (session?.role === "BUYER") {
     const existing = await prisma.reservation.findFirst({
       where: {
@@ -47,6 +50,13 @@ export default async function ListingDetailPage({
       },
     });
     alreadyReserved = !!existing;
+    if (
+      existing &&
+      existing.paymentStatus !== "PAID" &&
+      isCheckoutEnabled()
+    ) {
+      unpaidReservationId = existing.id;
+    }
   }
 
   const canReserve =
@@ -182,12 +192,23 @@ export default async function ListingDetailPage({
             <div className="card mt-4">
               <h2 className="mb-3 font-semibold">Захиалах</h2>
               {alreadyReserved ? (
-                <p className="rounded-xl bg-green-50 p-3 text-sm text-green-800">
-                  Та энэ Азтай уутыг аль хэдийн захиалсан. Авах цонхонд
-                  очиорой!
-                </p>
+                <div className="rounded-xl bg-green-50 p-3 text-sm text-green-800">
+                  <p>
+                    Та энэ Азтай уутыг аль хэдийн захиалсан.
+                    {unpaidReservationId
+                      ? " Төлбөрөө хийснээр баталгаажна."
+                      : " Байршил дээр очиж азтай уутаа авна уу!"}
+                  </p>
+                  {unpaidReservationId && (
+                    <PayCheckout
+                      reservationId={unpaidReservationId}
+                      amountMnt={listing.bagPrice}
+                      checkoutEnabled
+                    />
+                  )}
+                </div>
               ) : session?.role === "BUYER" ? (
-                <ReserveForm listingId={listing.id} />
+                <ReserveForm listingId={listing.id} checkoutEnabled={isCheckoutEnabled()} />
               ) : session?.role === "SELLER" ? (
                 <p className="text-sm text-stone-500">
                   Худалдагч захиалах боломжгүй.

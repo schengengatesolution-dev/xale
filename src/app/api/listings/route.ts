@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { z } from "zod";
+import { sellerHasBank } from "@/lib/settle-payment";
 
 const createSchema = z.object({
   title: z.string().min(1),
@@ -11,6 +12,7 @@ const createSchema = z.object({
     "HOTEL",
     "GROCERY",
     "CAFE",
+    "FITNESS",
     "OTHER",
   ]),
   description: z.string().min(1),
@@ -88,6 +90,21 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = createSchema.parse(body);
+
+    const seller = await prisma.user.findUnique({
+      where: { id: session.id },
+      select: { bankName: true, bankAccount: true, bankAccountName: true },
+    });
+    if (!seller || !sellerHasBank(seller)) {
+      return NextResponse.json(
+        {
+          error:
+            "Азтай уут нийтлэхийн өмнө банкны мэдээллээ бөглөнө үү (/seller/settings).",
+        },
+        { status: 400 }
+      );
+    }
+
     const pickupStart = new Date(data.pickupStart);
     const pickupEnd = new Date(data.pickupEnd);
     if (!(pickupEnd > pickupStart)) {

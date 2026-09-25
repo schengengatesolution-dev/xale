@@ -1,0 +1,99 @@
+import { prisma } from "@/lib/prisma";
+import {
+  SELLER_PAYOUT_ONELINER,
+  SETTLEMENT_STATUS,
+} from "@/lib/business-day";
+
+/**
+ * Mark payment + reservation PAID and create Settlement READY (instant payout intent).
+ * Idempotent. Never leaves verified PAID money without a Settlement row.
+ * Source of truth: QPay webhook + payment/check. Client status poll is UX backup only.
+ */
+export async function markPaymentPaid(paymentId: string): Promise<{
+  paymentId: string;
+  settlementId: string;
+  payoutTargetDate: Date;
+  sellerPayoutNote: string;
+  alreadyPaid: boolean;
+}> {
+  const existing = await prisma.payment.findUnique({
+    where: { id: paymentId },
+    include: {
+      settlement: true,
+      reservation: { include: { listing: { select: { sellerId: true } } } },
+    },
+  });
+  if (!existing) throw new Error("PAYMENT_NOT_FOUND");
+
+  if (existing.status === "PAID" && existing.settlement) {
+    return {
+      paymentId: existing.id,
+      settlementId: existing.settlement.id,
+      payoutTargetDate: existing.settlement.payoutTargetDate || new Date(),
+      sellerPayoutNote: SELLER_PAYOUT_ONELINER,
+      alreadyPaid: true,
+    };
+  }
+
+  const sellerId = existing.reservation.listing.sellerId;
+  const payoutTargetDate = new Date(); // instant — no next-business-day delay
+  const paidAt = new Date();
+
+  const result = await prisma.$transaction(async (tx) => {
+    const payment = await tx.payment.update({
+      where: { id: paymentId },
+      data: { status: "PAID" },
+    });
+
+    await tx.reservation.update({
+      where: { id: existing.reservationId },
+      data: {
+        paymentStatus: "PAID",
+        paidAt,
+        amountMnt: existing.amountMnt,
+      },
+    });
+
+    const settlement = await tx.settlement.upsert({
+      where: { paymentId },
+      create: {
+        paymentId,
+        sellerId,
+        amountSellerMnt: existing.sellerAmountMnt,
+        amountPlatformMnt: existing.platformFeeMnt,
+        status: SETTLEMENT_STATUS.READY,
+        payoutTargetDate,
+        note: SELLER_PAYOUT_ONELINER,
+      },
+      update: {
+        amountSellerMnt: existing.sellerAmountMnt,
+        amountPlatformMnt: existing.platformFeeMnt,
+        payoutTargetDate,
+        status: SETTLEMENT_STATUS.READY,
+        note: SELLER_PAYOUT_ONELINER,
+      },
+    });
+
+    return { payment, settlement };
+  });
+
+  return {
+    paymentId: result.payment.id,
+    settlementId: result.settlement.id,
+    payoutTargetDate: result.settlement.payoutTargetDate || payoutTargetDate,
+    sellerPayoutNote: SELLER_PAYOUT_ONELINER,
+    alreadyPaid: false,
+  };
+}
+
+export function sellerHasBank(seller: {
+  bankName: string | null;
+  bankAccount: string | null;
+  bankAccountName: string | null;
+}): boolean {
+  return Boolean(
+    seller.bankName?.trim() &&
+      seller.bankAccount?.trim() &&
+      seller.bankAccountName?.trim()
+  );
+}

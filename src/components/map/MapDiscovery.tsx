@@ -11,6 +11,7 @@ import {
   type CategoryKey,
 } from "@/lib/constants";
 import type { MapListing } from "./types";
+import { PayCheckout } from "@/components/PayCheckout";
 
 const BagMap = dynamic(
   () => import("./BagMap").then((m) => m.BagMap),
@@ -32,9 +33,10 @@ type SessionInfo = {
 
 type Props = {
   initialSession: SessionInfo;
+  checkoutEnabled?: boolean;
 };
 
-export function MapDiscovery({ initialSession }: Props) {
+export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props) {
   const [listings, setListings] = useState<MapListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -46,6 +48,8 @@ export function MapDiscovery({ initialSession }: Props) {
   const [session] = useState<SessionInfo>(initialSession);
   const [reserving, setReserving] = useState(false);
   const [reserveMsg, setReserveMsg] = useState<string | null>(null);
+  const [payReservationId, setPayReservationId] = useState<string | null>(null);
+  const [payAmount, setPayAmount] = useState<number | undefined>();
 
   useEffect(() => {
     let cancelled = false;
@@ -74,6 +78,7 @@ export function MapDiscovery({ initialSession }: Props) {
               pickupEnd: l.pickupEnd,
               pickupDistrict: l.pickupDistrict,
               pickupAddress: l.pickupAddress ?? null,
+              photoUrl: l.photoUrl ?? null,
               lat: c.lat,
               lng: c.lng,
               seller: l.seller,
@@ -123,6 +128,7 @@ export function MapDiscovery({ initialSession }: Props) {
   const closeSheet = useCallback(() => {
     setSelectedId(null);
     setReserveMsg(null);
+    setPayReservationId(null);
   }, []);
 
   async function reserveSelected() {
@@ -140,7 +146,14 @@ export function MapDiscovery({ initialSession }: Props) {
         setReserveMsg(data.error || "Захиалахад алдаа гарлаа");
         return;
       }
-      setReserveMsg("Захиалга амжилттай! Авах цонхонд очино уу.");
+      const rid = data.reservation?.id as string | undefined;
+      if (checkoutEnabled && rid) {
+        setPayReservationId(rid);
+        setPayAmount(data.reservation?.listing?.bagPrice ?? selected.bagPrice);
+        setReserveMsg("Захиалга амжилттай! Одоо төлбөрөө хийнэ үү.");
+      } else {
+        setReserveMsg("Захиалга амжилттай! Байршил дээр очиж азтай уутаа авна уу!");
+      }
     } catch {
       setReserveMsg("Сүлжээний алдаа");
     } finally {
@@ -168,6 +181,7 @@ export function MapDiscovery({ initialSession }: Props) {
             onSelect={(id) => {
               setSelectedId(id);
               setReserveMsg(null);
+              setPayReservationId(null);
             }}
           />
         )}
@@ -211,6 +225,16 @@ export function MapDiscovery({ initialSession }: Props) {
           />
           <div className="absolute bottom-0 left-0 right-0 z-[700] mx-auto max-w-lg px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:pb-4">
             <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-2xl">
+              {selected.photoUrl ? (
+                <div className="mb-3 overflow-hidden rounded-xl bg-stone-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={selected.photoUrl}
+                    alt={selected.title}
+                    className="aspect-[16/9] w-full object-cover"
+                  />
+                </div>
+              ) : null}
               <div className="mb-2 flex items-start justify-between gap-2">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
@@ -279,6 +303,15 @@ export function MapDiscovery({ initialSession }: Props) {
                 >
                   {reserveMsg}
                 </p>
+              )}
+
+              {checkoutEnabled && payReservationId && (
+                <PayCheckout
+                  reservationId={payReservationId}
+                  amountMnt={payAmount}
+                  checkoutEnabled
+                  autoStart
+                />
               )}
 
               <div className="mt-4 flex flex-col gap-2 sm:flex-row">

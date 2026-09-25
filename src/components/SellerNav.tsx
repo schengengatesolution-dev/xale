@@ -3,8 +3,9 @@ import Link from "next/link";
 const links = [
   { href: "/seller", label: "Самбар" },
   { href: "/seller/listings", label: "Миний уутнууд" },
-  { href: "/seller/listings/new", label: "Шинэ Bag" },
+  { href: "/seller/listings/new", label: "Шинэ уут" },
   { href: "/seller/reservations", label: "Захиалгууд" },
+  { href: "/seller/settings", label: "Банк" },
 ];
 
 export function SellerNav({ active }: { active?: string }) {

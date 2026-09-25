@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { z } from "zod";
+import { sellerHasBank } from "@/lib/settle-payment";
 
 const updateSchema = z.object({
   title: z.string().min(1).optional(),
   category: z
-    .enum(["BAKERY", "RESTAURANT", "HOTEL", "GROCERY", "CAFE", "OTHER"])
+    .enum(["BAKERY", "RESTAURANT", "HOTEL", "GROCERY", "CAFE", "FITNESS", "OTHER"])
     .optional(),
   description: z.string().min(1).optional(),
   bagPrice: z.number().int().nonnegative().optional(),
@@ -65,6 +66,23 @@ export async function PUT(
   try {
     const body = await req.json();
     const data = updateSchema.parse(body);
+
+    const nextStatus = data.status ?? existing.status;
+    if (nextStatus === "ACTIVE") {
+      const seller = await prisma.user.findUnique({
+        where: { id: session.id },
+        select: { bankName: true, bankAccount: true, bankAccountName: true },
+      });
+      if (!seller || !sellerHasBank(seller)) {
+        return NextResponse.json(
+          {
+            error:
+              "Идэвхтэй уут нийтлэхийн өмнө банкны мэдээллээ бөглөнө үү (/seller/settings).",
+          },
+          { status: 400 }
+        );
+      }
+    }
 
     const pickupStart = data.pickupStart
       ? new Date(data.pickupStart)

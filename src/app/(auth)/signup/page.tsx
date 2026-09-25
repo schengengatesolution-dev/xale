@@ -15,17 +15,32 @@ export default function SignupPage() {
     setError("");
     setLoading(true);
     const fd = new FormData(e.currentTarget);
+    const password = String(fd.get("password") || "");
+    const passwordConfirm = String(fd.get("passwordConfirm") || "");
+    if (password !== passwordConfirm) {
+      setError("Нууц үг таарахгүй байна. Дахин оруулна уу.");
+      setLoading(false);
+      return;
+    }
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: fd.get("email"),
-          password: fd.get("password"),
+          password,
+          passwordConfirm,
           name: fd.get("name"),
           phone: fd.get("phone") || undefined,
           whatsapp: fd.get("whatsapp") || undefined,
           role,
+          ...(role === "SELLER"
+            ? {
+                bankName: fd.get("bankName") || undefined,
+                bankAccount: fd.get("bankAccount") || undefined,
+                bankAccountName: fd.get("bankAccountName") || undefined,
+              }
+            : {}),
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -83,8 +98,8 @@ export default function SignupPage() {
           </div>
           <p className="mt-2 text-xs text-stone-500">
             {role === "SELLER"
-              ? "Зар оруулж, сонирхол хүлээн авна."
-              : "Зарууд үзэж, «Сонирхож байна» илгээнэ."}
+              ? "Азтай уут нийтэлнэ. Банкны мэдээлэл заавал — төлбөр шууд данс руу."
+              : "Зарууд үзэж, захиална."}
           </p>
         </div>
 
@@ -122,6 +137,20 @@ export default function SignupPage() {
           />
         </div>
         <div>
+          <label className="label" htmlFor="passwordConfirm">
+            Нууц үг давтах
+          </label>
+          <input
+            id="passwordConfirm"
+            name="passwordConfirm"
+            type="password"
+            required
+            minLength={6}
+            className="input"
+            autoComplete="new-password"
+          />
+        </div>
+        <div>
           <label className="label" htmlFor="phone">
             Утас
           </label>
@@ -145,12 +174,39 @@ export default function SignupPage() {
             inputMode="tel"
           />
         </div>
+
+        {role === "SELLER" && (
+          <>
+            <div>
+              <label className="label" htmlFor="bankName">
+                Банкны нэр *
+              </label>
+              <input id="bankName" name="bankName" required className="input" placeholder="Жишээ: Хаан банк" />
+            </div>
+            <div>
+              <label className="label" htmlFor="bankAccount">
+                Дансны дугаар *
+              </label>
+              <input id="bankAccount" name="bankAccount" required className="input" inputMode="numeric" />
+            </div>
+            <div>
+              <label className="label" htmlFor="bankAccountName">
+                Данс эзэмшигчийн нэр *
+              </label>
+              <input id="bankAccountName" name="bankAccountName" required className="input" />
+            </div>
+            <p className="text-xs text-stone-500">
+              Төлбөр баталгаажсан даруй таны данс руу шилжүүлнэ
+            </p>
+          </>
+        )}
+
         <button type="submit" disabled={loading} className="btn-primary w-full">
           {loading ? "Түр хүлээнэ үү..." : "Бүртгүүлэх"}
         </button>
       </form>
       <p className="mt-6 text-center text-xs text-stone-400">
-        Одоогоор шимтгэлгүй.{" "}
+        Төлбөрийн нөхцөл:{" "}
         <Link href="/payment-terms" className="underline hover:text-stone-600">
           Төлбөрийн нөхцөл
         </Link>

@@ -11,6 +11,7 @@ import {
 import { SellerNav } from "@/components/SellerNav";
 import { EmptyState } from "@/components/EmptyState";
 import { ReservationActions } from "@/components/ReservationActions";
+import { SELLER_PAYOUT_ONELINER } from "@/lib/business-day";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,13 @@ export default async function SellerReservationsPage() {
           bagPrice: true,
           pickupStart: true,
           pickupEnd: true,
+        },
+      },
+      payment: {
+        select: {
+          status: true,
+          amountMnt: true,
+          settlement: { select: { status: true } },
         },
       },
     },
@@ -98,6 +106,16 @@ export default async function SellerReservationsPage() {
                     >
                       {statusLabel}
                     </span>
+                    <p className="mt-1 text-[11px] text-stone-500">
+                      Төлбөр:{" "}
+                      {r.paymentStatus === "PAID"
+                        ? "Баталгаажсан"
+                        : r.paymentStatus === "PENDING"
+                          ? "Хүлээгдэж буй"
+                          : r.paymentStatus === "UNPAID"
+                            ? "Төлөөгүй"
+                            : r.paymentStatus}
+                    </p>
                     {r.buyer.phone && (
                       <a
                         href={`tel:${r.buyer.phone}`}
@@ -124,6 +142,11 @@ export default async function SellerReservationsPage() {
                   </p>
                 )}
                 <ReservationActions id={r.id} status={r.status} />
+                {r.paymentStatus === "PAID" && (
+                  <p className="mt-3 rounded-xl bg-green-50 px-3 py-2 text-xs text-green-900">
+                    {SELLER_PAYOUT_ONELINER}
+                  </p>
+                )}
               </li>
             );
           })}

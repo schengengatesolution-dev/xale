@@ -8,23 +8,27 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
-  passwordHash String
-  name         String
-  phone        String?
-  whatsapp     String?
-  role         String // SELLER | BUYER
-  createdAt    DateTime      @default(now())
-  listings     Listing[]
-  reservations Reservation[]
+  id              String        @id @default(cuid())
+  email           String        @unique
+  passwordHash    String
+  name            String
+  phone           String?
+  whatsapp        String?
+  role            String // SELLER | BUYER
+  bankName        String?
+  bankAccount     String?
+  bankAccountName String?
+  createdAt       DateTime      @default(now())
+  listings        Listing[]
+  reservations    Reservation[]
+  settlements     Settlement[]
 }
 
 /// Surprise Bag listing (TGTG-style)
 model Listing {
   id                   String        @id @default(cuid())
   title                String
-  category             String // BAKERY | RESTAURANT | HOTEL | GROCERY | CAFE | OTHER
+  category             String // BAKERY | RESTAURANT | HOTEL | GROCERY | CAFE | FITNESS | OTHER
   description          String
   bagPrice             Int // MNT — Surprise Bag үнэ
   estimatedRetailValue Int // MNT — ойролцоо жижиглэн үнэ
@@ -47,16 +51,56 @@ model Listing {
 
 /// Buyer reserve → seller mark COLLECTED / NO_SHOW
 model Reservation {
-  id        String   @id @default(cuid())
-  note      String?
-  status    String   @default("RESERVED") // RESERVED | COLLECTED | NO_SHOW | CANCELLED
-  listingId String
-  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  buyerId   String
-  buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  note          String?
+  status        String    @default("RESERVED") // RESERVED | COLLECTED | NO_SHOW | CANCELLED
+  paymentStatus String    @default("UNPAID") // UNPAID | PENDING | PAID | FAILED | REFUNDED
+  paidAt        DateTime?
+  amountMnt     Int? // snapshot of bagPrice at pay time
+  listingId     String
+  listing       Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyerId       String
+  buyer         User      @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  payment       Payment?
 
   @@index([listingId])
   @@index([buyerId])
+}
+
+model Payment {
+  id              String      @id @default(cuid())
+  reservationId   String      @unique
+  reservation     Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  qpayInvoiceId   String?     @unique
+  senderInvoiceNo String      @unique
+  amountMnt       Int
+  platformFeeMnt  Int
+  sellerAmountMnt Int
+  status          String // CREATED | PAID | CANCELLED | FAILED
+  qpayPayload     Json?
+  urls            Json? // deep links / QR from QPay response
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  settlement      Settlement?
+}
+
+/// Recorded on QPay PAID webhook — admin bank payout later (PENDING = ready-to-payout)
+model Settlement {
+  id               String   @id @default(cuid())
+  paymentId        String   @unique
+  payment          Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  sellerId         String
+  seller           User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  amountSellerMnt  Int
+  amountPlatformMnt Int
+  status           String   @default("READY") // READY | PROCESSING | PAID_OUT | HELD
+  payoutTargetDate DateTime? // instant on PAID (same moment as webhook)
+  note             String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([sellerId])
+  @@index([status])
 }

@@ -4,6 +4,8 @@ import { getAdminSession } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import { formatDate, ROLES } from "@/lib/constants";
 import { AdminLogoutButton } from "@/components/AdminLogoutButton";
+import { AdminCompaniesPanel } from "@/components/AdminCompaniesPanel";
+import { AdminSettlementsPanel } from "@/components/AdminSettlementsPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +21,11 @@ export default async function AdminDashboardPage() {
       phone: true,
       whatsapp: true,
       role: true,
+      bankName: true,
+      bankAccount: true,
+      bankAccountName: true,
       createdAt: true,
+      _count: { select: { listings: true } },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -162,6 +168,25 @@ export default async function AdminDashboardPage() {
           </>
         )}
       </div>
+
+      <AdminCompaniesPanel
+        initialSellers={users
+          .filter((u) => u.role === "SELLER")
+          .map((u) => ({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            phone: u.phone,
+            whatsapp: u.whatsapp,
+            bankName: u.bankName,
+            bankAccount: u.bankAccount,
+            bankAccountName: u.bankAccountName,
+            createdAt: u.createdAt,
+            _count: u._count,
+          }))}
+      />
+
+      <AdminSettlementsPanel />
     </div>
   );
 }

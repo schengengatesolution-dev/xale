@@ -64,5 +64,33 @@ Demo нууц үг бүгдэд: `demo1234`
 ## 5. Тэмдэглэл
 
 - Төлбөр / хүргэлт — одоогоор байхгүй (утас/WhatsApp). Төсөл: `/payment-terms`.
-- Зураг — URL-ээр (файл upload биш).
+- Зураг — Vercel Blob upload (`BLOB_READ_WRITE_TOKEN`, @vercel/blob). Seller form → `/api/uploads` → `Listing.photoUrl`.
 - Production DB-д seed дахин ажиллуулахад demo хэрэглэгч/зар давхардаж болно — зөвхөн шаардлагатай үед.
+
+
+## QPay staging (Hairan)
+
+Env (Vercel + local `.env.local`, never commit secrets):
+
+| Variable | Notes |
+|----------|-------|
+| `QPAY_BASE_URL` | prod merchant host for staging credentials |
+| `QPAY_CLIENT_ID` / `QPAY_CLIENT_SECRET` | Basic auth — do not log |
+| `QPAY_INVOICE_CODE` | invoice template code |
+| `QPAY_CHECKOUT_ENABLED` | gate real invoice create; Mongolian 503 if false |
+| `QPAY_LIVE` | **must stay `false`** until Hairan ААН + live cutover |
+| `PLATFORM_FEE_BPS` | `1000` = 10% (admin/settlement only; never public UI) |
+| `APP_URL` | callback base `${APP_URL}/api/payments/qpay/callback` |
+
+Money flow (staging):
+
+1. Buyer pays full bagPrice via QPay → funds land on **SGS/merchant** account.
+2. Webhook + `POST /v2/payment/check` verify → Payment PAID + Reservation PAID + Settlement **READY** (same moment).
+3. Seller amount = 90%, platform = 10% recorded on Settlement. Admin marks PROCESSING → PAID_OUT after bank transfer.
+4. True split-at-QPay (multi-merchant) is later; staging = merchant receive then immediate 90% payout intent.
+
+**Float prerequisite (OPS only):** Instant seller payout requires sufficient merchant/float balance to cover seller 90% before/while QPay settlement clears. Do not turn `QPAY_LIVE=true` until Hairan ААН KYC + float ops are ready.
+
+Qty: still decremented on reserve (demo continuity); `paymentStatus` tracks UNPAID→PENDING→PAID. Sellers should treat unpaid cautiously.
+
+Seller-facing copy (exact): «Төлбөр баталгаажсан даруй таны данс руу шилжүүлнэ» — never promise seconds; never show % on buyer/public UI.
