@@ -62,6 +62,20 @@
 - [x] Seller `/seller/payouts` pending vs paid
 - Live OFF until Hairan ААН; see OPS.md float note (`QPAY_LIVE=false`)
 
+
+## Phone OTP auth (2026-09-25)
+
+- [x] SMS body exactly: `Hairan Kod: XXXXXX`
+- [x] OTP for register + login (buyer & seller); role pick **after** verify; login skips role
+- [x] «Дахин илгээх» + 60s cooldown; OTP hashed, ~5 min expiry, max 5 attempts
+- [x] Phone normalize → `+976XXXXXXXX`; `User.phone` unique; `PhoneOtp` model
+- [x] `src/lib/sms.ts` — `SMS_PROVIDER=console|http` (no hardcoded carrier keys)
+- [x] API: `POST /api/auth/otp/send` · `POST /api/auth/otp/verify`
+- [x] UI: `/login` `/signup` phone-first; email+password fallback kept
+- [ ] Live SMS keys — set `SMS_PROVIDER=http` + `SMS_HTTP_*` on Vercel when ready
+
+Env (see `.env.example`): `SMS_PROVIDER`, `SMS_HTTP_URL`, `SMS_HTTP_TOKEN`, `SMS_HTTP_API_KEY`, `SMS_FROM`
+
 ## Deploy
 
 - **Production live:** https://xale-app.vercel.app

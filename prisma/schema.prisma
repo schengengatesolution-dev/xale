@@ -12,7 +12,7 @@ model User {
   email           String        @unique
   passwordHash    String
   name            String
-  phone           String?
+  phone           String?       @unique
   whatsapp        String?
   role            String // SELLER | BUYER
   bankName        String?
@@ -132,4 +132,16 @@ model PayoutBatch {
 
   @@index([status])
   @@index([cutoffAt])
+}
+
+/// Short-lived phone OTP (hashed). One row per phone; overwrite on resend.
+model PhoneOtp {
+  id        String   @id @default(cuid())
+  phone     String   @unique
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
 }

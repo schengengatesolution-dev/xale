@@ -94,3 +94,16 @@ Money flow (staging):
 Qty: still decremented on reserve (demo continuity); `paymentStatus` tracks UNPAID→PENDING→PAID. Sellers should treat unpaid cautiously.
 
 Seller-facing copy (exact): «Төлбөр баталгаажсан даруй таны данс руу шилжүүлнэ» — never promise seconds; never show % on buyer/public UI.
+
+
+## Phone OTP / SMS
+
+| Variable | Notes |
+|----------|-------|
+| `SMS_PROVIDER` | `console` (log code) or `http` (POST to gateway) |
+| `SMS_HTTP_URL` | Required when provider=http |
+| `SMS_HTTP_TOKEN` | Optional Bearer |
+| `SMS_HTTP_API_KEY` | Optional X-Api-Key |
+| `SMS_FROM` | Optional sender id |
+
+SMS body must stay exactly: `Hairan Kod: XXXXXX`. Do not commit live Mobicom keys.
