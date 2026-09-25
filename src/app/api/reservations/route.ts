@@ -139,7 +139,18 @@ export async function GET() {
 
   const reservations = await prisma.reservation.findMany({
     where: { listing: { sellerId: session.id } },
-    include: {
+    select: {
+      id: true,
+      note: true,
+      status: true,
+      paymentStatus: true,
+      paidAt: true,
+      amountMnt: true,
+      listingId: true,
+      buyerId: true,
+      createdAt: true,
+      updatedAt: true,
+      // pickupCode intentionally omitted — seller must type buyer-shown code
       buyer: {
         select: {
           id: true,

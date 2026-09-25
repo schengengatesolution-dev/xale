@@ -16,7 +16,14 @@ export async function GET(
   const payment = await prisma.payment.findUnique({
     where: { id: params.id },
     include: {
-      reservation: { select: { buyerId: true, paymentStatus: true, paidAt: true } },
+      reservation: {
+        select: {
+          buyerId: true,
+          paymentStatus: true,
+          paidAt: true,
+          pickupCode: true,
+        },
+      },
       settlement: {
         select: {
           id: true,
@@ -31,20 +38,17 @@ export async function GET(
     return NextResponse.json({ error: "Төлбөр олдсонгүй" }, { status: 404 });
   }
 
-  const isBuyer = session.role === "BUYER" && payment.reservation.buyerId === session.id;
-  // Admin not via getSession — buyers only for this poll endpoint
+  const isBuyer =
+    session.role === "BUYER" && payment.reservation.buyerId === session.id;
   if (!isBuyer) {
     return NextResponse.json({ error: "Зөвшөөрөлгүй" }, { status: 403 });
   }
 
   let status = payment.status;
   let settlement = payment.settlement;
+  let pickupCode = payment.reservation.pickupCode;
 
-  if (
-    isCheckoutEnabled() &&
-    status !== "PAID" &&
-    payment.qpayInvoiceId
-  ) {
+  if (isCheckoutEnabled() && status !== "PAID" && payment.qpayInvoiceId) {
     try {
       const { paid } = await checkPayment(payment.qpayInvoiceId);
       if (paid) {
@@ -55,19 +59,22 @@ export async function GET(
           status: "READY",
           payoutTargetDate: result.payoutTargetDate,
         };
+        pickupCode = result.pickupCode;
       }
     } catch (e) {
       console.error("status recheck failed", e instanceof Error ? e.message : e);
     }
   }
 
-  // Buyer-facing: no fee amounts / %
+  // Buyer-facing: no fee amounts / %; pickupCode only after PAID
   return NextResponse.json({
     paymentId: payment.id,
     status,
     amountMnt: payment.amountMnt,
-    paymentStatus: status === "PAID" ? "PAID" : payment.reservation.paymentStatus,
+    paymentStatus:
+      status === "PAID" ? "PAID" : payment.reservation.paymentStatus,
     paidAt: payment.reservation.paidAt,
+    pickupCode: status === "PAID" ? pickupCode : null,
     urls: payment.urls,
     settlement:
       status === "PAID" && settlement

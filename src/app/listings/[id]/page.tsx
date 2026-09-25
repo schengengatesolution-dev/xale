@@ -41,12 +41,18 @@ export default async function ListingDetailPage({
 
   let alreadyReserved = false;
   let unpaidReservationId: string | null = null;
+  let paidPickupCode: string | null = null;
   if (session?.role === "BUYER") {
     const existing = await prisma.reservation.findFirst({
       where: {
         listingId: listing.id,
         buyerId: session.id,
         status: "RESERVED",
+      },
+      select: {
+        id: true,
+        paymentStatus: true,
+        pickupCode: true,
       },
     });
     alreadyReserved = !!existing;
@@ -56,6 +62,9 @@ export default async function ListingDetailPage({
       isCheckoutEnabled()
     ) {
       unpaidReservationId = existing.id;
+    }
+    if (existing?.paymentStatus === "PAID" && existing.pickupCode) {
+      paidPickupCode = existing.pickupCode;
     }
   }
 
@@ -197,8 +206,23 @@ export default async function ListingDetailPage({
                     Та энэ Азтай уутыг аль хэдийн захиалсан.
                     {unpaidReservationId
                       ? " Төлбөрөө хийснээр баталгаажна."
-                      : " Байршил дээр очиж азтай уутаа авна уу!"}
+                      : paidPickupCode
+                        ? ""
+                        : " Байршил дээр очиж азтай уутаа авна уу!"}
                   </p>
+                  {paidPickupCode && (
+                    <div className="mt-3 rounded-2xl border-2 border-green-600 bg-white px-4 py-5 text-center shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+                        Авах код
+                      </p>
+                      <p className="mt-2 select-all font-mono text-5xl font-black tracking-[0.2em] text-green-800 sm:text-6xl">
+                        {paidPickupCode}
+                      </p>
+                      <p className="mt-3 text-sm font-medium leading-snug text-stone-700">
+                        Дэлгүүрт очиж энэ кодыг хэлнэ үү
+                      </p>
+                    </div>
+                  )}
                   {unpaidReservationId && (
                     <PayCheckout
                       reservationId={unpaidReservationId}

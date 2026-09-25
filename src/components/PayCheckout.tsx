@@ -30,6 +30,7 @@ export function PayCheckout({
   const [amount, setAmount] = useState<number | undefined>(amountMnt);
   const [paid, setPaid] = useState(false);
   const [payoutNote, setPayoutNote] = useState<string | null>(null);
+  const [pickupCode, setPickupCode] = useState<string | null>(null);
 
   const startPay = useCallback(async () => {
     setLoading(true);
@@ -100,6 +101,9 @@ export function PayCheckout({
         if (cancelled) return;
         if (data.status === "PAID") {
           setPaid(true);
+          if (typeof data.pickupCode === "string" && data.pickupCode) {
+            setPickupCode(data.pickupCode);
+          }
           setPayoutNote(
             data.settlement?.note ||
               "Баасан cutoff → дараагийн 1–5 ажлын өдөрт таны данс"
@@ -121,9 +125,29 @@ export function PayCheckout({
 
   if (paid) {
     return (
-      <div className="mt-3 rounded-xl bg-green-50 p-4 text-sm text-green-900">
-        <p className="font-semibold">Төлбөр амжилттай!</p>
-        <p className="mt-1">
+      <div className="mt-3 rounded-xl bg-green-50 p-4 text-green-900">
+        <p className="text-sm font-semibold">Төлбөр амжилттай!</p>
+        {pickupCode ? (
+          <div className="mt-3 rounded-2xl border-2 border-green-600 bg-white px-4 py-5 text-center shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
+              Авах код
+            </p>
+            <p
+              className="mt-2 select-all font-mono text-5xl font-black tracking-[0.2em] text-green-800 sm:text-6xl"
+              aria-label={`Авах код ${pickupCode}`}
+            >
+              {pickupCode}
+            </p>
+            <p className="mt-3 text-sm font-medium leading-snug text-stone-700">
+              Дэлгүүрт очиж энэ кодыг хэлнэ үү
+            </p>
+          </div>
+        ) : (
+          <p className="mt-2 text-sm">
+            Авах код бэлэн болоогүй байна. Хуудсыг дахин ачаална уу.
+          </p>
+        )}
+        <p className="mt-3 text-xs text-stone-600">
           Байршил дээр очиж азтай уутаа авна уу.
           {amount != null ? ` · ${formatMNT(amount)}` : ""}
         </p>

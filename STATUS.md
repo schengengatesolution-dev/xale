@@ -43,6 +43,14 @@
 | **4. Native Expo** | ✅ map home | `/workspace/xale-mobile` |
 | **5. Домэйн hairan.mn** | ⏳ дараа | OPS.md |
 
+## Pickup / redeem code (2026-09-25)
+
+- [x] `Reservation.pickupCode` — 6-digit, set once on PAID (idempotent)
+- [x] Buyer: large code after pay + listing detail («Дэлгүүрт очиж энэ кодыг хэлнэ үү»)
+- [x] Seller: type code → COLLECTED; wrong code rejected; pitch «Зөвхөн авах кодоор уут өгнө.»
+- [x] Code expiry = listing `pickupEnd` (same as bag window); then NO_SHOW
+- [x] Not leaked on public map/listing APIs or seller list responses
+
 ## QPay staging (2026-09-25)
 
 - [x] Prisma: Payment + Settlement + seller bank fields; Reservation.paymentStatus

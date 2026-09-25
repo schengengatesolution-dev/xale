@@ -57,6 +57,8 @@ model Reservation {
   paymentStatus String    @default("UNPAID") // UNPAID | PENDING | PAID | FAILED | REFUNDED
   paidAt        DateTime?
   amountMnt     Int? // snapshot of bagPrice at pay time
+  /// Short redeem code shown to buyer after PAID; seller must enter to mark COLLECTED
+  pickupCode    String?   @unique
   listingId     String
   listing       Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
   buyerId       String

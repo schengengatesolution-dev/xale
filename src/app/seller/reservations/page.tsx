@@ -50,7 +50,7 @@ export default async function SellerReservationsPage() {
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-2xl font-bold">Захиалгууд</h1>
       <p className="mt-1 text-sm text-stone-600">
-        Азтай уут захиалга · Авсан / Ирээгүй тэмдэглэнэ
+        Азтай уут захиалга · Зөвхөн авах кодоор уут өгнө.
       </p>
 
       <div className="mt-6">
@@ -141,7 +141,12 @@ export default async function SellerReservationsPage() {
                     {r.note}
                   </p>
                 )}
-                <ReservationActions id={r.id} status={r.status} />
+                <ReservationActions
+                  id={r.id}
+                  status={r.status}
+                  paymentStatus={r.paymentStatus}
+                  pickupWindowEnded={new Date() > r.listing.pickupEnd}
+                />
                 {r.paymentStatus === "PAID" && (
                   <p className="mt-3 rounded-xl bg-green-50 px-3 py-2 text-xs text-green-900">
                     {r.payment?.settlement?.status === "PAID_OUT"
