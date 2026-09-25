@@ -55,9 +55,9 @@
 
 - [x] Prisma: Payment + Settlement + seller bank fields; Reservation.paymentStatus
 - [x] `/api/payments/create` · `/api/payments/qpay/callback` (verify via payment/check) · status poll
-- [x] On PAID: Settlement **READY** (weekly Friday-cutoff batch; Asia/Ulaanbaatar)
+- [x] On PAID: Settlement **READY** (weekly Thu 23:59 UB cutoff → Fri payout batch)
 - [x] Seller bank required on signup / listing publish / checkout
-- [x] Buyer UI: no platform fee %; seller SLA: «Баасан cutoff → дараагийн 1–5 ажлын өдөрт таны данс»
+- [x] Buyer UI: no platform fee %; seller SLA: «Пүрэв шөнө cutoff → Баасан гаригт таны данс»
 - [x] Admin `/admin` weekly payout batch (group by seller, CSV, mark PAID_OUT) + PayoutBatch model
 - [x] Seller `/seller/payouts` pending vs paid
 - Live OFF until Hairan ААН; see OPS.md float note (`QPAY_LIVE=false`)

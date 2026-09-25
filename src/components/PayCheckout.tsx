@@ -106,7 +106,7 @@ export function PayCheckout({
           }
           setPayoutNote(
             data.settlement?.note ||
-              "Баасан cutoff → дараагийн 1–5 ажлын өдөрт таны данс"
+              "Пүрэв шөнө cutoff → Баасан гаригт таны данс"
           );
         }
       } catch {

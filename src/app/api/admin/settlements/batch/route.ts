@@ -9,7 +9,7 @@ import {
 } from "@/lib/payout-batch";
 import { prisma } from "@/lib/prisma";
 
-/** Preview weekly Friday-cutoff READY batch grouped by seller. */
+/** Preview weekly Thu-cutoff (Fri payout) READY batch grouped by seller. */
 export async function GET(req: NextRequest) {
   const admin = await getAdminSession();
   if (!admin) {

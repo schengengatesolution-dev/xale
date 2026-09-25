@@ -1,6 +1,7 @@
 /**
  * Seller payout SLA (Asia/Ulaanbaatar).
- * Weekly batch: Friday cutoff → seller bank within 1–5 working days.
+ * Weekly batch: Thursday 23:59:59 cutoff → Friday payout run → seller bank.
+ * Sales after Thu midnight belong in the NEXT Friday payout batch.
  * Never mention platform fee % in seller/public copy.
  */
 
@@ -8,12 +9,12 @@ export const UB_TZ = "Asia/Ulaanbaatar";
 
 /** Seller-facing SLA — no %, no «төлбөр ормогц» / instant promise. */
 export const SELLER_PAYOUT_ONELINER =
-  "Баасан cutoff → дараагийн 1–5 ажлын өдөрт таны данс";
+  "Пүрэв шөнө cutoff → Баасан гаригт таны данс";
 
 export const SELLER_PAYOUT_DETAIL =
-  "Долоо хоног бүрийн Баасан гаригийн cutoff хүртэлх баталгаажсан захиалгыг нэгтгэж, дараагийн 1–5 ажлын өдөрт таны банкны данс руу шилжүүлнэ.";
+  "Долоо хоног бүрийн Пүрэв гаригийн 23:59:59 (Asia/Ulaanbaatar) хүртэлх баталгаажсан захиалгыг нэгтгэж, Баасан гаригт таны банкны данс руу шилжүүлнэ. Пүрэв шөнөөрөөс хойшхи борлуулалт дараагийн Баасан багцад орно.";
 
-/** Settlement statuses: READY = awaiting weekly Friday-cutoff batch. */
+/** Settlement statuses: READY = awaiting weekly Thu-cutoff / Fri-payout batch. */
 export const SETTLEMENT_STATUS = {
   READY: "READY",
   PROCESSING: "PROCESSING",
@@ -94,18 +95,22 @@ export function ubWallToUtc(
 }
 
 /**
- * End of the most recent Friday in Asia/Ulaanbaatar (23:59:59.999).
- * If `ref` falls on Friday, that Friday is the cutoff day.
+ * End of the most recent Thursday in Asia/Ulaanbaatar (23:59:59.999).
+ * If `ref` falls on Thursday, that Thursday is the cutoff day.
+ * Friday payout run uses this cutoff; sales after it join the next Friday batch.
  */
-export function getLastFridayCutoff(ref: Date = new Date()): Date {
+export function getLastThursdayCutoff(ref: Date = new Date()): Date {
   const p = ubParts(ref);
-  // days since Friday: Fri=0, Sat=1, … Thu=6
-  const daysSinceFriday = (p.weekday - 5 + 7) % 7;
+  // days since Thursday: Thu=0, Fri=1, … Wed=6
+  const daysSinceThursday = (p.weekday - 4 + 7) % 7;
   const cutoffDay = ubWallToUtc(p.year, p.month, p.day, 0, 0, 0, 0);
-  cutoffDay.setUTCDate(cutoffDay.getUTCDate() - daysSinceFriday);
+  cutoffDay.setUTCDate(cutoffDay.getUTCDate() - daysSinceThursday);
   const c = ubParts(cutoffDay);
   return ubWallToUtc(c.year, c.month, c.day, 23, 59, 59, 999);
 }
+
+/** @deprecated Use getLastThursdayCutoff — kept for any stray imports. */
+export const getLastFridayCutoff = getLastThursdayCutoff;
 
 /** Human label for cutoff in mn-MN / UB. */
 export function formatCutoffMn(cutoff: Date): string {
@@ -121,7 +126,10 @@ export function formatCutoffMn(cutoff: Date): string {
   });
 }
 
-/** Short batch id from cutoff date, e.g. 2026-W39-FRI */
+/**
+ * Short batch id from cutoff date, e.g. 2026-W39-THU.
+ * Suffix is cutoff weekday; payout run day remains Friday.
+ */
 export function batchLabelFromCutoff(cutoff: Date): string {
   const p = ubParts(cutoff);
   const jan4 = ubWallToUtc(p.year, 1, 4);
@@ -132,5 +140,5 @@ export function batchLabelFromCutoff(cutoff: Date): string {
         86400000
     ) + 1;
   const week = Math.min(53, Math.ceil((dayOfYear + ((ubParts(jan4).weekday + 6) % 7)) / 7));
-  return `${p.year}-W${String(week).padStart(2, "0")}-FRI`;
+  return `${p.year}-W${String(week).padStart(2, "0")}-THU`;
 }

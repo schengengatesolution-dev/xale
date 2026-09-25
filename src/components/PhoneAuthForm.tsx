@@ -371,7 +371,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
                 />
               </div>
               <p className="text-xs text-stone-500">
-                Баасан cutoff → дараагийн 1–5 ажлын өдөрт таны данс
+                Пүрэв шөнө cutoff → Баасан гаригт таны данс
               </p>
             </>
           )}

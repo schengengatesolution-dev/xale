@@ -4,7 +4,7 @@ import {
   SETTLEMENT_STATUS,
   batchLabelFromCutoff,
   formatCutoffMn,
-  getLastFridayCutoff,
+  getLastThursdayCutoff,
 } from "@/lib/business-day";
 import { sellerHasBank } from "@/lib/settle-payment";
 
@@ -119,7 +119,7 @@ export async function loadReadySettlementsUpToCutoff(
 export async function buildWeeklyBatchPreview(
   ref: Date = new Date()
 ): Promise<WeeklyBatchPreview> {
-  const cutoffAt = getLastFridayCutoff(ref);
+  const cutoffAt = getLastThursdayCutoff(ref);
   const rows = await loadReadySettlementsUpToCutoff(cutoffAt);
   const groups = groupSettlementsBySeller(rows);
   const totalSellerMnt = groups.reduce((a, g) => a + g.amountSellerMnt, 0);
@@ -180,7 +180,7 @@ export function buildBatchCsv(preview: WeeklyBatchPreview): string {
 export async function buildPayableBatchPreview(
   ref: Date = new Date()
 ): Promise<WeeklyBatchPreview> {
-  const cutoffAt = getLastFridayCutoff(ref);
+  const cutoffAt = getLastThursdayCutoff(ref);
   const rows = await loadReadySettlementsUpToCutoff(cutoffAt, [
     SETTLEMENT_STATUS.READY,
     SETTLEMENT_STATUS.PROCESSING,

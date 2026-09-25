@@ -179,7 +179,7 @@ export function AdminSettlementsPanel() {
     <div className="mt-10">
       <h2 className="text-lg font-bold">Долоо хоногийн seller payout</h2>
       <p className="text-xs text-stone-500">
-        Баасан cutoff (Asia/Ulaanbaatar) → READY settlement-уудыг худалдагчаар
+        Пүрэв 23:59 cutoff (Asia/Ulaanbaatar) → Баасан payout · READY settlement-уудыг худалдагчаар
         нэгтгэж, гараар банк руу шилжүүлнэ. Хувь / шимтгэл зөвхөн админд.
       </p>
 

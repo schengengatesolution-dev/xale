@@ -30,7 +30,7 @@ async function ensurePickupCode(
 }
 
 /**
- * Mark payment + reservation PAID and create Settlement READY (weekly Friday-cutoff queue).
+ * Mark payment + reservation PAID and create Settlement READY (weekly Thu-cutoff (Fri payout) queue).
  * Idempotent. Never leaves verified PAID money without a Settlement row.
  * On PAID: assign pickupCode once (do not regenerate if already set).
  * Source of truth: QPay webhook + payment/check. Client status poll is UX backup only.

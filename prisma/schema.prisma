@@ -88,7 +88,7 @@ model Payment {
   settlement      Settlement?
 }
 
-/// Recorded on QPay PAID → READY until Friday-cutoff weekly batch marks PAID_OUT
+/// Recorded on QPay PAID → READY until Thu-cutoff/Fri-payout weekly batch marks PAID_OUT
 model Settlement {
   id                String       @id @default(cuid())
   paymentId         String       @unique
@@ -98,7 +98,7 @@ model Settlement {
   amountSellerMnt   Int
   amountPlatformMnt Int
   status            String       @default("READY") // READY | PROCESSING | PAID_OUT | HELD
-  payoutTargetDate  DateTime? // legacy; weekly batch uses createdAt + Friday cutoff
+  payoutTargetDate  DateTime? // legacy; weekly batch uses createdAt + Thursday cutoff
   paidOutAt         DateTime?
   payoutBatchId     String?
   payoutBatch       PayoutBatch? @relation(fields: [payoutBatchId], references: [id], onDelete: SetNull)
@@ -112,10 +112,10 @@ model Settlement {
   @@index([createdAt])
 }
 
-/// Weekly Friday-cutoff seller payout batch (manual bank transfer)
+/// Weekly Thu-cutoff / Fri-payout seller batch (manual bank transfer)
 model PayoutBatch {
   id             String       @id @default(cuid())
-  label          String // e.g. 2026-W39-FRI
+  label          String // e.g. 2026-W39-THU
   cutoffAt       DateTime
   status         String       @default("OPEN") // OPEN | EXPORTED | PAID
   operatorEmail  String?
