@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/admin-auth";
+import { sellerHasBank } from "@/lib/settle-payment";
 
 export async function GET(req: NextRequest) {
   const admin = await getAdminSession();
@@ -58,6 +59,34 @@ export async function PATCH(req: NextRequest) {
   }
   try {
     const data = patchSchema.parse(await req.json());
+
+    if (data.status === "PAID_OUT") {
+      const existing = await prisma.settlement.findUnique({
+        where: { id: data.id },
+        include: {
+          seller: {
+            select: {
+              bankName: true,
+              bankAccount: true,
+              bankAccountName: true,
+            },
+          },
+        },
+      });
+      if (!existing) {
+        return NextResponse.json({ error: "Олдсонгүй" }, { status: 404 });
+      }
+      if (!sellerHasBank(existing.seller)) {
+        return NextResponse.json(
+          {
+            error:
+              "Худалдагчийн банкны мэдээлэл бүрэн бус — PAID_OUT хийх боломжгүй",
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     const settlement = await prisma.settlement.update({
       where: { id: data.id },
       data: {

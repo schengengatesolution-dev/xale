@@ -3,6 +3,8 @@
  * Secrets never logged. Real invoice creation gated by QPAY_CHECKOUT_ENABLED.
  */
 
+import QRCode from "qrcode";
+
 type TokenCache = { accessToken: string; expiresAt: number };
 
 let tokenCache: TokenCache | null = null;
@@ -32,6 +34,17 @@ export function splitAmount(amountMnt: number): {
   const platformFeeMnt = Math.round((amountMnt * bps) / 10000);
   const sellerAmountMnt = amountMnt - platformFeeMnt;
   return { platformFeeMnt, sellerAmountMnt };
+}
+
+/** Callback / app base URL with production-safe fallbacks. */
+export function getAppUrl(): string {
+  const fromEnv = (process.env.APP_URL || "").replace(/\/$/, "").trim();
+  if (fromEnv) return fromEnv;
+  const vercel = (process.env.VERCEL_URL || "").replace(/\/$/, "").trim();
+  if (vercel) {
+    return vercel.startsWith("http") ? vercel : `https://${vercel}`;
+  }
+  return "https://hairan.mn";
 }
 
 function requireQpayEnv(): {
@@ -89,13 +102,89 @@ export async function getToken(): Promise<string> {
   return data.access_token;
 }
 
+export type QpayUrlItem = {
+  name?: string;
+  description?: string;
+  link?: string;
+  logo?: string;
+};
+
 export type QpayInvoiceResult = {
   invoice_id: string;
   qr_text?: string;
   qr_image?: string;
-  urls?: Array<{ name?: string; description?: string; link?: string; logo?: string }>;
+  shortUrl?: string;
+  urls?: QpayUrlItem[];
   [key: string]: unknown;
 };
+
+function pickString(
+  raw: Record<string, unknown>,
+  keys: string[]
+): string | undefined {
+  for (const key of keys) {
+    const v = raw[key];
+    if (typeof v === "string" && v.trim()) return v;
+  }
+  return undefined;
+}
+
+function pickUrls(raw: Record<string, unknown>): QpayUrlItem[] {
+  for (const key of ["urls", "Urls", "deeplinks", "deep_links"]) {
+    const v = raw[key];
+    if (Array.isArray(v)) return v as QpayUrlItem[];
+  }
+  return [];
+}
+
+/**
+ * Normalize QPay v2 invoice JSON into a stable shape.
+ * Live keys: invoice_id, qr_text, qr_image, qPay_shortUrl, urls
+ * Also accepts camelCase / alternate spellings.
+ */
+export function normalizeInvoicePayload(
+  raw: Record<string, unknown>
+): QpayInvoiceResult {
+  const invoice_id =
+    pickString(raw, ["invoice_id", "invoiceId", "id"]) || "";
+  const qr_text = pickString(raw, ["qr_text", "qrText", "qr_data", "qrData"]);
+  let qr_image = pickString(raw, ["qr_image", "qrImage", "qr_img", "qrImg"]);
+  const shortUrl = pickString(raw, [
+    "qPay_shortUrl",
+    "qpay_shortUrl",
+    "qpay_short_url",
+    "short_url",
+    "shortUrl",
+  ]);
+  const urls = pickUrls(raw);
+
+  // Strip data-URL prefix if present so callers can re-prefix consistently
+  if (qr_image?.startsWith("data:")) {
+    const comma = qr_image.indexOf(",");
+    if (comma >= 0) qr_image = qr_image.slice(comma + 1);
+  }
+
+  return {
+    ...raw,
+    invoice_id,
+    qr_text,
+    qr_image,
+    shortUrl,
+    urls,
+  };
+}
+
+/** Generate PNG base64 (no data: prefix) from QR payload text. */
+export async function qrImageFromText(qrText: string): Promise<string> {
+  const dataUrl = await QRCode.toDataURL(qrText, {
+    type: "image/png",
+    margin: 1,
+    width: 320,
+    errorCorrectionLevel: "M",
+  });
+  const comma = dataUrl.indexOf(",");
+  return comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl;
+}
 
 export async function createInvoice(params: {
   senderInvoiceNo: string;
@@ -128,10 +217,33 @@ export async function createInvoice(params: {
     throw new Error("QPAY_INVOICE_FAILED");
   }
 
-  const data = (await res.json()) as QpayInvoiceResult;
+  const raw = (await res.json()) as Record<string, unknown>;
+  const data = normalizeInvoicePayload(raw);
+
   if (!data.invoice_id) {
+    console.error("QPay invoice missing invoice_id; keys=", Object.keys(raw));
     throw new Error("QPAY_INVOICE_FAILED");
   }
+
+  if (!data.qr_image && data.qr_text) {
+    try {
+      data.qr_image = await qrImageFromText(data.qr_text);
+    } catch (e) {
+      console.error(
+        "QPay qr_image generate failed; keys=",
+        Object.keys(raw),
+        e instanceof Error ? e.message : e
+      );
+    }
+  }
+
+  if (!data.qr_image && !data.qr_text && !data.shortUrl) {
+    console.error(
+      "QPay invoice missing qr_image/qr_text/shortUrl; keys=",
+      Object.keys(raw)
+    );
+  }
+
   return data;
 }
 

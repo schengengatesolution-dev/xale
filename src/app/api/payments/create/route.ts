@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import {
   createInvoice,
+  getAppUrl,
   isCheckoutEnabled,
   splitAmount,
 } from "@/lib/qpay";
@@ -73,14 +74,13 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Soft gate: still create invoice so buyer sees QR; warn if bank missing.
+    // Settlement payout stays blocked without bank (admin PAID_OUT).
+    let warning: string | null = null;
     if (!sellerHasBank(reservation.listing.seller)) {
-      return NextResponse.json(
-        {
-          error:
-            "Худалдагчийн банкны мэдээлэл бүрэн бус байна. Түр хүлээнэ үү.",
-        },
-        { status: 400 }
-      );
+      warning =
+        "Худалдагчийн банкны мэдээлэл бүрэн бус байна. Төлбөр хийж болно; шилжүүлэг түр хүлээгдэнэ.";
     }
 
     const amountMnt = reservation.listing.bagPrice;
@@ -92,13 +92,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { platformFeeMnt, sellerAmountMnt } = splitAmount(amountMnt);
-    const appUrl = (process.env.APP_URL || "").replace(/\/$/, "");
-    if (!appUrl) {
-      return NextResponse.json(
-        { error: "Төлбөрийн тохиргоо дутуу байна" },
-        { status: 500 }
-      );
-    }
+    const appUrl = getAppUrl();
 
     // Reuse existing CREATED/PENDING payment if present
     let payment = reservation.payment;
@@ -134,9 +128,10 @@ export async function POST(req: NextRequest) {
       callbackUrl,
     });
 
-    const urls = {
+    const urlsPayload = {
       qr_text: invoice.qr_text || null,
       qr_image: invoice.qr_image || null,
+      shortUrl: invoice.shortUrl || null,
       urls: invoice.urls || [],
     };
 
@@ -145,7 +140,7 @@ export async function POST(req: NextRequest) {
       data: {
         qpayInvoiceId: invoice.invoice_id,
         qpayPayload: invoice as object,
-        urls: urls as object,
+        urls: urlsPayload as object,
         status: "CREATED",
         amountMnt,
         platformFeeMnt,
@@ -167,7 +162,9 @@ export async function POST(req: NextRequest) {
       amountMnt,
       qr_text: invoice.qr_text || null,
       qr_image: invoice.qr_image || null,
+      shortUrl: invoice.shortUrl || null,
       urls: invoice.urls || [],
+      ...(warning ? { warning } : {}),
     });
   } catch (e) {
     if (e instanceof z.ZodError) {

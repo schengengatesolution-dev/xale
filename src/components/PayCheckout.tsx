@@ -21,9 +21,11 @@ export function PayCheckout({
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [warning, setWarning] = useState("");
   const [paymentId, setPaymentId] = useState<string | null>(null);
   const [qrText, setQrText] = useState<string | null>(null);
   const [qrImage, setQrImage] = useState<string | null>(null);
+  const [shortUrl, setShortUrl] = useState<string | null>(null);
   const [urls, setUrls] = useState<QpayUrl[]>([]);
   const [amount, setAmount] = useState<number | undefined>(amountMnt);
   const [paid, setPaid] = useState(false);
@@ -32,6 +34,7 @@ export function PayCheckout({
   const startPay = useCallback(async () => {
     setLoading(true);
     setError("");
+    setWarning("");
     try {
       const res = await fetch("/api/payments/create", {
         method: "POST",
@@ -43,11 +46,37 @@ export function PayCheckout({
         setError(data.error || "Төлбөр үүсгэхэд алдаа гарлаа");
         return;
       }
+
+      const nextQrText =
+        (typeof data.qr_text === "string" && data.qr_text) ||
+        (typeof data.qrText === "string" && data.qrText) ||
+        null;
+      const nextQrImage =
+        (typeof data.qr_image === "string" && data.qr_image) ||
+        (typeof data.qrImage === "string" && data.qrImage) ||
+        null;
+      const nextShortUrl =
+        (typeof data.shortUrl === "string" && data.shortUrl) ||
+        (typeof data.qPay_shortUrl === "string" && data.qPay_shortUrl) ||
+        null;
+      const nextUrls = Array.isArray(data.urls) ? data.urls : [];
+
+      if (!nextQrImage && !nextQrText && !nextShortUrl) {
+        setError(
+          "QPay QR үүсээгүй байна. Дахин оролдоно уу, эсвэл дэмжлэгтэй холбогдоно уу."
+        );
+        return;
+      }
+
       setPaymentId(data.paymentId);
-      setQrText(data.qr_text || null);
-      setQrImage(data.qr_image || null);
-      setUrls(Array.isArray(data.urls) ? data.urls : []);
+      setQrText(nextQrText);
+      setQrImage(nextQrImage);
+      setShortUrl(nextShortUrl);
+      setUrls(nextUrls);
       setAmount(data.amountMnt);
+      if (typeof data.warning === "string" && data.warning) {
+        setWarning(data.warning);
+      }
     } catch {
       setError("Сүлжээний алдаа. Дахин оролдоно уу.");
     } finally {
@@ -135,6 +164,16 @@ export function PayCheckout({
               className="mx-auto mt-3 h-48 w-48 rounded-lg bg-white p-2"
             />
           )}
+          {!qrImage && shortUrl && (
+            <a
+              href={shortUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 block rounded-xl bg-green-700 px-3 py-3 text-center text-sm font-semibold text-white hover:bg-green-800"
+            >
+              QPay холбоосоор нээх
+            </a>
+          )}
           {qrText && !qrImage && (
             <p className="mt-2 break-all rounded-lg bg-white p-2 font-mono text-[10px] text-stone-600">
               {qrText}
@@ -163,7 +202,19 @@ export function PayCheckout({
           </p>
         </div>
       )}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {warning && (
+        <p className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-900">
+          {warning}
+        </p>
+      )}
+      {error && (
+        <p
+          role="alert"
+          className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-semibold text-red-800"
+        >
+          {error}
+        </p>
+      )}
       {/* payoutNote reserved for post-pay seller views; buyer never sees % */}
       {payoutNote ? null : null}
     </div>
