@@ -9,6 +9,7 @@ export type MapListing = {
   pickupEnd: string;
   pickupDistrict: string;
   pickupAddress: string | null;
+  photoUrl?: string | null;
   lat: number;
   lng: number;
   seller: {
