@@ -2,32 +2,40 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useT } from "@/lib/i18n";
 
 type Props = {
   session: { role: string } | null;
 };
 
-const buyerLinks = [
-  { href: "/", label: "Нүүр", icon: HomeIcon },
-  { href: "/map", label: "Ол", icon: MapIcon },
-  { href: "/how-it-works", label: "Алхам", icon: StepsIcon },
-];
-
 export function BottomNav({ session }: Props) {
   const pathname = usePathname();
+  const t = useT();
   if (pathname?.startsWith("/admin")) return null;
+
+  const buyerLinks = [
+    { href: "/", label: t("bottomNav.home"), icon: HomeIcon },
+    { href: "/map", label: t("bottomNav.find"), icon: MapIcon },
+    { href: "/how-it-works", label: t("bottomNav.steps"), icon: StepsIcon },
+  ];
 
   const sellerExtra =
     session?.role === "SELLER"
-      ? [{ href: "/seller", label: "Самбар", icon: BoardIcon }]
-      : [{ href: session ? "/listings" : "/signup", label: session ? "Жагсаалт" : "Эхлэх", icon: UserIcon }];
+      ? [{ href: "/seller", label: t("bottomNav.dashboard"), icon: BoardIcon }]
+      : [
+          {
+            href: session ? "/listings" : "/signup",
+            label: session ? t("bottomNav.listings") : t("bottomNav.start"),
+            icon: UserIcon,
+          },
+        ];
 
   const links = [...buyerLinks.slice(0, 2), ...sellerExtra, buyerLinks[2]];
 
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-40 border-t border-stone-200/90 bg-cream-50/95 backdrop-blur md:hidden pb-safe"
-      aria-label="Доод цэс"
+      aria-label={t("bottomNav.aria")}
     >
       <ul className="mx-auto flex max-w-lg items-stretch justify-around px-1 pt-1.5 pb-1">
         {links.map((l) => {

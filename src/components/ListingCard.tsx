@@ -1,13 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import {
-  CATEGORIES,
   formatMNT,
   formatPickupWindow,
-  pickupUrgencyLabel,
   daysUntil,
   savingsPercent,
-  STATUSES,
 } from "@/lib/constants";
+import { useLocale, useT } from "@/lib/i18n";
 
 type ListingCardProps = {
   listing: {
@@ -28,8 +28,10 @@ type ListingCardProps = {
 };
 
 export function ListingCard({ listing, href }: ListingCardProps) {
-  const cat =
-    CATEGORIES[listing.category as keyof typeof CATEGORIES] || listing.category;
+  const t = useT();
+  const { locale } = useLocale();
+  const catKey = `categories.${listing.category}` as const;
+  const cat = t(catKey);
   const discount = savingsPercent(
     listing.bagPrice,
     listing.estimatedRetailValue
@@ -38,8 +40,20 @@ export function ListingCard({ listing, href }: ListingCardProps) {
   const urgent = days >= 0 && days <= 1;
   const statusLabel =
     listing.status && listing.status !== "ACTIVE"
-      ? STATUSES[listing.status as keyof typeof STATUSES] || listing.status
+      ? t(`statuses.${listing.status}`)
       : null;
+
+  function urgencyLabel(end: Date | string): string {
+    const d = daysUntil(end);
+    if (d < 0) return t("urgency.expired");
+    if (d === 0) return t("urgency.today");
+    if (d === 1) return t("urgency.tomorrow");
+    if (d <= 3) return t("urgency.withinDays", { n: d });
+    return formatPickupWindow(end, end).split(" · ")[0] || String(end);
+  }
+
+  // Prefer locale-aware date for urgency fallback
+  void locale;
 
   return (
     <Link
@@ -57,7 +71,7 @@ export function ListingCard({ listing, href }: ListingCardProps) {
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-1 text-stone-400">
             <span className="text-4xl">🛍️</span>
-            <span className="text-xs font-medium">Азтай уут</span>
+            <span className="text-xs font-medium">{t("listingCard.luckyBag")}</span>
           </div>
         )}
         {discount > 0 && (
@@ -65,24 +79,24 @@ export function ListingCard({ listing, href }: ListingCardProps) {
             −{discount}%
           </span>
         )}
-        {statusLabel && (
+        {statusLabel && statusLabel !== `statuses.${listing.status}` && (
           <span className="absolute right-2 top-2 rounded-full bg-stone-800/80 px-2 py-0.5 text-xs text-white">
             {statusLabel}
           </span>
         )}
         {urgent && !statusLabel && (
           <span className="absolute bottom-2 left-2 rounded-full bg-coral-400 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
-            {pickupUrgencyLabel(listing.pickupEnd)}
+            {urgencyLabel(listing.pickupEnd)}
           </span>
         )}
         <span className="absolute bottom-2 right-2 rounded-full bg-green-900/80 px-2.5 py-0.5 text-xs font-semibold text-cream-100 backdrop-blur">
-          {listing.quantityAvailable} уут үлдсэн
+          {t("listingCard.left", { n: listing.quantityAvailable })}
         </span>
       </div>
       <div className="flex flex-1 flex-col gap-1.5 p-4">
         <div className="flex items-center justify-between gap-2">
           <p className="text-xs font-semibold uppercase tracking-wide text-green-700">
-            {cat}
+            {cat === catKey ? listing.category : cat}
           </p>
           {listing.seller?.name && (
             <p className="truncate text-xs text-stone-500">
@@ -91,7 +105,7 @@ export function ListingCard({ listing, href }: ListingCardProps) {
           )}
         </div>
         <p className="text-[11px] font-bold uppercase tracking-wider text-coral-400">
-          Азтай уут
+          {t("listingCard.luckyBag")}
         </p>
         <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-stone-900 group-hover:text-green-700">
           {listing.title}

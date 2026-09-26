@@ -1,15 +1,19 @@
-import Link from "next/link";
+"use client";
 
-const links = [
-  { href: "/seller", label: "Самбар" },
-  { href: "/seller/listings", label: "Миний уутнууд" },
-  { href: "/seller/listings/new", label: "Шинэ уут" },
-  { href: "/seller/reservations", label: "Захиалгууд" },
-  { href: "/seller/payouts", label: "Төлбөр" },
-  { href: "/seller/settings", label: "Банк" },
-];
+import Link from "next/link";
+import { useT } from "@/lib/i18n";
 
 export function SellerNav({ active }: { active?: string }) {
+  const t = useT();
+  const links = [
+    { href: "/seller", label: t("sellerNav.dashboard") },
+    { href: "/seller/listings", label: t("sellerNav.myBags") },
+    { href: "/seller/listings/new", label: t("sellerNav.newBag") },
+    { href: "/seller/reservations", label: t("sellerNav.orders") },
+    { href: "/seller/payouts", label: t("sellerNav.payouts") },
+    { href: "/seller/settings", label: t("sellerNav.bank") },
+  ];
+
   return (
     <div className="mb-6 flex flex-wrap gap-2">
       {links.map((l) => {

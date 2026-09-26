@@ -5,23 +5,28 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { coordsForListing, UB_CENTER } from "@/lib/geo";
 import {
-  CATEGORIES,
   formatMNT,
   formatPickupWindow,
   type CategoryKey,
 } from "@/lib/constants";
 import type { MapListing } from "./types";
 import { PayCheckout } from "@/components/PayCheckout";
+import { useT } from "@/lib/i18n";
+
+function MapLoading() {
+  const t = useT();
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-cream-100 text-sm text-stone-500">
+      {t("map.loadingMap")}
+    </div>
+  );
+}
 
 const BagMap = dynamic(
   () => import("./BagMap").then((m) => m.BagMap),
   {
     ssr: false,
-    loading: () => (
-      <div className="flex h-full w-full items-center justify-center bg-cream-100 text-sm text-stone-500">
-        Газрын зураг ачаалж байна…
-      </div>
-    ),
+    loading: () => <MapLoading />,
   }
 );
 
@@ -37,6 +42,7 @@ type Props = {
 };
 
 export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props) {
+  const t = useT();
   const [listings, setListings] = useState<MapListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,6 +54,7 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
   const [session] = useState<SessionInfo>(initialSession);
   const [reserving, setReserving] = useState(false);
   const [reserveMsg, setReserveMsg] = useState<string | null>(null);
+  const [reserveOk, setReserveOk] = useState(false);
   const [payReservationId, setPayReservationId] = useState<string | null>(null);
   const [payAmount, setPayAmount] = useState<number | undefined>();
 
@@ -57,7 +64,7 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
       try {
         const res = await fetch("/api/listings?status=ACTIVE");
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Алдаа");
+        if (!res.ok) throw new Error(data.error || t("map.errorGeneric"));
         const mapped: MapListing[] = (data.listings || []).map(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (l: any) => {
@@ -88,7 +95,7 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
         );
         if (!cancelled) setListings(mapped);
       } catch {
-        if (!cancelled) setError("Уутнуудыг ачаалж чадсангүй");
+        if (!cancelled) setError(t("map.loadError"));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -96,12 +103,13 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
       setUserPos({ lat: UB_CENTER.lat, lng: UB_CENTER.lng });
-      setGeoNote("Байршил боломжгүй — УБ төв");
+      setGeoNote(t("map.geoUnavailable"));
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -114,10 +122,11 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
       },
       () => {
         setUserPos({ lat: UB_CENTER.lat, lng: UB_CENTER.lng });
-        setGeoNote("Байршил зөвшөөрөгдөөгүй — УБ төв");
+        setGeoNote(t("map.geoDenied"));
       },
       { enableHighAccuracy: false, timeout: 8000, maximumAge: 60_000 }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const selected = useMemo(
@@ -128,6 +137,7 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
   const closeSheet = useCallback(() => {
     setSelectedId(null);
     setReserveMsg(null);
+    setReserveOk(false);
     setPayReservationId(null);
   }, []);
 
@@ -135,6 +145,7 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
     if (!selected || !session || session.role !== "BUYER") return;
     setReserving(true);
     setReserveMsg(null);
+    setReserveOk(false);
     try {
       const res = await fetch("/api/reservations", {
         method: "POST",
@@ -143,19 +154,21 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setReserveMsg(data.error || "Захиалахад алдаа гарлаа");
+        setReserveMsg(data.error || t("map.reserveError"));
         return;
       }
       const rid = data.reservation?.id as string | undefined;
       if (checkoutEnabled && rid) {
         setPayReservationId(rid);
         setPayAmount(data.reservation?.listing?.bagPrice ?? selected.bagPrice);
-        setReserveMsg("Захиалга амжилттай! Одоо төлбөрөө хийнэ үү.");
+        setReserveMsg(t("map.reserveOkPay"));
+        setReserveOk(true);
       } else {
-        setReserveMsg("Захиалга амжилттай! Байршил дээр очиж азтай уутаа авна уу!");
+        setReserveMsg(t("map.reserveOk"));
+        setReserveOk(true);
       }
     } catch {
-      setReserveMsg("Сүлжээний алдаа");
+      setReserveMsg(t("map.networkError"));
     } finally {
       setReserving(false);
     }
@@ -169,9 +182,16 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
       )
     : 0;
 
+  const catRaw = selected
+    ? t(`categories.${selected.category as CategoryKey}`)
+    : "";
+  const catLabel =
+    selected && catRaw === `categories.${selected.category}`
+      ? selected.category
+      : catRaw;
+
   return (
     <div className="fixed inset-x-0 top-14 bottom-[3.75rem] z-30 w-full overflow-hidden bg-cream-100 md:bottom-0 md:top-[3.75rem]">
-      {/* Map */}
       <div className="absolute inset-0 pb-[env(safe-area-inset-bottom)] md:pb-0">
         {!loading && !error && (
           <BagMap
@@ -181,13 +201,14 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
             onSelect={(id) => {
               setSelectedId(id);
               setReserveMsg(null);
+              setReserveOk(false);
               setPayReservationId(null);
             }}
           />
         )}
         {loading && (
           <div className="flex h-full items-center justify-center text-sm text-stone-500">
-            Ачаалж байна…
+            {t("map.loading")}
           </div>
         )}
         {error && (
@@ -197,29 +218,27 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
         )}
       </div>
 
-      {/* Top chip bar */}
       <div className="pointer-events-none absolute left-0 right-0 top-0 z-[500] flex items-start justify-between gap-2 p-3">
         <div className="pointer-events-auto rounded-2xl border border-stone-200/80 bg-white/95 px-3 py-2 shadow-md backdrop-blur">
-          <p className="text-xs font-bold text-green-800">Азтай уут · газрын зураг</p>
+          <p className="text-xs font-bold text-green-800">{t("map.chipTitle")}</p>
           <p className="text-[11px] text-stone-500">
-            {listings.length} уут ·{" "}
-            {geoNote || (userPos ? "Таны байршил" : "…")}
+            {t("map.bagCount", { n: listings.length })} ·{" "}
+            {geoNote || (userPos ? t("map.yourLocation") : "…")}
           </p>
         </div>
         <Link
           href="/listings"
           className="pointer-events-auto rounded-full border border-stone-200 bg-white/95 px-3 py-2 text-xs font-semibold text-stone-700 shadow-md backdrop-blur hover:bg-white"
         >
-          Жагсаалт
+          {t("map.list")}
         </Link>
       </div>
 
-      {/* Bottom sheet */}
       {selected && (
         <>
           <button
             type="button"
-            aria-label="Хаах"
+            aria-label={t("map.close")}
             className="absolute inset-0 z-[600] bg-black/20"
             onClick={closeSheet}
           />
@@ -238,8 +257,7 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
               <div className="mb-2 flex items-start justify-between gap-2">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
-                    {CATEGORIES[selected.category as CategoryKey] ||
-                      selected.category}
+                    {catLabel}
                   </p>
                   <h2 className="text-lg font-bold leading-snug text-green-900">
                     {selected.seller?.name || selected.title}
@@ -250,7 +268,7 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
                   type="button"
                   onClick={closeSheet}
                   className="rounded-full p-1.5 text-stone-400 hover:bg-stone-100 hover:text-stone-700"
-                  aria-label="Хаах"
+                  aria-label={t("map.close")}
                 >
                   ✕
                 </button>
@@ -258,7 +276,9 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
 
               <div className="space-y-1.5 text-sm text-stone-700">
                 <p>
-                  <span className="font-medium text-stone-500">Байршил: </span>
+                  <span className="font-medium text-stone-500">
+                    {t("map.location")}{" "}
+                  </span>
                   {selected.pickupDistrict}
                   {selected.pickupAddress
                     ? ` · ${selected.pickupAddress}`
@@ -266,7 +286,9 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
                 </p>
                 {phone && (
                   <p>
-                    <span className="font-medium text-stone-500">Утас: </span>
+                    <span className="font-medium text-stone-500">
+                      {t("map.phone")}{" "}
+                    </span>
                     <a
                       href={`tel:${phone}`}
                       className="font-semibold text-green-700 underline-offset-2 hover:underline"
@@ -276,7 +298,9 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
                   </p>
                 )}
                 <p>
-                  <span className="font-medium text-stone-500">Үнэ: </span>
+                  <span className="font-medium text-stone-500">
+                    {t("map.price")}{" "}
+                  </span>
                   <span className="font-bold text-green-800">
                     {formatMNT(selected.bagPrice)}
                   </span>
@@ -285,18 +309,20 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
                   </span>
                 </p>
                 <p>
-                  <span className="font-medium text-stone-500">Авах цонх: </span>
+                  <span className="font-medium text-stone-500">
+                    {t("map.pickupWindow")}{" "}
+                  </span>
                   {formatPickupWindow(selected.pickupStart, selected.pickupEnd)}
                 </p>
                 <p className="text-xs text-stone-500">
-                  Үлдсэн уут: {remaining}
+                  {t("map.remaining", { n: remaining })}
                 </p>
               </div>
 
               {reserveMsg && (
                 <p
                   className={`mt-3 rounded-xl px-3 py-2 text-sm ${
-                    reserveMsg.includes("амжилттай")
+                    reserveOk
                       ? "bg-green-50 text-green-800"
                       : "bg-red-50 text-red-700"
                   }`}
@@ -319,7 +345,7 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
                   href={`/listings/${selected.id}`}
                   className="btn-secondary flex-1 !py-2.5 text-center text-sm"
                 >
-                  Дэлгэрэнгүй
+                  {t("map.details")}
                 </Link>
                 {session?.role === "BUYER" ? (
                   <button
@@ -328,29 +354,33 @@ export function MapDiscovery({ initialSession, checkoutEnabled = false }: Props)
                     onClick={reserveSelected}
                     className="btn-primary flex-1 !py-2.5 text-sm disabled:opacity-50"
                   >
-                    {reserving ? "…" : remaining <= 0 ? "Дууссан" : "Захиалах"}
+                    {reserving
+                      ? "…"
+                      : remaining <= 0
+                        ? t("map.soldOut")
+                        : t("map.reserve")}
                   </button>
                 ) : session?.role === "SELLER" ? (
                   <Link
                     href={`/listings/${selected.id}`}
                     className="btn-primary flex-1 !py-2.5 text-center text-sm"
                   >
-                    Харах
+                    {t("map.view")}
                   </Link>
                 ) : (
                   <Link
                     href={`/signup?next=/map`}
                     className="btn-primary flex-1 !py-2.5 text-center text-sm"
                   >
-                    Бүртгүүлээд захиалах
+                    {t("map.signupToOrder")}
                   </Link>
                 )}
               </div>
               {!session && (
                 <p className="mt-2 text-center text-[11px] text-stone-400">
-                  Зочин үзэж болно · захиалахын тулд{" "}
+                  {t("map.guestNote")}{" "}
                   <Link href="/login" className="text-green-700 underline">
-                    нэвтэрнэ үү
+                    {t("map.loginLink")}
                   </Link>
                 </p>
               )}
