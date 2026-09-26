@@ -179,7 +179,7 @@ export function ListingForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="label" htmlFor="bagPrice">
-            Bag үнэ (₮)
+            Азтай уутны үнэ (₮)
           </label>
           <input
             id="bagPrice"

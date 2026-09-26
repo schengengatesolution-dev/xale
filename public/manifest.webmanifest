@@ -1,7 +1,7 @@
 {
-  "name": "xale — Азтай уут",
-  "short_name": "xale",
-  "description": "Азтай уут: ол → захиал → ав. Улаанбаатар.",
+  "name": "Хайран — Азтай уут",
+  "short_name": "Хайран",
+  "description": "Хайран Юм · ол → захиал → ав. Улаанбаатар.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -101,7 +101,7 @@ export default async function SellerDashboardPage() {
               href="/seller/listings/new"
               className="btn-primary mt-4 inline-flex"
             >
-              Эхний Bag үүсгэх
+              Эхний азтай уут үүсгэх
             </Link>
           </div>
         ) : (

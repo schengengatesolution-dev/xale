@@ -139,8 +139,13 @@ export function PayCheckout({
               {pickupCode}
             </p>
             <p className="mt-3 text-sm font-medium leading-snug text-stone-700">
-              Дэлгүүрт очиж энэ кодыг хэлнэ үү
+              Дэлгүүрт очиж энэ кодыг хэлнэ үү — кодгүйгээр уут өгөхгүй
             </p>
+            <ol className="mt-4 space-y-1.5 text-left text-xs leading-snug text-stone-600">
+              <li>1. Байршил руу оч</li>
+              <li>2. Кодыг хэл</li>
+              <li>3. Азтай уутаа ав</li>
+            </ol>
           </div>
         ) : (
           <p className="mt-2 text-sm">

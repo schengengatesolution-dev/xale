@@ -11,14 +11,14 @@ export async function Navbar() {
       <div className="relative mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-600 text-lg font-bold text-white shadow-sm">
-            x
+            Х
           </span>
           <div className="leading-tight">
             <span className="block text-xl font-bold tracking-tight text-green-800">
-              xale
+              Хайран
             </span>
-            <span className="hidden text-[10px] font-medium uppercase tracking-wider text-stone-400 sm:block">
-              Азтай уут
+            <span className="hidden text-[10px] font-medium tracking-wider text-stone-500 sm:block">
+              Хайран Юм
             </span>
           </div>
         </Link>
@@ -67,7 +67,7 @@ export async function Navbar() {
                 href="/seller/listings/new"
                 className="btn-primary !px-4 !py-1.5"
               >
-                + Bag
+                + Азтай уут
               </Link>
             </>
           )}

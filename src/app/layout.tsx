@@ -11,25 +11,23 @@ const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "xale — Азтай уут зах зээл",
-    template: "%s · xale",
+    default: "Хайран — Азтай уут",
+    template: "%s · Хайран",
   },
-  description:
-    "Азтай уут: ол → захиал → ав. Улаанбаатар.",
-  applicationName: "xale",
+  description: "Хайран Юм · Азтай уут: ол → захиал → ав. Улаанбаатар.",
+  applicationName: "Хайран",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "xale",
+    title: "Хайран",
   },
   formatDetection: {
     telephone: false,
   },
   openGraph: {
-    title: "xale — Азтай уут зах зээл",
-    description:
-      "Азтай уут — илүүдэл хоолыг хаягдахаас авар. Улаанбаатар.",
+    title: "Хайран — Азтай уут",
+    description: "Хайран Юм · илүүдэл хоолыг хаягдахаас авар. Улаанбаатар.",
     locale: "mn_MN",
     type: "website",
   },

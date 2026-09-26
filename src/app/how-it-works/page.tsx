@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Хэрхэн ажилладаг вэ?",
-  description:
-    "xale Азтай уут: ол → захиал → ав. Улаанбаатар.",
+  title: "Хэрхэн ажилладаг вэ? · Хайран",
+  description: "Хайран Азтай уут: ол → захиал → ав. QPay + авах код.",
 };
 
 const STEPS = [
@@ -13,28 +12,21 @@ const STEPS = [
     num: "1",
     title: "Ол",
     detail:
-      "Зарууд хуудаснаас дүүрэг, ангиллаар шүүж ойролцоох Азтай уутнуудыг харна. Ангилал (талх, кафе, ресторан…) тодорхой — яг агуулгыг сонгохгүй, гайхшрал!",
+      "Газрын зураг эсвэл жагсаалтаас ойролцоох Азтай уутнуудыг харна. Ангилал тодорхой — яг агуулгыг сонгохгүй.",
   },
   {
     step: "ХОЁР",
     num: "2",
     title: "Захиал",
     detail:
-      "«Захиалах · Reserve» товчоор уутыг нөөцлөнө. Одоогоор апп дотор карт төлбөргүй — төлбөрийг авах үедээ хийнэ. Апп доторх төлбөр удахгүй нэмэгдэнэ.",
+      "Захиалж QPay-ээр төлнө. Төлбөр амжилттай болсны дараа авах код гарч ирнэ — энэ кодыг дэлгүүрт хэлнэ.",
   },
   {
     step: "ГУРАВ",
     num: "3",
     title: "Ав",
     detail:
-      "Тохирсон авах цонхонд бизнес дээр очиж Азтай уутаа авна. Худалдагч «Авсан» гэж тэмдэглэнэ. Ирээгүй бол No-show.",
-  },
-  {
-    step: "ДӨРӨВ",
-    num: "4",
-    title: "Хаягдал бууруул",
-    detail:
-      "Жижиглэнгийн ойролцоогоор ⅓ үнээр авч, сайн хоолыг хаягдахаас аварна. Агуулга өдөр бүр өөрчлөгдөж болно.",
+      "Авах цонхонд дэлгүүрт очиж кодоо хэлээд уутаа авна. Дэлгүүр кодыг оруулж «авсан» гэж тэмдэглэнэ.",
   },
 ];
 
@@ -49,37 +41,32 @@ export default function HowItWorksPage() {
           ол → захиал → ав
         </h1>
         <p className="mt-4 text-base leading-relaxed text-stone-600">
-          <strong className="text-green-700">xale</strong> бизнесийн илүүдэл
-          хоолыг <strong>Азтай уут</strong> болгон хэрэглэгчдэд холбоно.
-          Гол урсгал: <strong>ол</strong> → <strong>захиал</strong> →{" "}
-          <strong>ав</strong>. (Хаягдал бууруулах — нэмэлт үр дүн.)
+          <strong className="text-green-700">Хайран</strong> бизнесийн илүүдэл
+          хоолыг <strong>Азтай уут</strong> болгон холбоно.{" "}
+          <span className="text-stone-500">Уриа: Хайран Юм</span>
         </p>
 
         <section className="mt-8 rounded-3xl border border-green-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-green-800">
-            Азтай уут гэж юу вэ?
-          </h2>
+          <h2 className="text-lg font-bold text-green-800">Азтай уут гэж юу вэ?</h2>
           <ul className="mt-3 space-y-2.5 text-sm leading-relaxed text-stone-700">
             <li className="flex gap-2">
               <span className="shrink-0 font-bold text-green-600">1.</span>
               <span>
-                <strong>Ангилал тодорхой</strong> — талх / нарийн боов, хүнсний
-                дэлгүүр, ресторан, кафе, зочид буудал гэх мэт.
+                <strong>Ангилал тодорхой</strong> — бакери, ресторан, хүнсний
+                дэлгүүр, кафе гэх мэт.
               </span>
             </li>
             <li className="flex gap-2">
               <span className="shrink-0 font-bold text-green-600">2.</span>
               <span>
-                <strong>Яг агуулгыг сонгохгүй</strong> — доторх зүйл гайхшрал;
-                өдөр бүр өөрчлөгдөж болно.
+                <strong>Гайхшрал</strong> — хугацаа дуусах дөхсөн зүйлс; яг
+                агуулгыг сонгохгүй.
               </span>
             </li>
             <li className="flex gap-2">
               <span className="shrink-0 font-bold text-green-600">3.</span>
               <span>
-                Тиймээс үнэ нь жижиглэнгийн ойролцоогоор{" "}
-                <strong>3 дахин хямд</strong> (~⅓). Жишээ: ~15,000₮ үнэ цэнэ →
-                ~5,000₮ Азтай уут.
+                Жижиглэнгийн ойролцоогоор <strong>3× хямд</strong>.
               </span>
             </li>
           </ul>
@@ -113,42 +100,20 @@ export default function HowItWorksPage() {
           ))}
         </ol>
 
-        <section className="mt-10 rounded-3xl border border-amber-200 bg-amber-50 p-6">
-          <h2 className="text-lg font-bold text-amber-950">
-            Хүнсний аюулгүй байдал
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-amber-950/90">
-            Азтай уутны агуулга өөрчлөгдөж болно. Харшил эсвэл хоолны
-            хязгаарлалт байвал захиалахаасаа өмнө бизнестэй холбогдоорой. xale
-            нь зуучлагч — хоолны чанарыг бизнес өөрөө хариуцна.
-          </p>
-        </section>
-
-        <section className="mt-4 rounded-3xl border border-green-200 bg-green-50/70 p-6">
-          <h2 className="text-lg font-bold text-green-800">Бизнесүүдэд</h2>
+        <section className="mt-10 rounded-3xl border border-green-200 bg-green-50/70 p-6">
+          <h2 className="text-lg font-bold text-green-800">Дэлгүүрт</h2>
           <p className="mt-2 text-sm leading-relaxed text-stone-700">
-            Азтай уут оруулах <strong>үнэгүй</strong>. Ирээдүйд гүйлгээний
-            шимтгэл (төсөл) — одоо идэвхгүй.{" "}
-            <Link
-              href="/payment-terms"
-              className="font-semibold text-green-700 hover:underline"
-            >
-              Төлбөрийн нөхцөл
-            </Link>
-          </p>
-        </section>
-
-        <section className="mt-4 rounded-3xl border border-stone-200 bg-white p-6">
-          <h2 className="text-lg font-bold text-green-800">Утасны апп (PWA v1)</h2>
-          <p className="mt-2 text-sm leading-relaxed text-stone-600">
-            Сайтыг утасны нүүр дэлгэцэд нэмж апп шиг ашиглана. Native апп болон
-            xale.mn — дараагийн шат.
+            Зөвхөн авах кодоор уут өгнө. Банкны данс{" "}
+            <Link href="/seller/settings" className="font-semibold text-green-700">
+              тохиргоонд
+            </Link>{" "}
+            — Баасан гаригт шилжүүлэг.
           </p>
         </section>
 
         <div className="mt-10 flex flex-wrap gap-3">
-          <Link href="/listings" className="btn-primary !px-8 !py-3.5">
-            Азтай уут ол
+          <Link href="/map" className="btn-primary !px-8 !py-3.5">
+            Газрын зураг
           </Link>
           <Link href="/signup" className="btn-secondary !px-8 !py-3.5">
             Бүртгүүлэх

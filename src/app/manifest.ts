@@ -2,35 +2,17 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "xale — Азтай уут",
-    short_name: "xale",
-    description:
-      "Азтай уут: ол → захиал → ав. Улаанбаатар.",
+    name: "Хайран — Азтай уут",
+    short_name: "Хайран",
+    description: "Хайран Юм · ол → захиал → ав. Улаанбаатар.",
     start_url: "/",
-    scope: "/",
     display: "standalone",
     background_color: "#F7F4EF",
     theme_color: "#0B3D2E",
     lang: "mn",
     icons: [
-      {
-        src: "/icons/icon-192.png",
-        sizes: "192x192",
-        type: "image/png",
-        purpose: "any",
-      },
-      {
-        src: "/icons/icon-512.png",
-        sizes: "512x512",
-        type: "image/png",
-        purpose: "any",
-      },
-      {
-        src: "/icons/icon-512-maskable.png",
-        sizes: "512x512",
-        type: "image/png",
-        purpose: "maskable",
-      },
+      { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
   };
 }

@@ -37,7 +37,7 @@ export default async function SellerListingsPage() {
           <p className="text-sm text-stone-600">Сайн байна уу, {session.name}</p>
         </div>
         <Link href="/seller/listings/new" className="btn-primary">
-          + Шинэ Bag
+          + Шинэ азтай уут
         </Link>
       </div>
 
@@ -51,7 +51,7 @@ export default async function SellerListingsPage() {
           title="Одоогоор Азтай уут байхгүй"
           description="Илүүдэл хоолоо Азтай уут болгон оруулаад хаягдлыг бууруулаарай."
           actionHref="/seller/listings/new"
-          actionLabel="Эхний Bag үүсгэх"
+          actionLabel="Эхний азтай уут үүсгэх"
         />
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-stone-200 bg-white shadow-sm">

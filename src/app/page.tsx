@@ -211,7 +211,7 @@ export default async function HomePage() {
       <section className="bg-white py-16">
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-center text-2xl font-bold text-stone-900 sm:text-3xl">
-            Яагаад xale вэ?
+            Яагаад Хайран вэ?
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-stone-600">
             Талхны дэлгүүр, кафе, ресторан, зочид буудал, хүнсний дэлгүүрүүд
@@ -248,7 +248,7 @@ export default async function HomePage() {
           <p className="mx-auto mt-8 max-w-2xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-xs leading-relaxed text-amber-950">
             <strong>Хүнсний аюулгүй байдал:</strong> Азтай уутны агуулга
             өөрчлөгдөж болно. Харшил / хоолны хязгаарлалт байвал захиалахаасаа
-            өмнө бизнестэй холбогдоорой. xale нь зуучлагч платформ.
+            өмнө бизнестэй холбогдоорой. Хайран нь зуучлагч платформ.
           </p>
         </div>
       </section>

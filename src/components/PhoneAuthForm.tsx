@@ -441,11 +441,11 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
               </p>
               <ul className="mt-1 space-y-0.5">
                 <li>
-                  <code className="rounded bg-white px-1">seller@xale.mn</code> —
+                  <code className="rounded bg-white px-1">seller@hairan.mn</code> —
                   худалдагч
                 </li>
                 <li>
-                  <code className="rounded bg-white px-1">buyer@xale.mn</code> —
+                  <code className="rounded bg-white px-1">buyer@hairan.mn</code> —
                   худалдан авагч
                 </li>
               </ul>

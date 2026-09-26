@@ -60,8 +60,8 @@ export default function AdminLoginPage() {
             required
             autoComplete="username"
             className="input"
-            placeholder="admin@xale.mn"
-            defaultValue="admin@xale.mn"
+            placeholder="admin@hairan.mn"
+            defaultValue="admin@hairan.mn"
           />
         </div>
         <div>
