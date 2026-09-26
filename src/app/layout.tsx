@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Хайран — Азтай уут",
-    description: "Хайран Юм · илүүдэл хоолыг хаягдахаас авар. Улаанбаатар.",
+    description: "Хайран Юм · Азтай уут: ол → захиал → ав. Улаанбаатар.",
     locale: "mn_MN",
     type: "website",
   },

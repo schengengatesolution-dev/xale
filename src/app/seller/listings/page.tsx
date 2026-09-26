@@ -49,7 +49,7 @@ export default async function SellerListingsPage() {
         <EmptyState
           icon="🛍️"
           title="Одоогоор Азтай уут байхгүй"
-          description="Илүүдэл хоолоо Азтай уут болгон оруулаад хаягдлыг бууруулаарай."
+          description="Борлуулагдаж амжаагүй бүтээгдэхүүнээ Азтай уут болгон оруулаарай."
           actionHref="/seller/listings/new"
           actionLabel="Эхний азтай уут үүсгэх"
         />

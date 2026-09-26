@@ -14,17 +14,12 @@ const STEPS = [
   {
     step: "2",
     title: "Захиал",
-    text: "Reserve товчоор нөөцлөнө. Апп доторх төлбөр удахгүй — одоо авах үедээ төлнө.",
+    text: "Захиалж QPay-ээр төлнө. Төлбөр амжилттай болсны дараа авах код гарч ирнэ.",
   },
   {
     step: "3",
     title: "Ав",
-    text: "Тохирсон авах цонхонд дэлгүүр / ресторан / кафе дээр очиж авна.",
-  },
-  {
-    step: "4",
-    title: "Хаягдал↓",
-    text: "Жижиглэнгийн ~⅓ үнээр авч хаягдал багасгана — агуулга гайхшрал, өдөр бүр өөр.",
+    text: "Авах цонхонд дэлгүүрт очиж кодоо хэлээд уутаа авна.",
   },
 ];
 
@@ -73,17 +68,15 @@ export default async function HomePage() {
             Улаанбаатар · Азтай уут
           </div>
           <h1 className="mt-5 max-w-2xl text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.25rem]">
-            Сайн хоолыг{" "}
-            <span className="text-cream-200">хаягдахаас</span> авар —
-            Азтай уут
+            Хайран юм,{" "}
+            <span className="text-cream-200">Азтай уутанд</span> байгаа
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-green-100">
-            Ойролцоох бизнесийн <strong>Азтай уут</strong>-ыг{" "}
-            <strong>ол</strong> → <strong>захиал</strong> → <strong>ав</strong>.
-            Ангилал тодорхой (талх, кафе, ресторан…), харин доторх зүйлийг
-            сонгохгүй — өдөр бүр өөрчлөгдөнө. Тиймээс үнэ нь жижиглэнгийн
-            ойролцоогоор <strong>3 дахин хямд</strong> (жишээ: ~15,000₮ →
-            ~5,000₮).
+            Ойролцоох азтай уутыг <strong>ол</strong> → <strong>захиал</strong> →{" "}
+            <strong>ав</strong>. Ямар төрлийн бүтээгдэхүүн уутанд байгааг бид
+            хэлнэ, харин яг юу азтай уутанд байхыг та л олж мэднэ. Ажлын цагаар
+            борлуулагдаж амжаагүй бүтээгдэхүүнийг — Азтай уутнаас{" "}
+            <strong>3 дахин хямдаар</strong>.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {session ? (
@@ -123,8 +116,8 @@ export default async function HomePage() {
             </div>
             <div className="hidden h-10 w-px bg-white/20 sm:block" />
             <div>
-              <p className="text-2xl font-bold text-white">Төлбөр офлайн</p>
-              <p>Апп доторх төлбөр удахгүй</p>
+              <p className="text-2xl font-bold text-white">QPay</p>
+              <p>Төл → авах код ав</p>
             </div>
             <div className="hidden h-10 w-px bg-white/20 sm:block" />
             <div>
@@ -146,7 +139,7 @@ export default async function HomePage() {
                 ол → захиал → ав
               </h2>
               <p className="mt-1 text-sm text-stone-600">
-                Азтай уут — 3 алхам (+ хаягдал↓)
+                Азтай уут — 3 алхам
               </p>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone-600">
                 Ангилал тодорхой, доторх зүйлийг сонгохгүй (гайхшрал). Үнэ нь
@@ -161,7 +154,7 @@ export default async function HomePage() {
               Дэлгэрэнгүй →
             </Link>
           </div>
-          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-10 grid gap-4 sm:grid-cols-3">
             {STEPS.map((s) => (
               <li key={s.step} className="card relative overflow-hidden">
                 <span className="flex h-11 w-11 items-center justify-center rounded-full bg-green-600 text-lg font-bold text-white shadow-sm">
@@ -215,8 +208,9 @@ export default async function HomePage() {
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-stone-600">
             Талхны дэлгүүр, кафе, ресторан, зочид буудал, хүнсний дэлгүүрүүд
-            өдөр бүр илүүдэл хоол үлдээдэг. <strong>Азтай уут</strong>-аар
-            энэ хоолыг хямд үнээр хэрэглэгчидэд хүргэнэ — хаягдал буурна.
+            өдөр бүр борлуулагдаж амжаагүй бүтээгдэхүүн үлдээдэг.{" "}
+            <strong>Азтай уут</strong>-аар тэдгээрийг зах зээлийн үнээс ойролцоогоор
+            3 дахин хямдаар авна.
           </p>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {[
@@ -231,9 +225,9 @@ export default async function HomePage() {
                 text: "Захиалсны дараа тохирсон цагт очиж авна — нөөцлөгдөнө.",
               },
               {
-                icon: "🌍",
-                title: "Хаягдал↓",
-                text: "Сайн хоол хаягдахгүй. Худалдагч, худалдан авагч хоёулаа хожно.",
+                icon: "🤝",
+                title: "Хоёр тал хожно",
+                text: "Бизнес борлуулагдаж амжаагүй бараагаа зарна. Худалдан авагч хямдаар авна.",
               },
             ].map((item) => (
               <div key={item.title} className="card text-center">
@@ -318,8 +312,8 @@ export default async function HomePage() {
       <section className="bg-green-900 py-16 text-center text-white">
         <h2 className="text-2xl font-bold sm:text-3xl">Одоо эхлээрэй</h2>
         <p className="mx-auto mt-3 max-w-md text-green-100">
-          Азтай уутаараа сайн хоолыг хаягдахаас авар. Утаснаасаа «Нүүр
-          дэлгэцэд нэмэх»-ээр апп шиг ашиглана.
+          Ойролцоох Азтай уутыг ол → захиал → ав. Утаснаасаа «Нүүр дэлгэцэд
+          нэмэх»-ээр апп шиг ашиглана.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {!session ? (
