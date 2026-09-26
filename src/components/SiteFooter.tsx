@@ -13,13 +13,14 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
         <div>
           <p className="flex items-center gap-2 text-lg font-bold text-stone-900">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-600 text-sm text-white">
-              x
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600 text-sm text-white">
+              Х
             </span>
-            xale
+            Хайран
           </p>
+          <p className="mt-1 text-sm font-medium text-green-800">Хайран Юм</p>
           <p className="mt-3 text-sm leading-relaxed text-stone-500">
-            Азтай уут зах зээл — илүүдэл хоолыг хаягдахаас авар. Улаанбаатар.
+            Азтай уут зах зээлийн үнээс 2-3 дахин хямд.
           </p>
         </div>
         <div>
@@ -58,17 +59,20 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-sm font-semibold text-stone-900">Тун удахгүй</p>
+          <p className="text-sm font-semibold text-stone-900">Холбоо барих</p>
           <p className="mt-3 text-sm text-stone-500">
-            Домэйн: <span className="font-medium text-stone-700">xale.mn</span>
+            Утас:{" "}
+            <a href="tel:+97694061666" className="font-medium text-stone-700 hover:text-green-700">
+              +976 94061666
+            </a>
           </p>
-          <p className="mt-1 text-xs text-stone-400">
-            Одоо: xale-app.vercel.app · PWA v1 (нүүр дэлгэцэд нэмэх)
+          <p className="mt-2 text-sm text-stone-500">
+            Домэйн: <span className="font-medium text-stone-700">hairan.mn</span>
           </p>
         </div>
       </div>
       <div className="border-t border-stone-100 py-4 text-center text-xs text-stone-400">
-        © {new Date().getFullYear()} xale · MVP
+        © {new Date().getFullYear()} Хайран · hairan.mn
       </div>
     </footer>
   );
