@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useEffect, useState } from "react";
-import { useT } from "@/lib/i18n";
 
 type Step = "phone" | "code" | "role";
 type Purpose = "login" | "register";
@@ -18,7 +17,6 @@ type Props = {
 
 export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
   const router = useRouter();
-  const t = useT();
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
   const [normalizedPhone, setNormalizedPhone] = useState("");
@@ -36,8 +34,8 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
 
   useEffect(() => {
     if (cooldown <= 0) return;
-    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
   }, [cooldown]);
 
   const redirectAfterAuth = useCallback(
@@ -60,7 +58,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error || t("auth.errSend"));
+        setError(data.error || "Код илгээхэд алдаа гарлаа");
         if (data.retryAfterSeconds) setCooldown(data.retryAfterSeconds);
         return;
       }
@@ -70,7 +68,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
       setStep("code");
       setCode("");
     } catch {
-      setError(t("auth.errNetwork"));
+      setError("Сүлжээний алдаа. Дахин оролдоно уу.");
     } finally {
       setLoading(false);
     }
@@ -102,7 +100,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error || t("auth.errVerify"));
+        setError(data.error || "Баталгаажуулахад алдаа гарлаа");
         return;
       }
       if (data.needsRole) {
@@ -114,7 +112,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
         redirectAfterAuth(data.user.role);
       }
     } catch {
-      setError(t("auth.errNetwork"));
+      setError("Сүлжээний алдаа. Дахин оролдоно уу.");
     } finally {
       setLoading(false);
     }
@@ -137,7 +135,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          setError(data.error || t("auth.errLogin"));
+          setError(data.error || "Нэвтрэхэд алдаа гарлаа");
           return;
         }
         redirectAfterAuth(data.user.role);
@@ -145,7 +143,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
         const password = String(fd.get("password") || "");
         const passwordConfirm = String(fd.get("passwordConfirm") || "");
         if (password !== passwordConfirm) {
-          setError(t("auth.errPasswordMismatch"));
+          setError("Нууц үг таарахгүй байна. Дахин оруулна уу.");
           return;
         }
         const emailRole = (fd.get("emailRole") as Role) || "BUYER";
@@ -170,13 +168,13 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          setError(data.error || t("auth.errSignup"));
+          setError(data.error || "Бүртгүүлэхэд алдаа гарлаа");
           return;
         }
         redirectAfterAuth(data.user.role);
       }
     } catch {
-      setError(t("auth.errNetwork"));
+      setError("Сүлжээний алдаа. Дахин оролдоно уу.");
     } finally {
       setLoading(false);
     }
@@ -189,7 +187,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
           {error && <div className="alert-error">{error}</div>}
           <div>
             <label className="label" htmlFor="phone">
-              {t("auth.phoneLabel")}
+              Утасны дугаар
             </label>
             <input
               id="phone"
@@ -202,10 +200,12 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
-            <p className="mt-1.5 text-xs text-stone-500">{t("auth.phoneHint")}</p>
+            <p className="mt-1.5 text-xs text-stone-500">
+              +976 + 8 орон. SMS: «Hairan Kod: ……»
+            </p>
           </div>
           <button type="submit" disabled={loading} className="btn-primary w-full">
-            {loading ? t("auth.pleaseWait") : t("auth.getCode")}
+            {loading ? "Түр хүлээнэ үү..." : "Код авах"}
           </button>
         </form>
       )}
@@ -217,11 +217,11 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
             <span className="font-medium text-stone-800">
               {normalizedPhone || phone}
             </span>{" "}
-            {t("auth.codeSent")}
+            дугаарт код илгээлээ.
           </p>
           <div>
             <label className="label" htmlFor="code">
-              {t("auth.codeLabel")}
+              6 оронтой код
             </label>
             <input
               id="code"
@@ -235,14 +235,16 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
             />
-            <p className="mt-1.5 text-xs text-stone-500">{t("auth.codeHint")}</p>
+            <p className="mt-1.5 text-xs text-stone-500">
+              Мессеж: Hairan Kod: XXXXXX
+            </p>
           </div>
           <button
             type="submit"
             disabled={loading || code.length !== 6}
             className="btn-primary w-full"
           >
-            {loading ? t("auth.pleaseWait") : t("auth.verify")}
+            {loading ? "Түр хүлээнэ үү..." : "Баталгаажуулах"}
           </button>
           <div className="flex items-center justify-between gap-2 text-sm">
             <button
@@ -254,7 +256,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
                 setCode("");
               }}
             >
-              {t("auth.changePhone")}
+              ← Утас солих
             </button>
             <button
               type="button"
@@ -266,13 +268,13 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
                   : "text-green-700 hover:underline"
               }`}
             >
-              {cooldown > 0
-                ? t("auth.resendCooldown", { n: cooldown })
-                : t("auth.resend")}
+              {cooldown > 0 ? `Дахин илгээх (${cooldown}с)` : "Дахин илгээх"}
             </button>
           </div>
           {userExists && (
-            <p className="text-xs text-stone-500">{t("auth.phoneExists")}</p>
+            <p className="text-xs text-stone-500">
+              Энэ утас бүртгэлтэй — нэвтэрнэ.
+            </p>
           )}
         </form>
       )}
@@ -280,9 +282,11 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
       {step === "role" && (
         <form onSubmit={verifyCode} className="card space-y-4">
           {error && <div className="alert-error">{error}</div>}
-          <p className="text-sm text-stone-600">{t("auth.rolePrompt")}</p>
+          <p className="text-sm text-stone-600">
+            Код зөв. Таны төрлийг сонгоно уу.
+          </p>
           <div>
-            <span className="label">{t("auth.roleLabel")}</span>
+            <span className="label">Төрөл</span>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
@@ -293,7 +297,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
                     : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
                 }`}
               >
-                {t("auth.buyer")}
+                Худалдан авагч
               </button>
               <button
                 type="button"
@@ -304,16 +308,18 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
                     : "border-stone-200 bg-white text-stone-600 hover:border-stone-300"
                 }`}
               >
-                {t("auth.seller")}
+                Худалдагч
               </button>
             </div>
             <p className="mt-2 text-xs text-stone-500">
-              {role === "SELLER" ? t("auth.sellerHint") : t("auth.buyerHint")}
+              {role === "SELLER"
+                ? "Азтай уут нийтэлнэ. Банкны мэдээлэл заавал — долоо хоног бүр данс руу шилжүүлнэ."
+                : "Зарууд үзэж, захиална."}
             </p>
           </div>
           <div>
             <label className="label" htmlFor="otpName">
-              {t("auth.nameLabel")}
+              Нэр / Байгууллагын нэр
             </label>
             <input
               id="otpName"
@@ -321,31 +327,27 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete="name"
-              placeholder={
-                role === "SELLER"
-                  ? t("auth.namePlaceholderSeller")
-                  : t("auth.namePlaceholderBuyer")
-              }
+              placeholder={role === "SELLER" ? "Дэлгүүрийн нэр" : "Таны нэр"}
             />
           </div>
           {role === "SELLER" && (
             <>
               <div>
                 <label className="label" htmlFor="otpBankName">
-                  {t("auth.bankName")}
+                  Банкны нэр *
                 </label>
                 <input
                   id="otpBankName"
                   required
                   className="input"
-                  placeholder={t("auth.bankNamePh")}
+                  placeholder="Жишээ: Хаан банк"
                   value={bankName}
                   onChange={(e) => setBankName(e.target.value)}
                 />
               </div>
               <div>
                 <label className="label" htmlFor="otpBankAccount">
-                  {t("auth.bankAccount")}
+                  Дансны дугаар *
                 </label>
                 <input
                   id="otpBankAccount"
@@ -358,7 +360,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
               </div>
               <div>
                 <label className="label" htmlFor="otpBankAccountName">
-                  {t("auth.bankAccountName")}
+                  Данс эзэмшигчийн нэр *
                 </label>
                 <input
                   id="otpBankAccountName"
@@ -368,17 +370,19 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
                   onChange={(e) => setBankAccountName(e.target.value)}
                 />
               </div>
-              <p className="text-xs text-stone-500">{t("auth.payoutNote")}</p>
+              <p className="text-xs text-stone-500">
+                Пүрэв шөнө cutoff → Баасан гаригт таны данс
+              </p>
             </>
           )}
           <button type="submit" disabled={loading} className="btn-primary w-full">
-            {loading ? t("auth.pleaseWait") : t("auth.createAccount")}
+            {loading ? "Түр хүлээнэ үү..." : "Бүртгэл үүсгэх"}
           </button>
         </form>
       )}
 
       <p className="text-center text-sm text-stone-600">
-        {purpose === "login" ? t("auth.noAccount") : t("auth.hasAccount")}{" "}
+        {purpose === "login" ? "Бүртгэлгүй юу?" : "Аль хэдийн бүртгэлтэй юу?"}{" "}
         <Link href={altHref} className="font-semibold text-green-700 hover:underline">
           {altLabel}
         </Link>
@@ -393,7 +397,9 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
           }}
           className="w-full text-center text-xs font-medium text-stone-500 hover:text-stone-800"
         >
-          {showEmailFallback ? t("auth.backToPhone") : t("auth.emailFallback")}
+          {showEmailFallback
+            ? "Утасны кодоор буцах ▲"
+            : "Имэйл + нууц үг (хуучин арга) ▼"}
         </button>
 
         {showEmailFallback && purpose === "login" && (
@@ -401,7 +407,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
             {error && <div className="alert-error">{error}</div>}
             <div>
               <label className="label" htmlFor="email">
-                {t("auth.email")}
+                Имэйл
               </label>
               <input
                 id="email"
@@ -415,7 +421,7 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
             </div>
             <div>
               <label className="label" htmlFor="password">
-                {t("auth.password")}
+                Нууц үг
               </label>
               <input
                 id="password"
@@ -427,18 +433,20 @@ export default function PhoneAuthForm({ purpose, altHref, altLabel }: Props) {
               />
             </div>
             <button type="submit" disabled={loading} className="btn-secondary w-full">
-              {loading ? t("auth.pleaseWait") : t("auth.loginEmail")}
+              {loading ? "Түр хүлээнэ үү..." : "Имэйлээр нэвтрэх"}
             </button>
             <div className="rounded-xl border border-stone-200 bg-stone-50 p-3 text-xs text-stone-600">
-              <p className="font-semibold text-stone-800">{t("auth.demoTitle")}</p>
+              <p className="font-semibold text-stone-800">
+                Demo (нууц үг: demo1234)
+              </p>
               <ul className="mt-1 space-y-0.5">
                 <li>
-                  <code className="rounded bg-white px-1">seller@hairan.mn</code> —{" "}
-                  {t("auth.demoSeller")}
+                  <code className="rounded bg-white px-1">seller@hairan.mn</code> —
+                  худалдагч
                 </li>
                 <li>
-                  <code className="rounded bg-white px-1">buyer@hairan.mn</code> —{" "}
-                  {t("auth.demoBuyer")}
+                  <code className="rounded bg-white px-1">buyer@hairan.mn</code> —
+                  худалдан авагч
                 </li>
               </ul>
             </div>
@@ -466,14 +474,13 @@ function EmailSignupFallback({
   error: string;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
 }) {
-  const t = useT();
   const [role, setRole] = useState<Role>("BUYER");
   return (
     <form onSubmit={onSubmit} className="mt-4 space-y-3">
       {error && <div className="alert-error">{error}</div>}
       <input type="hidden" name="emailRole" value={role} />
       <div>
-        <span className="label">{t("auth.roleLabel")}</span>
+        <span className="label">Төрөл</span>
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
@@ -484,7 +491,7 @@ function EmailSignupFallback({
                 : "border-stone-200"
             }`}
           >
-            {t("auth.buyer")}
+            Худалдан авагч
           </button>
           <button
             type="button"
@@ -495,25 +502,25 @@ function EmailSignupFallback({
                 : "border-stone-200"
             }`}
           >
-            {t("auth.seller")}
+            Худалдагч
           </button>
         </div>
       </div>
       <div>
         <label className="label" htmlFor="fbName">
-          {t("auth.name")}
+          Нэр
         </label>
         <input id="fbName" name="name" required className="input" />
       </div>
       <div>
         <label className="label" htmlFor="fbEmail">
-          {t("auth.email")}
+          Имэйл
         </label>
         <input id="fbEmail" name="email" type="email" required className="input" />
       </div>
       <div>
         <label className="label" htmlFor="fbPassword">
-          {t("auth.password")}
+          Нууц үг
         </label>
         <input
           id="fbPassword"
@@ -526,7 +533,7 @@ function EmailSignupFallback({
       </div>
       <div>
         <label className="label" htmlFor="fbPasswordConfirm">
-          {t("auth.passwordConfirm")}
+          Нууц үг давтах
         </label>
         <input
           id="fbPasswordConfirm"
@@ -539,7 +546,7 @@ function EmailSignupFallback({
       </div>
       <div>
         <label className="label" htmlFor="fallbackPhone">
-          {t("auth.phone")}
+          Утас
         </label>
         <input
           id="fallbackPhone"
@@ -553,13 +560,13 @@ function EmailSignupFallback({
         <>
           <div>
             <label className="label" htmlFor="fbBankName">
-              {t("auth.bankName")}
+              Банкны нэр *
             </label>
             <input id="fbBankName" name="bankName" required className="input" />
           </div>
           <div>
             <label className="label" htmlFor="fbBankAccount">
-              {t("auth.bankAccount")}
+              Дансны дугаар *
             </label>
             <input
               id="fbBankAccount"
@@ -571,7 +578,7 @@ function EmailSignupFallback({
           </div>
           <div>
             <label className="label" htmlFor="fbBankAccountName">
-              {t("auth.bankAccountName")}
+              Данс эзэмшигчийн нэр *
             </label>
             <input
               id="fbBankAccountName"
@@ -583,7 +590,7 @@ function EmailSignupFallback({
         </>
       )}
       <button type="submit" disabled={loading} className="btn-secondary w-full">
-        {loading ? t("auth.pleaseWait") : t("auth.signupEmail")}
+        {loading ? "Түр хүлээнэ үү..." : "Имэйлээр бүртгүүлэх"}
       </button>
     </form>
   );

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { LogoutButton } from "./LogoutButton";
-import { useT } from "@/lib/i18n";
 
 type Props = {
   session: {
@@ -14,13 +13,12 @@ type Props = {
 
 export function MobileMenu({ session }: Props) {
   const [open, setOpen] = useState(false);
-  const t = useT();
 
   return (
     <div className="md:hidden">
       <button
         type="button"
-        aria-label={open ? t("nav.closeMenu") : t("nav.openMenu")}
+        aria-label={open ? "Цэс хаах" : "Цэс нээх"}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-stone-200 bg-white text-stone-700 hover:bg-stone-50"
@@ -44,21 +42,21 @@ export function MobileMenu({ session }: Props) {
               onClick={() => setOpen(false)}
               className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
             >
-              {t("nav.luckyBagsMap")}
+              Азтай уут · зураг
             </Link>
             <Link
               href="/listings"
               onClick={() => setOpen(false)}
               className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
             >
-              {t("nav.listings")}
+              Жагсаалт
             </Link>
             <Link
               href="/how-it-works"
               onClick={() => setOpen(false)}
               className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
             >
-              {t("nav.howItWorks")}
+              Хэрхэн ажилладаг вэ?
             </Link>
             {session?.role === "SELLER" && (
               <>
@@ -67,28 +65,28 @@ export function MobileMenu({ session }: Props) {
                   onClick={() => setOpen(false)}
                   className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
                 >
-                  {t("nav.dashboard")}
+                  Самбар
                 </Link>
                 <Link
                   href="/seller/listings"
                   onClick={() => setOpen(false)}
                   className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
                 >
-                  {t("nav.myListings")}
+                  Миний зарууд
                 </Link>
                 <Link
                   href="/seller/listings/new"
                   onClick={() => setOpen(false)}
                   className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
                 >
-                  {t("nav.newListing")}
+                  Шинэ зар
                 </Link>
                 <Link
                   href="/seller/reservations"
                   onClick={() => setOpen(false)}
                   className="rounded-lg px-3 py-2.5 font-medium text-stone-700 hover:bg-stone-100"
                 >
-                  {t("nav.interests")}
+                  Сонирхол
                 </Link>
               </>
             )}
@@ -104,14 +102,14 @@ export function MobileMenu({ session }: Props) {
                   onClick={() => setOpen(false)}
                   className="btn-secondary flex-1 !py-2"
                 >
-                  {t("nav.login")}
+                  Нэвтрэх
                 </Link>
                 <Link
                   href="/signup"
                   onClick={() => setOpen(false)}
                   className="btn-primary flex-1 !py-2"
                 >
-                  {t("nav.signup")}
+                  Бүртгүүлэх
                 </Link>
               </div>
             )}

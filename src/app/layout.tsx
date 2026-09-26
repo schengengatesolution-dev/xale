@@ -6,8 +6,6 @@ import { BottomNav } from "@/components/BottomNav";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { getSession } from "@/lib/auth";
 import { SiteFooter } from "@/components/SiteFooter";
-import { LocaleProvider } from "@/lib/i18n";
-import { getLocale } from "@/lib/i18n/server";
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
@@ -53,20 +51,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getSession();
-  const locale = getLocale();
 
   return (
-    <html lang={locale}>
+    <html lang="mn">
       <body className={inter.className}>
-        <LocaleProvider initialLocale={locale}>
-          <Navbar />
-          <main className="min-h-[calc(100vh-4rem)] pb-20 md:pb-0">{children}</main>
-          <SiteFooter />
-          <BottomNav
-            session={session ? { role: session.role } : null}
-          />
-          <ServiceWorkerRegister />
-        </LocaleProvider>
+        <Navbar />
+        <main className="min-h-[calc(100vh-4rem)] pb-20 md:pb-0">{children}</main>
+        <SiteFooter />
+        <BottomNav
+          session={session ? { role: session.role } : null}
+        />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

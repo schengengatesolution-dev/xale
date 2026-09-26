@@ -2,20 +2,34 @@ import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
-import { createT, getLocale } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
+const STEPS = [
+  {
+    step: "1",
+    title: "Ол",
+    text: "Ойролцоох Азтай уутнуудыг дүүрэг, ангиллаар шүүж олно. Ангилал тодорхой.",
+  },
+  {
+    step: "2",
+    title: "Захиал",
+    text: "Reserve товчоор нөөцлөнө. Апп доторх төлбөр удахгүй — одоо авах үедээ төлнө.",
+  },
+  {
+    step: "3",
+    title: "Ав",
+    text: "Тохирсон авах цонхонд дэлгүүр / ресторан / кафе дээр очиж авна.",
+  },
+  {
+    step: "4",
+    title: "Хаягдал↓",
+    text: "Жижиглэнгийн ~⅓ үнээр авч хаягдал багасгана — агуулга гайхшрал, өдөр бүр өөр.",
+  },
+];
+
 export default async function HomePage() {
   const session = await getSession();
-  const t = createT(getLocale());
-
-  const STEPS = [
-    { step: "1", title: t("home.step1Title"), text: t("home.step1Text") },
-    { step: "2", title: t("home.step2Title"), text: t("home.step2Text") },
-    { step: "3", title: t("home.step3Title"), text: t("home.step3Text") },
-    { step: "4", title: t("home.step4Title"), text: t("home.step4Text") },
-  ];
 
   let featured: Array<{
     id: string;
@@ -56,25 +70,20 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:py-24">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cream-100 backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-cream-200" />
-            {t("home.badge")}
+            Улаанбаатар · Азтай уут
           </div>
           <h1 className="mt-5 max-w-2xl text-4xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-[3.25rem]">
-            {t("home.heroTitleBefore")}{" "}
-            <span className="text-cream-200">{t("home.heroTitleHighlight")}</span>{" "}
-            {t("home.heroTitleAfter")}
+            Сайн хоолыг{" "}
+            <span className="text-cream-200">хаягдахаас</span> авар —
+            Азтай уут
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-green-100">
-            {t("home.heroBodyBefore")}
-            <strong>{t("home.heroBodyLucky")}</strong>
-            {t("home.heroBodyMid")}
-            <strong>{t("home.heroBodyFind")}</strong>
-            {t("home.heroBodyArrow1")}
-            <strong>{t("home.heroBodyOrder")}</strong>
-            {t("home.heroBodyArrow2")}
-            <strong>{t("home.heroBodyPick")}</strong>
-            {t("home.heroBodyAfter")}
-            <strong>{t("home.heroBodyCheap")}</strong>
-            {t("home.heroBodyEnd")}
+            Ойролцоох бизнесийн <strong>Азтай уут</strong>-ыг{" "}
+            <strong>ол</strong> → <strong>захиал</strong> → <strong>ав</strong>.
+            Ангилал тодорхой (талх, кафе, ресторан…), харин доторх зүйлийг
+            сонгохгүй — өдөр бүр өөрчлөгдөнө. Тиймээс үнэ нь жижиглэнгийн
+            ойролцоогоор <strong>3 дахин хямд</strong> (жишээ: ~15,000₮ →
+            ~5,000₮).
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {session ? (
@@ -82,9 +91,7 @@ export default async function HomePage() {
                 href={session.role === "SELLER" ? "/seller" : "/map"}
                 className="rounded-xl bg-cream-100 px-6 py-3.5 text-sm font-bold text-green-800 shadow-lg hover:bg-white"
               >
-                {session.role === "SELLER"
-                  ? t("home.ctaDashboard")
-                  : t("home.ctaNearbyBags")}
+                {session.role === "SELLER" ? "Самбар руу" : "Ойролцоох уутнууд"}
               </Link>
             ) : (
               <>
@@ -92,13 +99,13 @@ export default async function HomePage() {
                   href="/map"
                   className="rounded-xl bg-cream-100 px-6 py-3.5 text-sm font-bold text-green-800 shadow-lg hover:bg-white"
                 >
-                  {t("home.ctaNearby")}
+                  Ойролцоох Азтай уут ол
                 </Link>
                 <Link
                   href="/signup"
                   className="rounded-xl border border-white/35 bg-white/10 px-6 py-3.5 text-sm font-semibold backdrop-blur hover:bg-white/20"
                 >
-                  {t("home.ctaFreeSignup")}
+                  Үнэгүй бүртгүүлэх
                 </Link>
               </>
             )}
@@ -106,23 +113,23 @@ export default async function HomePage() {
               href="/how-it-works"
               className="rounded-xl px-4 py-3.5 text-sm font-semibold text-cream-100/90 underline-offset-4 hover:underline"
             >
-              {t("home.howLink")}
+              Хэрхэн ажилладаг вэ?
             </Link>
           </div>
           <div className="mt-10 flex flex-wrap gap-6 text-sm text-green-100/90">
             <div>
-              <p className="text-2xl font-bold text-white">{t("home.statSteps")}</p>
-              <p>{t("home.statStepsSub")}</p>
+              <p className="text-2xl font-bold text-white">3 алхам</p>
+              <p>ол → захиал → ав</p>
             </div>
             <div className="hidden h-10 w-px bg-white/20 sm:block" />
             <div>
-              <p className="text-2xl font-bold text-white">{t("home.statPay")}</p>
-              <p>{t("home.statPaySub")}</p>
+              <p className="text-2xl font-bold text-white">Төлбөр офлайн</p>
+              <p>Апп доторх төлбөр удахгүй</p>
             </div>
             <div className="hidden h-10 w-px bg-white/20 sm:block" />
             <div>
-              <p className="text-2xl font-bold text-white">{t("home.statDistricts")}</p>
-              <p>{t("home.statDistrictsSub")}</p>
+              <p className="text-2xl font-bold text-white">УБ дүүргүүд</p>
+              <p>Авах цонх · дүүрэг шүүнэ</p>
             </div>
           </div>
         </div>
@@ -133,21 +140,25 @@ export default async function HomePage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-coral-400">
-                {t("home.howLabel")}
+                Хэрхэн ашиглах вэ?
               </p>
               <h2 className="mt-2 text-2xl font-bold text-green-600 sm:text-3xl">
-                {t("home.howTitle")}
+                ол → захиал → ав
               </h2>
-              <p className="mt-1 text-sm text-stone-600">{t("home.howSubtitle")}</p>
+              <p className="mt-1 text-sm text-stone-600">
+                Азтай уут — 3 алхам (+ хаягдал↓)
+              </p>
               <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone-600">
-                {t("home.howBlurb")}
+                Ангилал тодорхой, доторх зүйлийг сонгохгүй (гайхшрал). Үнэ нь
+                жижиглэнгийн ойролцоогоор 3 дахин хямд — жишээ: ~15,000₮ үнэ
+                цэнэ → ~5,000₮ Азтай уут.
               </p>
             </div>
             <Link
               href="/how-it-works"
               className="text-sm font-semibold text-green-700 hover:underline"
             >
-              {t("home.more")}
+              Дэлгэрэнгүй →
             </Link>
           </div>
           <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -157,7 +168,7 @@ export default async function HomePage() {
                   {s.step}
                 </span>
                 <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.15em] text-coral-400">
-                  {t("home.stepLabel")} {s.step}
+                  Алхам {s.step}
                 </p>
                 <h3 className="mt-1 text-xl font-bold uppercase tracking-tight text-green-600">
                   {s.title}
@@ -176,15 +187,17 @@ export default async function HomePage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-bold text-stone-900 sm:text-3xl">
-                {t("home.featuredTitle")}
+                Ойролцоох Азтай уут
               </h2>
-              <p className="mt-1 text-sm text-stone-600">{t("home.featuredSub")}</p>
+              <p className="mt-1 text-sm text-stone-600">
+                Идэвхтэй уутнууд · Улаанбаатар
+              </p>
             </div>
             <Link
               href="/map"
               className="text-sm font-semibold text-green-700 hover:underline"
             >
-              {t("home.viewAll")}
+              Бүгдийг үзэх →
             </Link>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -198,29 +211,29 @@ export default async function HomePage() {
       <section className="bg-white py-16">
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-center text-2xl font-bold text-stone-900 sm:text-3xl">
-            {t("home.whyTitle")}
+            Яагаад Хайран вэ?
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-stone-600">
-            {t("home.whyBodyBefore")}
-            <strong>{t("home.whyBodyLucky")}</strong>
-            {t("home.whyBodyAfter")}
+            Талхны дэлгүүр, кафе, ресторан, зочид буудал, хүнсний дэлгүүрүүд
+            өдөр бүр илүүдэл хоол үлдээдэг. <strong>Азтай уут</strong>-аар
+            энэ хоолыг хямд үнээр хэрэглэгчидэд хүргэнэ — хаягдал буурна.
           </p>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {[
               {
                 icon: "🛍️",
-                title: t("home.feature1Title"),
-                text: t("home.feature1Text"),
+                title: "Азтай уут",
+                text: "Ангилал тодорхой; доторх зүйлийг сонгохгүй. Үнэ жижиглэнгийн ~⅓ (~3 дахин хямд).",
               },
               {
                 icon: "⏰",
-                title: t("home.feature2Title"),
-                text: t("home.feature2Text"),
+                title: "Авах цонх",
+                text: "Захиалсны дараа тохирсон цагт очиж авна — нөөцлөгдөнө.",
               },
               {
                 icon: "🌍",
-                title: t("home.feature3Title"),
-                text: t("home.feature3Text"),
+                title: "Хаягдал↓",
+                text: "Сайн хоол хаягдахгүй. Худалдагч, худалдан авагч хоёулаа хожно.",
               },
             ].map((item) => (
               <div key={item.title} className="card text-center">
@@ -233,8 +246,9 @@ export default async function HomePage() {
             ))}
           </div>
           <p className="mx-auto mt-8 max-w-2xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-xs leading-relaxed text-amber-950">
-            <strong>{t("home.safetyTitle")}</strong>
-            {t("home.safetyText")}
+            <strong>Хүнсний аюулгүй байдал:</strong> Азтай уутны агуулга
+            өөрчлөгдөж болно. Харшил / хоолны хязгаарлалт байвал захиалахаасаа
+            өмнө бизнестэй холбогдоорой. Хайран нь зуучлагч платформ.
           </p>
         </div>
       </section>
@@ -242,58 +256,58 @@ export default async function HomePage() {
       <section className="bg-cream-200/50 py-16">
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-center text-2xl font-bold sm:text-3xl">
-            {t("home.dualTitle")}
+            Худалдан авагч · Бизнес
           </h2>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <div className="card border-green-200 bg-green-50/70">
-              <h3 className="text-xl font-bold text-green-800">
-                {t("home.buyerTitle")}
-              </h3>
+              <h3 className="text-xl font-bold text-green-800">Худалдан авагч</h3>
               <ul className="mt-4 space-y-2.5 text-sm text-stone-700">
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> {t("home.buyer1")}
+                  <span className="text-green-600">✓</span> Ойролцоох Азтай уут
+                  ол
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> {t("home.buyer2")}
+                  <span className="text-green-600">✓</span> Захиал (нөөцлө)
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> {t("home.buyer3")}
+                  <span className="text-green-600">✓</span> Ав — жижиглэнгийн
+                  ойролцоогоор ⅓ үнэ
                 </li>
               </ul>
               <Link href="/map" className="btn-primary mt-6 inline-flex">
-                {t("home.buyerCta")}
+                Уутнууд үзэх
               </Link>
             </div>
             <div className="card border-green-200/80 bg-white">
-              <h3 className="text-xl font-bold text-green-800">
-                {t("home.bizTitle")}
-              </h3>
+              <h3 className="text-xl font-bold text-green-800">Бизнес</h3>
               <ul className="mt-4 space-y-2.5 text-sm text-stone-700">
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> {t("home.biz1")}
+                  <span className="text-green-600">✓</span> Талх, кафе, ресторан,
+                  буудал, дэлгүүр
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> {t("home.biz2Before")}
-                  <strong>{t("home.biz2Strong")}</strong>
+                  <span className="text-green-600">✓</span> Азтай уут үүсгэ —
+                  одоо <strong>шимтгэлгүй</strong>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-green-600">✓</span> {t("home.biz3")}
+                  <span className="text-green-600">✓</span> Захиалга хүлээн авч
+                  «Авсан» тэмдэглэ
                 </li>
               </ul>
               {!session ? (
                 <Link href="/signup" className="btn-primary mt-6 inline-flex">
-                  {t("home.bizSignup")}
+                  Бизнесээр бүртгүүлэх
                 </Link>
               ) : session.role === "SELLER" ? (
                 <Link href="/seller" className="btn-primary mt-6 inline-flex">
-                  {t("home.ctaDashboard")}
+                  Самбар руу
                 </Link>
               ) : (
                 <Link
                   href="/payment-terms"
                   className="btn-secondary mt-6 inline-flex"
                 >
-                  {t("home.paymentTerms")}
+                  Төлбөрийн нөхцөл
                 </Link>
               )}
             </div>
@@ -302,8 +316,11 @@ export default async function HomePage() {
       </section>
 
       <section className="bg-green-900 py-16 text-center text-white">
-        <h2 className="text-2xl font-bold sm:text-3xl">{t("home.ctaTitle")}</h2>
-        <p className="mx-auto mt-3 max-w-md text-green-100">{t("home.ctaBody")}</p>
+        <h2 className="text-2xl font-bold sm:text-3xl">Одоо эхлээрэй</h2>
+        <p className="mx-auto mt-3 max-w-md text-green-100">
+          Азтай уутаараа сайн хоолыг хаягдахаас авар. Утаснаасаа «Нүүр
+          дэлгэцэд нэмэх»-ээр апп шиг ашиглана.
+        </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {!session ? (
             <>
@@ -311,13 +328,13 @@ export default async function HomePage() {
                 href="/map"
                 className="inline-block rounded-xl bg-cream-100 px-8 py-3.5 text-sm font-bold text-green-800 hover:bg-white"
               >
-                {t("home.ctaFind")}
+                Азтай уут ол
               </Link>
               <Link
                 href="/signup"
                 className="inline-block rounded-xl border border-white/30 px-8 py-3.5 text-sm font-semibold text-cream-100 hover:bg-white/10"
               >
-                {t("nav.signup")}
+                Бүртгүүлэх
               </Link>
             </>
           ) : (
@@ -325,7 +342,7 @@ export default async function HomePage() {
               href={session.role === "SELLER" ? "/seller" : "/map"}
               className="inline-block rounded-xl bg-cream-100 px-8 py-3.5 text-sm font-bold text-green-800 hover:bg-white"
             >
-              {t("home.ctaContinue")}
+              Үргэлжлүүлэх
             </Link>
           )}
         </div>

@@ -2,15 +2,16 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { isCheckoutEnabled } from "@/lib/qpay";
 import {
+  CATEGORIES,
   formatMNT,
   formatPickupWindow,
   savingsPercent,
+  STATUSES,
 } from "@/lib/constants";
 import { ReserveForm } from "@/components/ReserveForm";
 import { PayCheckout } from "@/components/PayCheckout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createT, getLocale } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,6 @@ export default async function ListingDetailPage({
 }: {
   params: { id: string };
 }) {
-  const t = createT(getLocale());
   const listing = await prisma.listing.findUnique({
     where: { id: params.id },
     include: {
@@ -32,16 +32,12 @@ export default async function ListingDetailPage({
   if (!listing) notFound();
 
   const session = await getSession();
-  const catRaw = t(`categories.${listing.category}`);
   const cat =
-    catRaw === `categories.${listing.category}` ? listing.category : catRaw;
+    CATEGORIES[listing.category as keyof typeof CATEGORIES] || listing.category;
   const discount = savingsPercent(
     listing.bagPrice,
     listing.estimatedRetailValue
   );
-  const statusRaw = t(`statuses.${listing.status}`);
-  const statusLabel =
-    statusRaw === `statuses.${listing.status}` ? listing.status : statusRaw;
 
   let alreadyReserved = false;
   let unpaidReservationId: string | null = null;
@@ -78,7 +74,7 @@ export default async function ListingDetailPage({
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <Link href="/listings" className="text-sm text-green-700 hover:underline">
-        {t("listingDetail.back")}
+        ← Азтай уутнууд руу
       </Link>
 
       <div className="mt-4 grid gap-8 md:grid-cols-2">
@@ -93,9 +89,7 @@ export default async function ListingDetailPage({
           ) : (
             <div className="flex aspect-square flex-col items-center justify-center gap-2 text-stone-400">
               <span className="text-6xl">🛍️</span>
-              <span className="text-sm font-medium">
-                {t("listingDetail.luckyBag")}
-              </span>
+              <span className="text-sm font-medium">Азтай уут</span>
             </div>
           )}
         </div>
@@ -105,7 +99,7 @@ export default async function ListingDetailPage({
             {cat}
           </p>
           <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-coral-400">
-            {t("listingDetail.luckyBag")}
+            Азтай уут
           </p>
           <h1 className="mt-1 text-2xl font-bold sm:text-3xl">{listing.title}</h1>
           <p className="mt-1 text-sm text-stone-600">{listing.seller.name}</p>
@@ -126,21 +120,24 @@ export default async function ListingDetailPage({
 
           <dl className="mt-6 grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-xl bg-stone-100 p-3">
-              <dt className="text-stone-500">{t("listingDetail.remaining")}</dt>
+              <dt className="text-stone-500">Үлдсэн уут</dt>
               <dd className="font-semibold">{listing.quantityAvailable}</dd>
             </div>
             <div className="rounded-xl bg-stone-100 p-3">
-              <dt className="text-stone-500">{t("listingDetail.status")}</dt>
-              <dd className="font-semibold">{statusLabel}</dd>
+              <dt className="text-stone-500">Төлөв</dt>
+              <dd className="font-semibold">
+                {STATUSES[listing.status as keyof typeof STATUSES] ||
+                  listing.status}
+              </dd>
             </div>
             <div className="col-span-2 rounded-xl bg-stone-100 p-3">
-              <dt className="text-stone-500">{t("listingDetail.pickupWindow")}</dt>
+              <dt className="text-stone-500">Авах цонх</dt>
               <dd className="font-semibold">
                 {formatPickupWindow(listing.pickupStart, listing.pickupEnd)}
               </dd>
             </div>
             <div className="col-span-2 rounded-xl bg-stone-100 p-3">
-              <dt className="text-stone-500">{t("listingDetail.location")}</dt>
+              <dt className="text-stone-500">Байршил</dt>
               <dd className="font-semibold">
                 {listing.pickupDistrict}
                 {listing.pickupAddress ? ` · ${listing.pickupAddress}` : ""}
@@ -150,30 +147,33 @@ export default async function ListingDetailPage({
 
           {listing.dietaryNotes && (
             <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950">
-              <strong>{t("listingDetail.notes")}</strong> {listing.dietaryNotes}
+              <strong>Тэмдэглэл:</strong> {listing.dietaryNotes}
             </p>
           )}
 
           <div className="mt-6">
-            <h2 className="font-semibold">{t("listingDetail.description")}</h2>
+            <h2 className="font-semibold">Тайлбар</h2>
             <p className="mt-2 whitespace-pre-wrap text-sm text-stone-700">
               {listing.description}
             </p>
             <p className="mt-2 text-xs text-stone-500">
-              {t("listingDetail.secretNote")}
+              Агуулга нууц — өдөр бүр өөрчлөгдөж болно. Хүнсний аюулгүй
+              байдлын хувьд бизнес хариуцна.
             </p>
           </div>
 
           <p className="mt-4 rounded-xl border border-green-200 bg-green-50 px-3 py-2.5 text-xs leading-relaxed text-green-900">
-            {t("listingDetail.bagNote")}
+            <strong>Азтай уут:</strong> ангилал тодорхой. Доторх зүйлийг
+            сонгохгүй (гайхшрал) — үнэ жижиглэнгийн ойролцоогоор ⅓ (~3 дахин
+            хямд).
           </p>
 
           <div className="card mt-6">
-            <h2 className="font-semibold">{t("listingDetail.business")}</h2>
+            <h2 className="font-semibold">Бизнес</h2>
             <p className="mt-1 text-stone-800">{listing.seller.name}</p>
             {listing.seller.phone && (
               <p className="mt-2 text-sm">
-                {t("listingDetail.phone")}:{" "}
+                Утас:{" "}
                 <a
                   href={`tel:${listing.seller.phone}`}
                   className="font-semibold text-green-700"
@@ -199,27 +199,27 @@ export default async function ListingDetailPage({
 
           {canReserve && (
             <div className="card mt-4">
-              <h2 className="mb-3 font-semibold">{t("listingDetail.reserve")}</h2>
+              <h2 className="mb-3 font-semibold">Захиалах</h2>
               {alreadyReserved ? (
                 <div className="rounded-xl bg-green-50 p-3 text-sm text-green-800">
                   <p>
-                    {t("listingDetail.alreadyReserved")}
+                    Та энэ Азтай уутыг аль хэдийн захиалсан.
                     {unpaidReservationId
-                      ? t("listingDetail.payToConfirm")
+                      ? " Төлбөрөө хийснээр баталгаажна."
                       : paidPickupCode
                         ? ""
-                        : t("listingDetail.goPickup")}
+                        : " Байршил дээр очиж азтай уутаа авна уу!"}
                   </p>
                   {paidPickupCode && (
                     <div className="mt-3 rounded-2xl border-2 border-green-600 bg-white px-4 py-5 text-center shadow-sm">
                       <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
-                        {t("listingDetail.pickupCode")}
+                        Авах код
                       </p>
                       <p className="mt-2 select-all font-mono text-5xl font-black tracking-[0.2em] text-green-800 sm:text-6xl">
                         {paidPickupCode}
                       </p>
                       <p className="mt-3 text-sm font-medium leading-snug text-stone-700">
-                        {t("listingDetail.showCode")}
+                        Дэлгүүрт очиж энэ кодыг хэлнэ үү
                       </p>
                     </div>
                   )}
@@ -235,17 +235,17 @@ export default async function ListingDetailPage({
                 <ReserveForm listingId={listing.id} checkoutEnabled={isCheckoutEnabled()} />
               ) : session?.role === "SELLER" ? (
                 <p className="text-sm text-stone-500">
-                  {t("listingDetail.sellerCant")}
+                  Худалдагч захиалах боломжгүй.
                 </p>
               ) : (
                 <p className="text-sm text-stone-600">
-                  {t("listingDetail.loginToReserve")}{" "}
+                  Захиалахын тулд{" "}
                   <Link href="/login" className="font-semibold text-green-700">
-                    {t("listingDetail.login")}
+                    нэвтэрнэ үү
                   </Link>{" "}
-                  {t("listingDetail.or")}{" "}
+                  эсвэл{" "}
                   <Link href="/signup" className="font-semibold text-green-700">
-                    {t("listingDetail.signupBuyer")}
+                    худалдан авагчаар бүртгүүлнэ үү
                   </Link>
                   .
                 </p>

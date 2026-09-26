@@ -1,9 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { ListingCard } from "@/components/ListingCard";
 import { EmptyState } from "@/components/EmptyState";
-import { CATEGORY_KEYS, UB_DISTRICTS, type CategoryKey } from "@/lib/constants";
+import { CATEGORIES, CATEGORY_KEYS, UB_DISTRICTS } from "@/lib/constants";
 import Link from "next/link";
-import { createT, getLocale } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +15,6 @@ type Props = {
 };
 
 export default async function ListingsPage({ searchParams }: Props) {
-  const t = createT(getLocale());
   const where: Record<string, unknown> = { status: "ACTIVE" };
   if (searchParams.category) where.category = searchParams.category;
   if (searchParams.district) where.pickupDistrict = searchParams.district;
@@ -49,26 +47,24 @@ export default async function ListingsPage({ searchParams }: Props) {
     return s ? `/listings?${s}` : "/listings";
   }
 
-  function catLabel(k: CategoryKey) {
-    return t(`categories.${k}`);
-  }
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("listings.title")}</h1>
-          <p className="mt-1 text-sm text-stone-600">{t("listings.subtitle")}</p>
+          <h1 className="text-2xl font-bold tracking-tight">Азтай уут</h1>
+          <p className="mt-1 text-sm text-stone-600">
+            Ойролцоох уутнууд · Улаанбаатар · агуулга нууц!
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             href="/map"
             className="rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700"
           >
-            {t("listings.map")}
+            Газрын зураг
           </Link>
           <p className="text-sm font-medium text-stone-500">
-            {t("listings.bagCount", { n: listings.length })}
+            {listings.length} уут
           </p>
         </div>
       </div>
@@ -76,19 +72,19 @@ export default async function ListingsPage({ searchParams }: Props) {
       <form className="card mt-6 grid gap-3 sm:grid-cols-4">
         <div className="sm:col-span-2">
           <label className="label" htmlFor="q">
-            {t("listings.search")}
+            Хайх
           </label>
           <input
             id="q"
             name="q"
             defaultValue={searchParams.q || ""}
             className="input"
-            placeholder={t("listings.searchPlaceholder")}
+            placeholder="Жишээ: талх, кафе..."
           />
         </div>
         <div>
           <label className="label" htmlFor="category">
-            {t("listings.category")}
+            Ангилал
           </label>
           <select
             id="category"
@@ -96,17 +92,17 @@ export default async function ListingsPage({ searchParams }: Props) {
             defaultValue={searchParams.category || ""}
             className="input"
           >
-            <option value="">{t("listings.all")}</option>
+            <option value="">Бүгд</option>
             {CATEGORY_KEYS.map((k) => (
               <option key={k} value={k}>
-                {catLabel(k)}
+                {CATEGORIES[k]}
               </option>
             ))}
           </select>
         </div>
         <div>
           <label className="label" htmlFor="district">
-            {t("listings.district")}
+            Дүүрэг
           </label>
           <select
             id="district"
@@ -114,7 +110,7 @@ export default async function ListingsPage({ searchParams }: Props) {
             defaultValue={searchParams.district || ""}
             className="input"
           >
-            <option value="">{t("listings.all")}</option>
+            <option value="">Бүгд</option>
             {UB_DISTRICTS.map((d) => (
               <option key={d} value={d}>
                 {d}
@@ -124,10 +120,10 @@ export default async function ListingsPage({ searchParams }: Props) {
         </div>
         <div className="flex gap-2 sm:col-span-4">
           <button type="submit" className="btn-primary">
-            {t("listings.filter")}
+            Шүүх
           </button>
           <Link href="/listings" className="btn-secondary">
-            {t("listings.clear")}
+            Цэвэрлэх
           </Link>
         </div>
       </form>
@@ -141,7 +137,7 @@ export default async function ListingsPage({ searchParams }: Props) {
               : "bg-stone-200 text-stone-700 hover:bg-stone-300"
           }`}
         >
-          {t("listings.all")}
+          Бүгд
         </Link>
         {CATEGORY_KEYS.map((k) => (
           <Link
@@ -153,7 +149,7 @@ export default async function ListingsPage({ searchParams }: Props) {
                 : "bg-stone-200 text-stone-700 hover:bg-stone-300"
             }`}
           >
-            {catLabel(k)}
+            {CATEGORIES[k]}
           </Link>
         ))}
       </div>
@@ -163,18 +159,16 @@ export default async function ListingsPage({ searchParams }: Props) {
           icon={hasFilters ? "🔍" : "🛍️"}
           title={
             hasFilters
-              ? t("listings.emptyFilteredTitle")
-              : t("listings.emptyTitle")
+              ? "Тохирох Азтай уут олдсонгүй"
+              : "Одоогоор идэвхтэй уут байхгүй"
           }
           description={
             hasFilters
-              ? t("listings.emptyFilteredDesc")
-              : t("listings.emptyDesc")
+              ? "Шүүлтүүрээ өөрчилж эсвэл цэвэрлээд дахин үзнэ үү."
+              : "Бизнесүүд удахгүй Азтай уут нэмнэ."
           }
           actionHref={hasFilters ? "/listings" : "/signup"}
-          actionLabel={
-            hasFilters ? t("listings.clearFilters") : t("listings.signup")
-          }
+          actionLabel={hasFilters ? "Шүүлтүүр цэвэрлэх" : "Бүртгүүлэх"}
         />
       ) : (
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
