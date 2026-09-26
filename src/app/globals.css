@@ -5,12 +5,12 @@
 @tailwind utilities;
 
 :root {
-  --xale-forest: #0b3d2e;
-  --xale-forest-mid: #1f5c45;
-  --xale-cream: #f8f4f0;
-  --xale-green: #1f5c45;
-  --xale-green-dark: #0b3d2e;
-  --xale-amber: #a67c4e;
+  --hairan-forest: #0b3d2e;
+  --hairan-forest-mid: #1f5c45;
+  --hairan-cream: #f8f4f0;
+  --hairan-green: #1f5c45;
+  --hairan-green-dark: #0b3d2e;
+  --hairan-amber: #a67c4e;
   --background: #f8f4f0;
   --foreground: #1c1917;
 }
@@ -61,7 +61,7 @@ body {
   width: 100%;
   font: inherit;
 }
-.xale-bag-marker {
+.hairan-bag-marker {
   background: transparent !important;
   border: none !important;
 }

@@ -17,7 +17,7 @@ export default function PaymentTermsPage() {
         Сүүлийн шинэчлэл: 2026-09-26 · <strong className="text-stone-700">Хайран</strong>
       </p>
 
-      <div className="prose-xale mt-10 space-y-8 text-stone-700">
+      <div className="prose-hairan mt-10 space-y-8 text-stone-700">
         <section className="card space-y-3">
           <h2 className="text-lg font-bold text-stone-900">1. Худалдан авагч</h2>
           <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed">

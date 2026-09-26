@@ -16,7 +16,7 @@ import type { MapListing } from "./types";
 function bagIcon(selected: boolean) {
   const size = selected ? 36 : 28;
   return L.divIcon({
-    className: "xale-bag-marker",
+    className: "hairan-bag-marker",
     html: `<div style="
       width:${size}px;height:${size}px;
       border-radius:9999px;

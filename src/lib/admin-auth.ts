@@ -8,7 +8,7 @@ const SECRET = new TextEncoder().encode(
 );
 
 export function getAdminEmail(): string {
-  return process.env.ADMIN_EMAIL || "admin@xale.mn";
+  return process.env.ADMIN_EMAIL || "admin@hairan.mn";
 }
 
 function getAdminPassword(): string | null {
